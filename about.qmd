@@ -1,0 +1,19 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: file-pdf
+      text: Resume
+      href: CV.pdf
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/dieguliomachado/
+    - icon: github
+      text: Github
+      href: https://github.com/diegulio
+
+---
+
+Hi there! Soy Diego Machado, Ingeniero Civil Industrial con magíster en Ciencias de la Ingeniería. Soy un entusiasta en el mundo de la inteligencia artificial, me encuentro constantenemente aprendiendo y desarrollando nuevos proyectos. Tengo conocimientos en una gran variedad de aplicaciones de la IA, tales como Regresión, Clasificación, Time Series, NLP, CV y Audio.
