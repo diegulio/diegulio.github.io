@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/main.html</loc>
+    <lastmod>2023-05-04T00:57:33.216Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-1-simple-nn.html</loc>
+    <lastmod>2023-05-04T00:57:33.678Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-3-rnn.html</loc>
+    <lastmod>2023-05-04T00:57:34.364Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-5-mybestsolution.html</loc>
+    <lastmod>2023-05-04T00:57:34.809Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-4-bert-tensorflow-huggingface.html</loc>
+    <lastmod>2023-05-04T00:57:35.634Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-2-embeddings.html</loc>
+    <lastmod>2023-05-04T00:57:36.694Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/index.html</loc>
+    <lastmod>2023-05-04T00:57:37.028Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/about.html</loc>
+    <lastmod>2023-05-04T00:57:37.286Z</lastmod>
+  </url>
+</urlset>

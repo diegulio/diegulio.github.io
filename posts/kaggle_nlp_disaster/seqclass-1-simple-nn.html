@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.333">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Diegulio">
+
+<title>blog🎯 - 1. Simple Neural Network</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">blog🎯</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">1. Simple Neural Network</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Diegulio </p>
+            </div>
+    </div>
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#simple-nn" id="toc-simple-nn" class="nav-link active" data-scroll-target="#simple-nn">Simple NN</a>
+  <ul class="collapse">
+  <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+  <li><a href="#data-pipeline" id="toc-data-pipeline" class="nav-link" data-scroll-target="#data-pipeline">Data Pipeline</a></li>
+  <li><a href="#model" id="toc-model" class="nav-link" data-scroll-target="#model">Model</a></li>
+  <li><a href="#pred-test" id="toc-pred-test" class="nav-link" data-scroll-target="#pred-test">Pred test</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclussions" id="toc-conclussions" class="nav-link" data-scroll-target="#conclussions">Conclussions</a></li>
+  <li><a href="#anyway-it-should-serve-as-motivation-to-keep-improving" id="toc-anyway-it-should-serve-as-motivation-to-keep-improving" class="nav-link" data-scroll-target="#anyway-it-should-serve-as-motivation-to-keep-improving">Anyway, it should serve as motivation to keep improving!</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="simple-nn" class="level1">
+<h1>Simple NN</h1>
+<p>In this notebook I will use a simple Neural Network Arquitecture. We need to remember that we only can feed numbers to NN !</p>
+<p>The Arquitecture will look like this:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="seqclass-1-simple-nn_files/figure-html/9c0f5318-1-88ba72c8-f12b-4f0f-a719-9e655604cadf.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">NLP-NN.png</figcaption>
+</figure>
+</div>
+<p>Remember that is belong to a NLP Notebook series where I am learning and testing different NLP approachs in this competition. Like NN, Embedding, RNN, Transformers, HuggingFace, etc.</p>
+<p>To see the other notebooks visit: https://www.kaggle.com/code/diegomachado/seqclass-nn-embed-rnn-lstm-gru-bert-hf</p>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:54:57.393354Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:54:57.392706Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:06.006941Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:06.005572Z&quot;}" data-papermill="{&quot;duration&quot;:8.644245,&quot;end_time&quot;:&quot;2022-12-11T14:55:06.010743&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:54:57.366498&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gc</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> TextVectorization, Lambda</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.utils <span class="im">import</span> plot_model</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.text <span class="im">import</span> text_to_word_sequence</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> losses</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.callbacks <span class="im">import</span> EarlyStopping, TensorBoard, ReduceLROnPlateau</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#import tensorflow_hub as hub</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#import tensorflow_text as text # Bert preprocess uses this </span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> Adam</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nltk</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gensim.models <span class="im">import</span> KeyedVectors</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#nltk.download('stopwords')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:06.081573Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:06.080305Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:06.160812Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:06.159826Z&quot;}" data-papermill="{&quot;duration&quot;:0.103552,&quot;end_time&quot;:&quot;2022-12-11T14:55:06.163845&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:06.060293&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"/kaggle/input/df-split/df_split/df_train.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pd.read_csv(<span class="st">"/kaggle/input/df-split/df_split/df_test.csv"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> train[[col <span class="cf">for</span> col <span class="kw">in</span> train.columns <span class="cf">if</span> col <span class="op">!=</span> <span class="st">'target'</span>]].copy()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">'target'</span>].copy()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> test[[col <span class="cf">for</span> col <span class="kw">in</span> test.columns <span class="cf">if</span> col <span class="op">!=</span> <span class="st">'target'</span>]].copy()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> test[<span class="st">'target'</span>].copy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:06.199287Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:06.198462Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:06.260561Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:06.259369Z&quot;}" data-papermill="{&quot;duration&quot;:0.085056,&quot;end_time&quot;:&quot;2022-12-11T14:55:06.265445&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:06.180389&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tensorflow Datasets</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> tf.data.Dataset.from_tensor_slices((X_train.text, y_train))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>test_ds <span class="op">=</span> tf.data.Dataset.from_tensor_slices((X_test.text, y_test))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>train_ds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>2022-12-11 14:55:06.219408: I tensorflow/core/common_runtime/process_util.cc:146] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>&lt;TensorSliceDataset shapes: ((), ()), types: (tf.string, tf.int64)&gt;</code></pre>
+</div>
+</div>
+<p>Instantiate <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/TextVectorization">TextVectorization Layer</a></p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:06.334028Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:06.333525Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:06.832072Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:06.831088Z&quot;}" data-papermill="{&quot;duration&quot;:0.519458,&quot;end_time&quot;:&quot;2022-12-11T14:55:06.834517&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:06.315059&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>max_features <span class="op">=</span> <span class="dv">10000</span> <span class="co"># Vocabulary (TensorFlow select the most frequent tokens)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="dv">50</span> <span class="co"># It will pad or truncate sequences</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>vectorization_layer <span class="op">=</span> TextVectorization(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    max_tokens <span class="op">=</span> max_features,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    output_sequence_length <span class="op">=</span> sequence_length,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Adapt is to compute metrics (In this case the vocabulary)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>vectorization_layer.adapt(X_train.text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>2022-12-11 14:55:06.451771: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:06.869047Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:06.868436Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:06.946728Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:06.945477Z&quot;}" data-papermill="{&quot;duration&quot;:0.098218,&quot;end_time&quot;:&quot;2022-12-11T14:55:06.949237&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:06.851019&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Testing the Vectorization layer</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vectorize_text(text):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> tf.expand_dims(text, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> vectorization_layer(text)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># retrieve a batch (of 1 review and label) from the dataset</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>text_batch, label_batch <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(train_ds))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>first_review, first_label <span class="op">=</span> text_batch, label_batch</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Review"</span>, first_review)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Label"</span>, first_label)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Vectorized review"</span>, vectorize_text(first_review))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Review tf.Tensor(b'Riot Kit Bah - part of the new concept Gear coming for Autumn/Winter\n#menswear #fashion #urbanfashion\xc2\x89\xc3\x9b_ https://t.co/cCwzDTFbUS', shape=(), dtype=string)
+Label tf.Tensor(0, shape=(), dtype=int64)
+Vectorized review tf.Tensor(
+[[ 403 1278    1  572    6    2   44 3700    1  250   10    1    1  968
+  6559    1    0    0    0    0    0    0    0    0    0    0    0    0
+     0    0    0    0    0    0    0    0    0    0    0    0    0    0
+     0    0    0    0    0    0    0    0]], shape=(1, 50), dtype=int64)</code></pre>
+</div>
+</div>
+<p><strong>🔍</strong> We see that the length of the vector is <code>output_sequence_length = 250</code>, and if the statement is not that long, it is paded with 0. We also note that no integer is greater than 10000, since we set this as our maximum vocabulary of tokens (vocabulary_size()). We also see that there are some integers = 1. This in the vocabulary corresponds to <code>UNK</code>, that is, unknown words (tokens), this is because our vocabulary is limited (TextVectorization chooses the 10000 most frequent ones).</p>
+<p>An improvement can be to analyze the length of the dataset sentences and choose an output_sequence_lenght based on this (to avoid to much pad)</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:07.015390Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:07.014963Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:07.022396Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:07.021144Z&quot;}" data-papermill="{&quot;duration&quot;:0.027639,&quot;end_time&quot;:&quot;2022-12-11T14:55:07.024618&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:06.996979&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vectorization_layer.vocabulary_size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>10000</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:07.059468Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:07.058467Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:07.086939Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:07.086059Z&quot;}" data-papermill="{&quot;duration&quot;:0.048263,&quot;end_time&quot;:&quot;2022-12-11T14:55:07.089343&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:07.041080&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To see the vocabulary</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>vectorization_layer.get_vocabulary()[:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>['', '[UNK]', 'the', 'a', 'in', 'to', 'of', 'and', 'i', 'is']</code></pre>
+</div>
+</div>
+<section id="data-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="data-pipeline">Data Pipeline</h3>
+<p>Now we need to prepare the data pipeline:</p>
+<p>batch -&gt; cache -&gt; prefetch</p>
+<ul>
+<li><code>Batch</code> : Create a set of samples (Those will be processed together in the model)</li>
+<li><code>Cache</code>: The first time the dataset is iterated over, its elements will be cached either in the specified file or in memory. Subsequent iterations will use the cached data.</li>
+<li><code>Prefetch</code> : This allows later elements to be prepared while the current element is being processed. This often improves latency and throughput, at the cost of using additional memory to store prefetched elements.</li>
+</ul>
+<p>Optional: You can do it another steps like <code>shuffle</code></p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:07.155196Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:07.154798Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:07.162026Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:07.161230Z&quot;}" data-papermill="{&quot;duration&quot;:0.027109,&quot;end_time&quot;:&quot;2022-12-11T14:55:07.164258&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:07.137149&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>AUTOTUNE <span class="op">=</span> tf.data.AUTOTUNE</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> train_ds.batch(<span class="dv">32</span>).cache().prefetch(buffer_size<span class="op">=</span>AUTOTUNE)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>test_ds <span class="op">=</span> test_ds.batch(<span class="dv">32</span>).cache().prefetch(buffer_size<span class="op">=</span>AUTOTUNE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model" class="level3">
+<h3 class="anchored" data-anchor-id="model">Model</h3>
+<p>We will build a simple Sequential Model composed by two Dense Layers. I dont take to much time tunning it.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:07.231286Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:07.230633Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:07.302453Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:07.301304Z&quot;}" data-papermill="{&quot;duration&quot;:0.092164,&quot;end_time&quot;:&quot;2022-12-11T14:55:07.305261&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:07.213097&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Sequential([</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    layers.Input(shape<span class="op">=</span>(<span class="dv">1</span>,), dtype<span class="op">=</span>tf.string), <span class="co"># Input Layer</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    vectorization_layer, <span class="co"># Vectorization Layer</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">64</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">#layers.Dropout(0.1),</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">32</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">#layers.Dropout(0.1),</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    layers.Dense(<span class="dv">1</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:07.343364Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:07.342933Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:07.349078Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:07.348008Z&quot;}" data-papermill="{&quot;duration&quot;:0.027807,&quot;end_time&quot;:&quot;2022-12-11T14:55:07.351546&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:07.323739&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+text_vectorization (TextVect (None, 50)                0         
+_________________________________________________________________
+dense (Dense)                (None, 64)                3264      
+_________________________________________________________________
+dense_1 (Dense)              (None, 32)                2080      
+_________________________________________________________________
+dense_2 (Dense)              (None, 1)                 33        
+=================================================================
+Total params: 5,377
+Trainable params: 5,377
+Non-trainable params: 0
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:07.386144Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:07.385153Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:08.644645Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:08.643132Z&quot;}" data-papermill="{&quot;duration&quot;:1.279898,&quot;end_time&quot;:&quot;2022-12-11T14:55:08.648101&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:07.368203&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>plot_model(model, show_shapes<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<p><img src="seqclass-1-simple-nn_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:08.688415Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:08.687570Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:55:08.714589Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:55:08.713302Z&quot;}" data-papermill="{&quot;duration&quot;:0.050535,&quot;end_time&quot;:&quot;2022-12-11T14:55:08.717513&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:08.666978&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>losses.BinaryCrossentropy(from_logits<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>tf.metrics.BinaryAccuracy(threshold<span class="op">=</span><span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>🔍 <strong>Due to our last Dense Layer has a linear activation function, it computes the logits. So the loss function needs to be computed with <code>from_logits=True</code>.</strong></p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:55:08.793077Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:55:08.792633Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:08.055146Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:08.054220Z&quot;}" data-papermill="{&quot;duration&quot;:59.283408,&quot;end_time&quot;:&quot;2022-12-11T14:56:08.057563&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:55:08.774155&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    train_ds,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    validation_data <span class="op">=</span> test_ds,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span>epochs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/100
+191/191 [==============================] - 2s 4ms/step - loss: 76.1297 - binary_accuracy: 0.5123 - val_loss: 30.4719 - val_binary_accuracy: 0.5207
+Epoch 2/100
+191/191 [==============================] - 1s 3ms/step - loss: 37.2703 - binary_accuracy: 0.5167 - val_loss: 22.0519 - val_binary_accuracy: 0.5194
+Epoch 3/100
+191/191 [==============================] - 1s 3ms/step - loss: 34.7663 - binary_accuracy: 0.5118 - val_loss: 27.2791 - val_binary_accuracy: 0.5141
+Epoch 4/100
+191/191 [==============================] - 1s 3ms/step - loss: 28.8605 - binary_accuracy: 0.5135 - val_loss: 26.1287 - val_binary_accuracy: 0.5253
+Epoch 5/100
+191/191 [==============================] - 1s 3ms/step - loss: 28.4162 - binary_accuracy: 0.5123 - val_loss: 24.3497 - val_binary_accuracy: 0.5108
+Epoch 6/100
+191/191 [==============================] - 1s 3ms/step - loss: 26.5699 - binary_accuracy: 0.5084 - val_loss: 17.0479 - val_binary_accuracy: 0.5148
+Epoch 7/100
+191/191 [==============================] - 1s 3ms/step - loss: 24.1579 - binary_accuracy: 0.5136 - val_loss: 24.3595 - val_binary_accuracy: 0.5351
+Epoch 8/100
+191/191 [==============================] - 1s 3ms/step - loss: 22.3645 - binary_accuracy: 0.5110 - val_loss: 18.3034 - val_binary_accuracy: 0.5108
+Epoch 9/100
+191/191 [==============================] - 1s 3ms/step - loss: 19.4826 - binary_accuracy: 0.5059 - val_loss: 17.5856 - val_binary_accuracy: 0.5161
+Epoch 10/100
+191/191 [==============================] - 1s 3ms/step - loss: 19.1403 - binary_accuracy: 0.5156 - val_loss: 15.4736 - val_binary_accuracy: 0.5299
+Epoch 11/100
+191/191 [==============================] - 1s 3ms/step - loss: 16.6029 - binary_accuracy: 0.5156 - val_loss: 13.5105 - val_binary_accuracy: 0.5220
+Epoch 12/100
+191/191 [==============================] - 0s 3ms/step - loss: 16.8898 - binary_accuracy: 0.5166 - val_loss: 13.1816 - val_binary_accuracy: 0.5253
+Epoch 13/100
+191/191 [==============================] - 1s 3ms/step - loss: 15.9538 - binary_accuracy: 0.5151 - val_loss: 14.4587 - val_binary_accuracy: 0.5391
+Epoch 14/100
+191/191 [==============================] - 1s 3ms/step - loss: 15.0781 - binary_accuracy: 0.5085 - val_loss: 11.7277 - val_binary_accuracy: 0.5312
+Epoch 15/100
+191/191 [==============================] - 1s 3ms/step - loss: 13.2963 - binary_accuracy: 0.5072 - val_loss: 8.4516 - val_binary_accuracy: 0.5167
+Epoch 16/100
+191/191 [==============================] - 1s 3ms/step - loss: 11.8151 - binary_accuracy: 0.5125 - val_loss: 13.2906 - val_binary_accuracy: 0.5351
+Epoch 17/100
+191/191 [==============================] - 1s 3ms/step - loss: 12.2239 - binary_accuracy: 0.5136 - val_loss: 10.8708 - val_binary_accuracy: 0.5378
+Epoch 18/100
+191/191 [==============================] - 1s 3ms/step - loss: 11.7989 - binary_accuracy: 0.5046 - val_loss: 8.7974 - val_binary_accuracy: 0.5299
+Epoch 19/100
+191/191 [==============================] - 1s 3ms/step - loss: 10.5223 - binary_accuracy: 0.5103 - val_loss: 9.4426 - val_binary_accuracy: 0.5253
+Epoch 20/100
+191/191 [==============================] - 1s 3ms/step - loss: 10.5585 - binary_accuracy: 0.5122 - val_loss: 9.8687 - val_binary_accuracy: 0.5246
+Epoch 21/100
+191/191 [==============================] - 1s 3ms/step - loss: 9.2616 - binary_accuracy: 0.5167 - val_loss: 11.9928 - val_binary_accuracy: 0.5253
+Epoch 22/100
+191/191 [==============================] - 1s 3ms/step - loss: 10.1322 - binary_accuracy: 0.5213 - val_loss: 7.8273 - val_binary_accuracy: 0.4990
+Epoch 23/100
+191/191 [==============================] - 1s 3ms/step - loss: 8.4561 - binary_accuracy: 0.5200 - val_loss: 9.2781 - val_binary_accuracy: 0.5174
+Epoch 24/100
+191/191 [==============================] - 1s 3ms/step - loss: 8.0963 - binary_accuracy: 0.5166 - val_loss: 5.4576 - val_binary_accuracy: 0.5167
+Epoch 25/100
+191/191 [==============================] - 1s 3ms/step - loss: 7.1907 - binary_accuracy: 0.5122 - val_loss: 8.8754 - val_binary_accuracy: 0.5003
+Epoch 26/100
+191/191 [==============================] - 1s 3ms/step - loss: 6.9971 - binary_accuracy: 0.5190 - val_loss: 7.2822 - val_binary_accuracy: 0.5095
+Epoch 27/100
+191/191 [==============================] - 1s 3ms/step - loss: 6.5726 - binary_accuracy: 0.5105 - val_loss: 5.3474 - val_binary_accuracy: 0.4879
+Epoch 28/100
+191/191 [==============================] - 1s 3ms/step - loss: 6.0869 - binary_accuracy: 0.5243 - val_loss: 5.1194 - val_binary_accuracy: 0.5174
+Epoch 29/100
+191/191 [==============================] - 1s 3ms/step - loss: 5.7851 - binary_accuracy: 0.5125 - val_loss: 6.9937 - val_binary_accuracy: 0.5076
+Epoch 30/100
+191/191 [==============================] - 1s 3ms/step - loss: 5.1723 - binary_accuracy: 0.5148 - val_loss: 5.7589 - val_binary_accuracy: 0.5062
+Epoch 31/100
+191/191 [==============================] - 1s 4ms/step - loss: 5.1466 - binary_accuracy: 0.5125 - val_loss: 3.9673 - val_binary_accuracy: 0.5181
+Epoch 32/100
+191/191 [==============================] - 1s 3ms/step - loss: 4.2948 - binary_accuracy: 0.5186 - val_loss: 5.4504 - val_binary_accuracy: 0.5089
+Epoch 33/100
+191/191 [==============================] - 1s 3ms/step - loss: 4.4029 - binary_accuracy: 0.5095 - val_loss: 2.8821 - val_binary_accuracy: 0.5128
+Epoch 34/100
+191/191 [==============================] - 1s 3ms/step - loss: 4.0808 - binary_accuracy: 0.5099 - val_loss: 3.8832 - val_binary_accuracy: 0.5161
+Epoch 35/100
+191/191 [==============================] - 1s 3ms/step - loss: 3.7501 - binary_accuracy: 0.5174 - val_loss: 3.9605 - val_binary_accuracy: 0.5135
+Epoch 36/100
+191/191 [==============================] - 1s 3ms/step - loss: 3.7382 - binary_accuracy: 0.5102 - val_loss: 3.6448 - val_binary_accuracy: 0.5115
+Epoch 37/100
+191/191 [==============================] - 1s 3ms/step - loss: 3.1055 - binary_accuracy: 0.5245 - val_loss: 3.9398 - val_binary_accuracy: 0.5056
+Epoch 38/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.9880 - binary_accuracy: 0.5151 - val_loss: 2.8102 - val_binary_accuracy: 0.5082
+Epoch 39/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.7847 - binary_accuracy: 0.5215 - val_loss: 2.1289 - val_binary_accuracy: 0.5187
+Epoch 40/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.8415 - binary_accuracy: 0.5241 - val_loss: 2.8795 - val_binary_accuracy: 0.5115
+Epoch 41/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.5144 - binary_accuracy: 0.5223 - val_loss: 2.5149 - val_binary_accuracy: 0.5213
+Epoch 42/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.0964 - binary_accuracy: 0.5287 - val_loss: 2.0305 - val_binary_accuracy: 0.5207
+Epoch 43/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.1527 - binary_accuracy: 0.5158 - val_loss: 1.8447 - val_binary_accuracy: 0.5095
+Epoch 44/100
+191/191 [==============================] - 1s 3ms/step - loss: 2.0041 - binary_accuracy: 0.5296 - val_loss: 1.7671 - val_binary_accuracy: 0.5095
+Epoch 45/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.7718 - binary_accuracy: 0.5232 - val_loss: 2.0167 - val_binary_accuracy: 0.5121
+Epoch 46/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.8157 - binary_accuracy: 0.5159 - val_loss: 1.7764 - val_binary_accuracy: 0.5227
+Epoch 47/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.6907 - binary_accuracy: 0.5281 - val_loss: 1.3804 - val_binary_accuracy: 0.5233
+Epoch 48/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.5388 - binary_accuracy: 0.5233 - val_loss: 1.4022 - val_binary_accuracy: 0.5213
+Epoch 49/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.6031 - binary_accuracy: 0.5259 - val_loss: 1.3513 - val_binary_accuracy: 0.5253
+Epoch 50/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.3865 - binary_accuracy: 0.5271 - val_loss: 1.1486 - val_binary_accuracy: 0.5246
+Epoch 51/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.2101 - binary_accuracy: 0.5269 - val_loss: 1.0696 - val_binary_accuracy: 0.5227
+Epoch 52/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.2028 - binary_accuracy: 0.5368 - val_loss: 1.1062 - val_binary_accuracy: 0.5292
+Epoch 53/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.1968 - binary_accuracy: 0.5332 - val_loss: 0.9421 - val_binary_accuracy: 0.5318
+Epoch 54/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.1506 - binary_accuracy: 0.5340 - val_loss: 1.0106 - val_binary_accuracy: 0.5338
+Epoch 55/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.2173 - binary_accuracy: 0.5281 - val_loss: 0.9825 - val_binary_accuracy: 0.5378
+Epoch 56/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.1079 - binary_accuracy: 0.5296 - val_loss: 0.8303 - val_binary_accuracy: 0.5515
+Epoch 57/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9980 - binary_accuracy: 0.5378 - val_loss: 0.8406 - val_binary_accuracy: 0.5456
+Epoch 58/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.1121 - binary_accuracy: 0.5363 - val_loss: 1.8118 - val_binary_accuracy: 0.5548
+Epoch 59/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.0127 - binary_accuracy: 0.5388 - val_loss: 0.9639 - val_binary_accuracy: 0.5483
+Epoch 60/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9924 - binary_accuracy: 0.5374 - val_loss: 0.8626 - val_binary_accuracy: 0.5483
+Epoch 61/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8680 - binary_accuracy: 0.5399 - val_loss: 0.8083 - val_binary_accuracy: 0.5542
+Epoch 62/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8643 - binary_accuracy: 0.5440 - val_loss: 1.2377 - val_binary_accuracy: 0.5581
+Epoch 63/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9144 - binary_accuracy: 0.5396 - val_loss: 0.7873 - val_binary_accuracy: 0.5522
+Epoch 64/100
+191/191 [==============================] - 0s 3ms/step - loss: 0.9946 - binary_accuracy: 0.5343 - val_loss: 0.8474 - val_binary_accuracy: 0.5463
+Epoch 65/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9548 - binary_accuracy: 0.5365 - val_loss: 0.7671 - val_binary_accuracy: 0.5568
+Epoch 66/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9172 - binary_accuracy: 0.5432 - val_loss: 1.1670 - val_binary_accuracy: 0.5535
+Epoch 67/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9938 - binary_accuracy: 0.5473 - val_loss: 1.7050 - val_binary_accuracy: 0.5575
+Epoch 68/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8954 - binary_accuracy: 0.5394 - val_loss: 0.7633 - val_binary_accuracy: 0.5483
+Epoch 69/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8815 - binary_accuracy: 0.5460 - val_loss: 0.9965 - val_binary_accuracy: 0.5561
+Epoch 70/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8643 - binary_accuracy: 0.5438 - val_loss: 1.0431 - val_binary_accuracy: 0.5509
+Epoch 71/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8825 - binary_accuracy: 0.5483 - val_loss: 1.0019 - val_binary_accuracy: 0.5601
+Epoch 72/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9897 - binary_accuracy: 0.5479 - val_loss: 1.3509 - val_binary_accuracy: 0.5502
+Epoch 73/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9775 - binary_accuracy: 0.5427 - val_loss: 0.9652 - val_binary_accuracy: 0.5581
+Epoch 74/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.0205 - binary_accuracy: 0.5445 - val_loss: 1.2212 - val_binary_accuracy: 0.5614
+Epoch 75/100
+191/191 [==============================] - 1s 3ms/step - loss: 1.0616 - binary_accuracy: 0.5432 - val_loss: 1.1886 - val_binary_accuracy: 0.5575
+Epoch 76/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9314 - binary_accuracy: 0.5468 - val_loss: 1.3687 - val_binary_accuracy: 0.5548
+Epoch 77/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8521 - binary_accuracy: 0.5470 - val_loss: 0.7695 - val_binary_accuracy: 0.5548
+Epoch 78/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8151 - binary_accuracy: 0.5517 - val_loss: 0.9690 - val_binary_accuracy: 0.5509
+Epoch 79/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9553 - binary_accuracy: 0.5453 - val_loss: 0.8552 - val_binary_accuracy: 0.5575
+Epoch 80/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8296 - binary_accuracy: 0.5512 - val_loss: 0.7398 - val_binary_accuracy: 0.5555
+Epoch 81/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8471 - binary_accuracy: 0.5548 - val_loss: 0.7572 - val_binary_accuracy: 0.5529
+Epoch 82/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8430 - binary_accuracy: 0.5456 - val_loss: 0.7894 - val_binary_accuracy: 0.5575
+Epoch 83/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8508 - binary_accuracy: 0.5471 - val_loss: 0.9579 - val_binary_accuracy: 0.5476
+Epoch 84/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8445 - binary_accuracy: 0.5537 - val_loss: 0.8346 - val_binary_accuracy: 0.5581
+Epoch 85/100
+191/191 [==============================] - 1s 4ms/step - loss: 0.8542 - binary_accuracy: 0.5511 - val_loss: 0.7923 - val_binary_accuracy: 0.5542
+Epoch 86/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9084 - binary_accuracy: 0.5481 - val_loss: 0.9421 - val_binary_accuracy: 0.5575
+Epoch 87/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9367 - binary_accuracy: 0.5463 - val_loss: 0.9959 - val_binary_accuracy: 0.5450
+Epoch 88/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9629 - binary_accuracy: 0.5498 - val_loss: 1.1058 - val_binary_accuracy: 0.5607
+Epoch 89/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9141 - binary_accuracy: 0.5365 - val_loss: 0.7433 - val_binary_accuracy: 0.5561
+Epoch 90/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8145 - binary_accuracy: 0.5478 - val_loss: 0.7720 - val_binary_accuracy: 0.5529
+Epoch 91/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.7985 - binary_accuracy: 0.5560 - val_loss: 0.7784 - val_binary_accuracy: 0.5581
+Epoch 92/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8700 - binary_accuracy: 0.5468 - val_loss: 0.8171 - val_binary_accuracy: 0.5594
+Epoch 93/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8868 - binary_accuracy: 0.5502 - val_loss: 0.9612 - val_binary_accuracy: 0.5594
+Epoch 94/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8591 - binary_accuracy: 0.5493 - val_loss: 0.8276 - val_binary_accuracy: 0.5581
+Epoch 95/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8683 - binary_accuracy: 0.5435 - val_loss: 0.8003 - val_binary_accuracy: 0.5581
+Epoch 96/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8546 - binary_accuracy: 0.5415 - val_loss: 0.7477 - val_binary_accuracy: 0.5555
+Epoch 97/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.9054 - binary_accuracy: 0.5484 - val_loss: 1.2473 - val_binary_accuracy: 0.5575
+Epoch 98/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8245 - binary_accuracy: 0.5479 - val_loss: 0.7795 - val_binary_accuracy: 0.5515
+Epoch 99/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8624 - binary_accuracy: 0.5435 - val_loss: 0.9183 - val_binary_accuracy: 0.5529
+Epoch 100/100
+191/191 [==============================] - 1s 3ms/step - loss: 0.8200 - binary_accuracy: 0.5470 - val_loss: 0.7893 - val_binary_accuracy: 0.5509</code></pre>
+</div>
+</div>
+</section>
+<section id="pred-test" class="level3">
+<h3 class="anchored" data-anchor-id="pred-test">Pred test</h3>
+<p>Now we will predict the test to do the submission</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:08.384400Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:08.383974Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:08.419671Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:08.418421Z&quot;}" data-papermill="{&quot;duration&quot;:0.121573,&quot;end_time&quot;:&quot;2022-12-11T14:56:08.422509&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:08.300936&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>test_df <span class="op">=</span> pd.read_csv(<span class="st">"/kaggle/input/nlp-getting-started/test.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:08.590453Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:08.589715Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:08.600041Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:08.599245Z&quot;}" data-papermill="{&quot;duration&quot;:0.09729,&quot;end_time&quot;:&quot;2022-12-11T14:56:08.602230&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:08.504940&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>topred_ds <span class="op">=</span> tf.data.Dataset.from_tensor_slices(test_df.text)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>AUTOTUNE <span class="op">=</span> tf.data.AUTOTUNE</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>topred_ds <span class="op">=</span> topred_ds.batch(<span class="dv">32</span>).cache().prefetch(buffer_size<span class="op">=</span>AUTOTUNE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:08.767932Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:08.767238Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:09.058670Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:09.057491Z&quot;}" data-papermill="{&quot;duration&quot;:0.37756,&quot;end_time&quot;:&quot;2022-12-11T14:56:09.061316&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:08.683756&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> model.predict(topred_ds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:09.227249Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:09.225892Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:09.234290Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:09.233169Z&quot;}" data-papermill="{&quot;duration&quot;:0.093801,&quot;end_time&quot;:&quot;2022-12-11T14:56:09.236514&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:09.142713&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>preds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>array([[-0.83098686],
+       [-0.71497   ],
+       [-0.4031287 ],
+       ...,
+       [-0.3488861 ],
+       [-0.4957207 ],
+       [-1.3229517 ]], dtype=float32)</code></pre>
+</div>
+</div>
+<p>📝 <strong>Note that those are the logits</strong>!</p>
+<p>To get a prediction we will compute the sigmoid function and round it to 1 or 0! (Thats because they are 2 classes, if there would be multi class classification then we would need Softmax Function)</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:09.568078Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:09.567084Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:09.578567Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:09.577782Z&quot;}" data-papermill="{&quot;duration&quot;:0.098891,&quot;end_time&quot;:&quot;2022-12-11T14:56:09.580987&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:09.482096&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>test_df[<span class="st">"target"</span>] <span class="op">=</span> tf.<span class="bu">round</span>(tf.nn.sigmoid(preds)) <span class="co"># We use simple round function</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>test_df[<span class="st">"target"</span>] <span class="op">=</span> test_df[<span class="st">"target"</span>].astype(<span class="bu">int</span>) <span class="co"># Submission needs int prediction</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:09.746558Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:09.746163Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:09.755534Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:09.754660Z&quot;}" data-papermill="{&quot;duration&quot;:0.094479,&quot;end_time&quot;:&quot;2022-12-11T14:56:09.757512&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:09.663033&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>test_df.target.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>0    3023
+1     240
+Name: target, dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:09.923704Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:09.923083Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:09.940462Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:09.939320Z&quot;}" data-papermill="{&quot;duration&quot;:0.103518,&quot;end_time&quot;:&quot;2022-12-11T14:56:09.943249&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:09.839731&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sub <span class="op">=</span> test_df[[<span class="st">"id"</span>, <span class="st">"target"</span>]]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>sub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>9</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>11</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3258</td>
+<td>10861</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3259</td>
+<td>10865</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3260</td>
+<td>10868</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3261</td>
+<td>10874</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3262</td>
+<td>10875</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>3263 rows × 2 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2022-12-11T14:56:10.110840Z&quot;,&quot;iopub.status.busy&quot;:&quot;2022-12-11T14:56:10.110443Z&quot;,&quot;iopub.status.idle&quot;:&quot;2022-12-11T14:56:10.121823Z&quot;,&quot;shell.execute_reply&quot;:&quot;2022-12-11T14:56:10.120932Z&quot;}" data-papermill="{&quot;duration&quot;:0.097655,&quot;end_time&quot;:&quot;2022-12-11T14:56:10.124165&quot;,&quot;exception&quot;:false,&quot;start_time&quot;:&quot;2022-12-11T14:56:10.026510&quot;,&quot;status&quot;:&quot;completed&quot;}" data-tags="[]" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#sub.to_csv("NN_submission.csv", index = False)</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>sub.to_csv(<span class="st">"submission.csv"</span>, index <span class="op">=</span> <span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="seqclass-1-simple-nn_files/figure-html/cfd7f48e-1-f9050e25-4dae-42e6-8dcb-cffdb7377433.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="conclussions" class="level1">
+<h1>Conclussions</h1>
+<p>🦾 <strong>It is very bad but it is a baseline! It is a little better than predicting at random </strong></p>
+<p>Here we are using an Integer Embedding to represent text. It is not efficient because: 1. It doesnt Capture relationship between tokens 2. Frequently each token has a weight. In this case each token could appear in any place of the generated sequence. So multiple tokens will share weights! But they mean different context!</p>
+<p>I think using an Embedding Layer will improve the results! Lets do it in the next notebook!</p>
+</section>
+<section id="anyway-it-should-serve-as-motivation-to-keep-improving" class="level1">
+<h1>Anyway, it should serve as motivation to keep improving!</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
