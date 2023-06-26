@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>blog🎯 - Diegulio’s Blog 🦊</title>
+<title>diegulio’s blog🎯 - Diegulio’s Blog 🦊</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,6 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./raccoon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-listing/list.min.js"></script>
 <script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -70,9 +71,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-image','listing-title','listing-subtitle','listing-categories','listing-author','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-title","listing-author","listing-subtitle","listing-image","listing-description","listing-categories"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -117,7 +118,7 @@ background: true;
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">blog🎯</span>
+    <span class="navbar-title">diegulio’s blog🎯</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -201,7 +202,7 @@ background: true;
     </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="python,library" data-listing-file-modified-sort="1687669827784" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="0" data-categories="python,library" data-listing-file-modified-sort="1687746293545" data-listing-reading-time-sort="4">
 <div class="thumbnail">
 <p><a href="./posts/back_to_sit/main.html"> <img src="./posts/back_to_sit/portada.jpg" class="thumbnail-image"> </a></p>
 </div>
@@ -211,7 +212,7 @@ background: true;
 Back To Sit
 </h3>
 <div class="listing-subtitle">
-
+A library to notify you when your code is done!
 </div>
 </a>
 <div class="listing-categories">
@@ -222,31 +223,30 @@ python
 library
 </div>
 </div>
-<a href="./posts/back_to_sit/main.html">
-<div class="listing-description">
-Had you ever went for a break meanwhile your model/code is running? Yeah! right? But it is very upset when you have to return to your computer every 5 minutes to see if your…
-</div>
-</a>
+<a href="./posts/back_to_sit/main.html"> </a>
 </div>
 <div class="metadata">
 <a href="./posts/back_to_sit/main.html">
 <div class="listing-author">
 Diegulio
 </div>
+<div class="listing-reading-time">
+4 min
+</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="Audio,code,Kaggle,Pytorch" data-listing-file-modified-sort="1687672505752" data-listing-reading-time-sort="23">
+<div class="quarto-post image-right" data-index="1" data-categories="Audio,code,Kaggle,Pytorch" data-listing-file-modified-sort="1687745711458" data-listing-reading-time-sort="23">
 <div class="thumbnail">
 <p><a href="./posts/birdclef2023/main.html"> <img src="./posts/birdclef2023/bc.png" class="thumbnail-image"> </a></p>
 </div>
 <div class="body">
 <a href="./posts/birdclef2023/main.html">
 <h3 class="no-anchor listing-title">
-Clasificando Sonidos de Pájaros con Redes Neuronales
+BirdClef 2023 Competition
 </h3>
 <div class="listing-subtitle">
-
+Clasificando Sonidos de Pájaros con Redes Neuronales
 </div>
 </a>
 <div class="listing-categories">
@@ -263,21 +263,20 @@ Kaggle
 Pytorch
 </div>
 </div>
-<a href="./posts/birdclef2023/main.html">
-<div class="listing-description">
-En este post resolveremos un problema de audio con Machine Learning! Este es un tipo de problema que yo no había navegado anteriormente, por lo que tuve que estudiar todo…
-</div>
-</a>
+<a href="./posts/birdclef2023/main.html"> </a>
 </div>
 <div class="metadata">
 <a href="./posts/birdclef2023/main.html">
 <div class="listing-author">
 Diegulio
 </div>
+<div class="listing-reading-time">
+23 min
+</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="NLP,code,Kaggle" data-listing-file-modified-sort="1687668064852" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="2" data-categories="NLP,code,Kaggle" data-listing-file-modified-sort="1687745747673" data-listing-reading-time-sort="3">
 <div class="thumbnail">
 <p><a href="./posts/kaggle_nlp_disaster/main.html"> <img src="./posts/kaggle_nlp_disaster/disaster.jpeg" class="thumbnail-image"> </a></p>
 </div>
@@ -287,7 +286,7 @@ Diegulio
 Identificando desastres en Twitter con NLP
 </h3>
 <div class="listing-subtitle">
-
+Aprende a usar Natural Language Processing (NLP) para identificar desastres en Twitter
 </div>
 </a>
 <div class="listing-categories">
@@ -301,21 +300,20 @@ code
 Kaggle
 </div>
 </div>
-<a href="./posts/kaggle_nlp_disaster/main.html">
-<div class="listing-description">
-I’m learning NLP. So to do that I decided pass trough diverse NLP models, study the teory and code them! I think that it is a good method to learn Machine Learning things.…
-</div>
-</a>
+<a href="./posts/kaggle_nlp_disaster/main.html"> </a>
 </div>
 <div class="metadata">
 <a href="./posts/kaggle_nlp_disaster/main.html">
 <div class="listing-author">
 Diegulio
 </div>
+<div class="listing-reading-time">
+3 min
+</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-listing-file-modified-sort="1687727453086">
+<div class="quarto-post image-right" data-index="3" data-listing-file-modified-sort="1687746323012">
 <div class="thumbnail">
 <p><a href="./posts/back_to_sit/main.html"> </a></p>
 </div>
@@ -326,16 +324,13 @@ Diegulio
 <div class="listing-subtitle">
 
 </div>
-<div class="listing-description">
-
-</div>
 </a>
 </div>
 <div class="metadata">
 <a href="./posts/back_to_sit/main.html"> </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-listing-file-modified-sort="1687727455823">
+<div class="quarto-post image-right" data-index="4" data-listing-file-modified-sort="1687746325720">
 <div class="thumbnail">
 <p><a href="./posts/birdclef2023/main.html"> </a></p>
 </div>
@@ -346,16 +341,13 @@ Diegulio
 <div class="listing-subtitle">
 
 </div>
-<div class="listing-description">
-
-</div>
 </a>
 </div>
 <div class="metadata">
 <a href="./posts/birdclef2023/main.html"> </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-listing-file-modified-sort="1687727456693">
+<div class="quarto-post image-right" data-index="5" data-listing-file-modified-sort="1687746326621">
 <div class="thumbnail">
 <p><a href="./posts/kaggle_nlp_disaster/main.html"> </a></p>
 </div>
@@ -364,9 +356,6 @@ Diegulio
 <h3 class="no-anchor listing-title">
 </h3>
 <div class="listing-subtitle">
-
-</div>
-<div class="listing-description">
 
 </div>
 </a>
