@@ -2,10 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/llm-recipe/main.html",
-      "/posts/birdclef2023/main.html",
       "/posts/back_to_sit/main.html",
-      "/posts/kaggle_nlp_disaster/main.html"
+      "/posts/birdclef2023/main.html",
+      "/posts/kaggle_nlp_disaster/main.html",
+      "/posts/llm-recipe/main.html"
     ]
   }
 ]
