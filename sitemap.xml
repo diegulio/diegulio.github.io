@@ -2,46 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://diegulio.github.io/posts/llm-recipe/main.html</loc>
-    <lastmod>2023-07-18T23:11:05.993Z</lastmod>
+    <lastmod>2023-07-24T14:19:39.978Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/back_to_sit/main.html</loc>
-    <lastmod>2023-07-18T23:11:06.450Z</lastmod>
+    <lastmod>2023-07-24T14:19:40.451Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/birdclef2023/main.html</loc>
-    <lastmod>2023-07-18T23:11:09.149Z</lastmod>
+    <lastmod>2023-07-24T14:19:43.208Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/llm-cv-assistant/main.html</loc>
+    <lastmod>2023-07-24T14:19:44.436Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/main.html</loc>
-    <lastmod>2023-07-18T23:11:10.082Z</lastmod>
+    <lastmod>2023-07-24T14:19:45.097Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-1-simple-nn.html</loc>
-    <lastmod>2023-07-18T23:11:10.546Z</lastmod>
+    <lastmod>2023-07-24T14:19:45.594Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-3-rnn.html</loc>
-    <lastmod>2023-07-18T23:11:11.244Z</lastmod>
+    <lastmod>2023-07-24T14:19:46.293Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-5-mybestsolution.html</loc>
-    <lastmod>2023-07-18T23:11:11.708Z</lastmod>
+    <lastmod>2023-07-24T14:19:46.764Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-4-bert-tensorflow-huggingface.html</loc>
-    <lastmod>2023-07-18T23:11:12.549Z</lastmod>
+    <lastmod>2023-07-24T14:19:47.634Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-2-embeddings.html</loc>
-    <lastmod>2023-07-18T23:11:13.604Z</lastmod>
+    <lastmod>2023-07-24T14:19:48.728Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/index.html</loc>
-    <lastmod>2023-07-18T23:11:14.139Z</lastmod>
+    <lastmod>2023-07-24T14:19:49.324Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/about.html</loc>
-    <lastmod>2023-07-18T23:11:14.417Z</lastmod>
+    <lastmod>2023-07-24T14:19:49.610Z</lastmod>
   </url>
 </urlset>
