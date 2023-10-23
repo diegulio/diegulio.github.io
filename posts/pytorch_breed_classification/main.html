@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.333">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Diegulio">
+<meta name="dcterms.date" content="2023-10-23">
+
+<title>Image Classification with Pytorch Lighting</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo3.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Image Classification with Pytorch Lighting">
+<meta property="og:description" content="Classify images of pets using Pytorch Lighting">
+<meta property="og:image" content="https://diegulio.github.io/posts/pytorch_breed_classification/dc.jpg">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo3.png" alt="" class="navbar-logo">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/diegulio" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/dieguliomachado/" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Image Classification with Pytorch Lighting</h1>
+            <p class="subtitle lead">Classify images of pets using Pytorch Lighting</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Pytorch</div>
+                <div class="quarto-category">Lighting</div>
+                <div class="quarto-category">Wandb</div>
+                <div class="quarto-category">Timm</div>
+                <div class="quarto-category">Gradio</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Diegulio </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 23, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tópico-breed-classification-with-pytorch-lighting" id="toc-tópico-breed-classification-with-pytorch-lighting" class="nav-link active" data-scroll-target="#tópico-breed-classification-with-pytorch-lighting">⚡️ Tópico: Breed Classification with Pytorch Lighting</a></li>
+  <li><a href="#motivación-find-your-pet" id="toc-motivación-find-your-pet" class="nav-link" data-scroll-target="#motivación-find-your-pet">🔎&nbsp;Motivación: Find your pet</a></li>
+  <li><a href="#tool-path-que-utilizaremos" id="toc-tool-path-que-utilizaremos" class="nav-link" data-scroll-target="#tool-path-que-utilizaremos">🔨&nbsp;Tool Path: Que utilizaremos</a></li>
+  <li><a href="#concept-path-que-aprenderemos" id="toc-concept-path-que-aprenderemos" class="nav-link" data-scroll-target="#concept-path-que-aprenderemos">💭&nbsp;Concept Path: Que aprenderemos</a></li>
+  <li><a href="#estrategia-como-abordamos" id="toc-estrategia-como-abordamos" class="nav-link" data-scroll-target="#estrategia-como-abordamos">♟️&nbsp;Estrategia: Como abordamos</a></li>
+  <li><a href="#prototyping" id="toc-prototyping" class="nav-link" data-scroll-target="#prototyping">🧠&nbsp;Prototyping</a>
+  <ul class="collapse">
+  <li><a href="#config" id="toc-config" class="nav-link" data-scroll-target="#config">Config</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">1. Dataset</a>
+  <ul class="collapse">
+  <li><a href="#split" id="toc-split" class="nav-link" data-scroll-target="#split">Split</a></li>
+  <li><a href="#pytorch-dataset" id="toc-pytorch-dataset" class="nav-link" data-scroll-target="#pytorch-dataset">Pytorch Dataset</a></li>
+  </ul></li>
+  <li><a href="#dataloader" id="toc-dataloader" class="nav-link" data-scroll-target="#dataloader">2. DataLoader</a></li>
+  <li><a href="#model" id="toc-model" class="nav-link" data-scroll-target="#model">3. Model</a>
+  <ul class="collapse">
+  <li><a href="#timm-pytorch-image-models" id="toc-timm-pytorch-image-models" class="nav-link" data-scroll-target="#timm-pytorch-image-models">TIMM (pyTorch Image Models)</a></li>
+  <li><a href="#pytorch-lighting" id="toc-pytorch-lighting" class="nav-link" data-scroll-target="#pytorch-lighting">Pytorch Lighting ⚡️</a></li>
+  </ul></li>
+  <li><a href="#trainer" id="toc-trainer" class="nav-link" data-scroll-target="#trainer">4. Trainer</a>
+  <ul class="collapse">
+  <li><a href="#weight-and-biases-logging" id="toc-weight-and-biases-logging" class="nav-link" data-scroll-target="#weight-and-biases-logging">🐝&nbsp;Weight and Biases Logging</a></li>
+  </ul></li>
+  <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">5. Fit</a></li>
+  <li><a href="#evaluate" id="toc-evaluate" class="nav-link" data-scroll-target="#evaluate">6. Evaluate</a></li>
+  </ul></li>
+  <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados">🎯&nbsp;Resultados</a></li>
+  <li><a href="#front-end" id="toc-front-end" class="nav-link" data-scroll-target="#front-end">🧐&nbsp;Front-End</a></li>
+  <li><a href="#próximos-pasos" id="toc-próximos-pasos" class="nav-link" data-scroll-target="#próximos-pasos">🚀&nbsp;Próximos Pasos</a></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión">🥳&nbsp;Conclusión</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p><a href="https://huggingface.co/spaces/Diegulio/breed-classification"><img src="https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-md-dark.svg" class="img-fluid" alt="Open in Spaces"></a> <a href="https://github.com/diegulio/pytorch-breed-classification"><img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" class="img-fluid" alt="GitHub"></a></p>
+<section id="tópico-breed-classification-with-pytorch-lighting" class="level1">
+<h1>⚡️ Tópico: Breed Classification with Pytorch Lighting</h1>
+<p>En este post, resolveremos un problema clásico de Machine Learning: <strong>Clasificación</strong>. Lo interesante, es que no será un problema tabular, si no que será un problema de <strong>Computer Vision</strong> 👁️. Esto quiere decir que utilizaremos modelos de Deep Learning para clasificar imágenes dentro de un set de categorias (o clases) pre-definidas. Si bien es un problema clásico, el hecho de que la entrada de nuestro modelo sean imágenes hace todo el tema mucho más motivante, y es un buen punto de partida para escalar y luego resolver problemas tales como: Object detection, Segmentation, Image generation, entre otros.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ℹ️
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Este post busca enseñar la implementación más que los detalles teóricos. Si bien la teoría es muy importante, en este caso, al ser una implementación más avanzada, me centraré en ella.</p>
+</div>
+</div>
+</section>
+<section id="motivación-find-your-pet" class="level1">
+<h1>🔎&nbsp;Motivación: Find your pet</h1>
+<p>Imaginemos tenemos una página web en donde las personas pueden subir carteles de sus mascotas perdidas, y a la vez carteles de sus mascotas encontradas. Una característica importante en tu página web sería tener un buen algoritmo de recomendación que logre hacer match entre estas mascotas. Algo que podría ayudar, es poder identificar correctamente la raza de la mascota (a veces los usuarios no saben de que raza es su mascota).</p>
+<p>De hecho, el modelo que elaboraremos aquí puede servir para más que simplemente identificar la raza de la mascota. No pretendo profundizar en esto, pero en realidad nuestro modelo podrá utilizarse para generar Embeddings, i.e formas de representar una imagen vectorialmente en una dimensión menor. Esto puede ser utilizado directamente en sistemas de recomendación, recomendando aquellas mascotas encontradas que tengan embeddings cercanos a el embedding de la mascota que estamos buscando. Disclaimer: esto por sí sólo podría no ser un muy buen recomendador porque probablemente sólo recomendará mascotas de la misma raza. Si no entendiste este párrafo, no te preocupes, no es el tema principal de este post. Aún así, te recomiendo estudiar sobre que son los Embeddings!</p>
+<p>🧠&nbsp;<strong>Solución: Crear un modelo de clasificación de imágenes para detectar si una imagen corresponde a: Alguna raza de perro, gato o ninguno.</strong></p>
+</section>
+<section id="tool-path-que-utilizaremos" class="level1">
+<h1>🔨&nbsp;Tool Path: Que utilizaremos</h1>
+<p>A continuación les dejo las herramientas que utilizaremos en este post:</p>
+<ol type="1">
+<li><strong>Pytorch</strong>: es una biblioteca de código abierto para el desarrollo de aplicaciones de aprendizaje profundo y la investigación en inteligencia artificial.</li>
+<li><strong>Pytorch Lighting</strong>: es una extensión de PyTorch que simplifica y estandariza el proceso de entrenamiento y desarrollo de modelos de aprendizaje profundo en PyTorch, facilitando la creación de código limpio y modular.</li>
+<li><strong>Weight and Biases</strong>: plataforma que permite realizar un seguimiento, visualización y colaboración en proyectos de Machine Learning.</li>
+<li><strong>Timm</strong>: biblioteca que proporciona una amplia variedad de modelos de redes neuronales pre-entrenados para tareas de computer vision en PyTorch.</li>
+<li><strong>Gradio</strong>: facilita la creación de interfaces de usuario interactivas para modelos de Machine Learning.</li>
+</ol>
+</section>
+<section id="concept-path-que-aprenderemos" class="level1">
+<h1>💭&nbsp;Concept Path: Que aprenderemos</h1>
+<p>A continuación algunos de los conceptos que veremos:</p>
+<ol type="1">
+<li>Convolutional Neural Networks</li>
+<li>Transfer Learning</li>
+<li>Data Augmentation</li>
+<li>Early Stopping</li>
+<li>Learning rate scheduling</li>
+</ol>
+<p>La mayor parte de estos conceptos los explicaré en un bajo nivel de detalle, creo que existen múltiples recursos en internet con un muy buen nivel de detalle y explicabilidad de estos conceptos. Pero como siempre, si sientes que te gustaría profundizar en algo, charlemos!</p>
+</section>
+<section id="estrategia-como-abordamos" class="level1">
+<h1>♟️&nbsp;Estrategia: Como abordamos</h1>
+<p>Al ser un clásico problema de ML, procederemos como se acostumbra:</p>
+<ol type="1">
+<li>Recolectar datos: Buscar nuestras imágenes y sus respectivas etiquetas.</li>
+<li>Definir una linea base: Un modelo fácil y rápido.</li>
+<li>Aplicaremos otros modelos (usualmente más complejos): Creamos un benchmark para nuestro caso de uso.</li>
+<li>Iteramos: Iteramos aplicando distintas técnicas, buscando mejorar nuestros resultados.</li>
+<li>Deploy: Desplegamos nuestra aplicación para que sea utilizada por el público.</li>
+</ol>
+<p>Claramente existen otros pasos importantes, pero que no vienen al caso. Ej: Estudio de negocio, de factibilidad, de datos, etc.</p>
+</section>
+<section id="prototyping" class="level1">
+<h1>🧠&nbsp;Prototyping</h1>
+<p>Recordar que en esta ocasión utilizaremos <strong>Pytorch Lighting</strong>. Esta herramienta es un wrapper de Pytorch, que nos permite reducir la duplicidad de código y aumentar la modularidad. En otras palabras, es más fácil crear las rutinas de entrenamiento.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">En la izquierda, podemos ver la rutina de entrenamiento utilizando Pytorch puro. A la derecha podemos ver como es reducida al utilizar Pytorch Lighting, sacrificando sólo una pizca de flexibilidad.<br> Fuente: <a href="https://towardsdatascience.com/from-pytorch-to-pytorch-lightning-a-gentle-introduction-b371b7caaf09">https://towardsdatascience.com/from-pytorch-to-pytorch-lightning-a-gentle-introduction-b371b7caaf09</a></figcaption>
+</figure>
+</div>
+<p>En resumen, Pytorch Lighting hace por nosotros un montón de cosas como: el loop de epochs, utilizar gpu o no, calcular o no gradientes, computar métricas a través de cada paso, etc.</p>
+<p>Aún así, lo que necesitamos es muy similar a lo que se necesita en Pytorch puro. Esto es:</p>
+<ol type="1">
+<li><strong>Una clase Dataset</strong>: clase que facilita el acceso a la data. En este caso, a las imágenes.</li>
+<li><strong>Un Dataloader</strong>: La forma en como los datos son cargados al momento de entrenar.</li>
+<li><strong>Una clase Modelo</strong>: Acá indicamos de que se compone nuestro modelo, las capas que utiliza, el optimizador, la predicción, etc.</li>
+<li>Todo lo anterior es utilizado en la clase <strong>Trainer</strong> de Pytorch Lighting. La cual se preocupa de hacer toda la rutina de entrenamiento por nosotros!</li>
+</ol>
+<p>A grandes rasgos, todo el proceso debería ser algo como:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Dataset</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyDataset:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Como consulto mi dataset?</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> MyDataset()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Dataloader -&gt; como cargo mis datos</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>dataloader <span class="op">=</span> DataLoader(dataset)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Modelo</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyModel:</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">"""</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">    Cual es la arquitectura de mi modelo?</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">    Cómo pasan las imagenes através de mi modelo?</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> Mymodel()</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Trainer</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> Trainer() <span class="co"># Algunas configuraciones de entrenamiento</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Fit</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>trainer.fit(modelo, train_dataloader, val_dataloader) <span class="co"># Entrenamiento</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Evaluate</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>trainer.evaluate(modelo, test_dataloader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="config" class="level2">
+<h2 class="anchored" data-anchor-id="config">Config</h2>
+<p>Normalmente, se utiliza un archivo, clase, etc. para definir la configuración general de nuestra aplicación. Por ejemplo: el nombre del modelo que utilizaremos, la ruta a la imagen, la ruta a el archivo de etiquetas, etc.</p>
+<p>Por ahora, nuestra clase config será:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CFG:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  IMG_PATH <span class="op">=</span> <span class="st">'PATH/TO/IMAGES'</span> <span class="co"># Ruta a imagenes</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  LABEL_PATH <span class="op">=</span> <span class="st">'/PATH/TO/labels.csv'</span> <span class="co"># Ruta a archivo de etiquetas</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Data</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  TEST_SIZE <span class="op">=</span> <span class="fl">0.2</span> <span class="co"># Tamaño del conjunto de test</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  VAL_SIZE <span class="op">=</span> <span class="fl">0.1</span> <span class="co">#&nbsp;Tamaño del conjunto de validación</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A medida avancemos, iremos agregando cada vez más variables.</p>
+</section>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">1. Dataset</h2>
+<p>Al ser un problema supervisado, necesitaremos imágenes y sus respectivas etiquetas. Un dato freak, es que este proyecto ya lo habia resuelto hace unos años utilizando Tensorflow. En esa ocasión me tomé el tiempo de recolectar datos de distintas fuentes para construir el dataset final, para mayor información de como lo hice (no es tan importante), leer <a href="https://github.com/diegulio/Breed_Recognition-to-Buscomiperro/blob/main/ProjectLifeDiary.md">aquí</a>.</p>
+<p>TLDR: extraje una base de datos de Stanford de razas de perro, un dataset de Kaggle de gatos, y descargué manualmente algunas imágenes pseudo-aleatorias (otros animales, personas, cosas, paisajes). Juntando todo esto creé un dataset con las siguientes clases:</p>
+<ul>
+<li>120 razas de perro</li>
+<li>Gato</li>
+<li>No detectado</li>
+</ul>
+<p>Lo que tenemos, es una carpeta con cientos de imágenes. Además, tenemos un archivo .csv que nos indica la clase según el nombre de la imagen. Esto nos será util para la construcción de la clase personalizada Dataset en Pytorch:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 1.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">sample archivo labels.csv</figcaption>
+</figure>
+</div>
+<p>Todas las imágenes son jpg, por lo que la extensión la agrego en el código. Algo importante a mencionar, es que este dataset está balanceado (o almenos, no preocupantemente imbalanceado). Por lo que tenemos una cantidad decente de imágenes para cada clase.</p>
+<section id="split" class="level3">
+<h3 class="anchored" data-anchor-id="split">Split</h3>
+<p>Como todo problema de ML, necesitaremos dividir nuestros datos en entrenamiento, validación y testeo. Para esto, sólo necesitaremos dividir el dataframe de el archivo de labels, ya que este mismo será utilizando en el siguiente paso (Pytorch Dataset).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos el archivo de anotaciones/etiquetas</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> pd.read_csv(CFG.LABEL_PATH)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> labels.<span class="bu">id</span> <span class="co">#&nbsp;Data (paths)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> labels.breed <span class="co"># Target</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Split</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span>CFG.TEST_SIZE, random_state<span class="op">=</span><span class="dv">13</span>, shuffle <span class="op">=</span> <span class="va">True</span>, stratify <span class="op">=</span> y)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>X_train, X_val, y_train, y_val <span class="op">=</span> train_test_split(X_train, y_train, test_size<span class="op">=</span>CFG.VAL_SIZE, random_state<span class="op">=</span><span class="dv">13</span>, shuffle <span class="op">=</span> <span class="va">True</span>, stratify <span class="op">=</span> y_train)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Dejamos todo en un df para cada conjunto</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>train_labels <span class="op">=</span> pd.concat([X_train, y_train], axis <span class="op">=</span> <span class="dv">1</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>val_labels <span class="op">=</span> pd.concat([X_val, y_val], axis <span class="op">=</span> <span class="dv">1</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>test_labels <span class="op">=</span> pd.concat([X_test, y_test], axis <span class="op">=</span> <span class="dv">1</span>).reset_index(drop <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="pytorch-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="pytorch-dataset">Pytorch Dataset</h3>
+<p>Code time 👨🏾‍💻&nbsp;!</p>
+<p>Para crear una clase Dataset personalizada en Pytorch, se necesitan 3 métodos fundamentales:</p>
+<ol type="1">
+<li><strong><code>__init__</code></strong>: La función <strong><code>__init__</code></strong> se ejecuta una vez al crear una instancia del objeto Dataset. Inicializamos el directorio que contiene las imágenes, el archivo de anotaciones y transformaciones.</li>
+<li><strong><code>__len__</code></strong>: La función <strong><code>__len__</code></strong> devuelve el número de muestras en nuestro conjunto de datos.</li>
+<li><strong><code>__getitem__</code></strong>: La función <strong><code>__getitem__</code></strong> carga y devuelve una muestra del conjunto de datos en el índice <em>idx</em> dado.</li>
+</ol>
+<ul>
+<li>Hagamos esto de forma iterativa, en un paso 0 deberiamos tener algo como:</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Clase Dataset</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetDataSet(Dataset):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Ahora, comenzaremos por el método <strong><code>__init__</code></strong>, acá es donde se inicializa la instancia. Es en donde buscaremos definir los atributos a usar en los siguientes métodos (<code>__len__</code> y <code>__getitem__</code>). Básicamente, lo que necesitaremos son: <strong>las imágenes</strong> (o la ruta a donde están), y el <strong>archivo</strong> <strong>labels</strong> que nos dice la clase de cada imagen según su nombre.</li>
+</ul>
+<p>Además verás un parámetro llamado <strong>transforms</strong>. Por ahora, imagina que esta es una función que le cambia el tamaño a la imagen. Esto es importante ya que no podemos alimentar al modelo con imágenes de distintos tamaños. Más adelante, veremos como esta función puede hacer mucho más que sólo cambiar el tamaño a las imágenes.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetDataSet(Dataset):</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, config, labels, transform):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.labels <span class="op">=</span> labels <span class="co"># DataFrame de etiquetas</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.<span class="bu">dir</span> <span class="op">=</span> config.IMG_PATH <span class="co">#&nbsp;Path de imagenes</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config <span class="co"># Clase configuraciones**</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>__len__</code>: Ahora debemos calcular el largo de nuestro dataset. Esto es directo, ya que será igual a la cantidad de filas de nuestro DataFrame labels.</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetDataSet(Dataset):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, config, labels, transform):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.labels <span class="op">=</span> labels <span class="co"># DataFrame de etiquetas</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.<span class="bu">dir</span> <span class="op">=</span> config.IMG_PATH <span class="co">#&nbsp;Path de imagenes</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config <span class="co"># Clase configuraciones</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.labels) <span class="co"># largo de dataset**</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Finalmente, el método <code>__getitem__</code>, el más complejo. Debemos asumir que la entrada será un indice, y necesitaremos que devuelva la imagen correspondiente (en pixeles), y su clase.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetDataSet(Dataset):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, config, labels, transform):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.labels <span class="op">=</span> labels <span class="co"># DataFrame de etiquetas</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.<span class="bu">dir</span> <span class="op">=</span> config.IMG_PATH <span class="co">#&nbsp;Path a imagenes</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config <span class="co"># Configuraciones</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.transform <span class="op">=</span> transform <span class="co"># Transformaciones</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.labels)  <span class="co"># largo de dataset</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    breed <span class="op">=</span> <span class="va">self</span>.labels.iloc[idx, <span class="dv">1</span>] <span class="co"># Etiqueta desde dataframe</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    img_path <span class="op">=</span> <span class="va">self</span>.labels.iloc[idx, <span class="dv">0</span>] <span class="co">#&nbsp;Nombre imagen desde dataframe</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    full_path <span class="op">=</span> os.path.join(<span class="va">self</span>.<span class="bu">dir</span>, <span class="ss">f'</span><span class="sc">{</span>img_path<span class="sc">}</span><span class="ss">.jpg'</span>) <span class="co"># Path completo a imagen</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> read_image(full_path)<span class="op">/</span><span class="dv">255</span> <span class="co">#&nbsp;Se lee y normaliza la imagen </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> <span class="va">self</span>.transform(image)  <span class="co"># Función que cambia el tamaño de la imagen</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> img, breed <span class="co">#&nbsp;Se retorna la imagen y la clase**</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🚨
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ALTO AHI! Si nos damos cuenta, tomamos las imágenes y las convertimos a pixeles (números). Esto es super lógico, ya que los modelos <strong>sólo</strong> leen números! pero ¿por qué estamos retornando <em>breed</em>, si <em>breed</em> es una palabra?<br>
+La verdad es que esto es un error, por lo que debemos arregarlo. Para eso, le asignaremos un numero entero (índice) a cada clase, y así el modelo podrá trabajar tranquilo.</p>
+</div>
+</div>
+<p>Para esto creamos un diccionario que le asignará un número entero (índice) a cada clase i.g dalmata → 0. Además crearemos un diccionario que según un número entero, nos indique a que clase pertenece i.g 0 → dalmata. Todo esto lo haremos en nuestra clase de configuración:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CFG:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  IMG_PATH <span class="op">=</span> <span class="st">'PATH/TO/IMAGES'</span> <span class="co"># Ruta a imagenes</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  LABEL_PATH <span class="op">=</span> <span class="st">'/PATH/TO/labels.csv'</span> <span class="co"># Ruta a archivo de etiquetas</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Data</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  TEST_SIZE <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  VAL_SIZE <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> pd.read_csv(LABEL_PATH) <span class="co"># leemos archivo de etiquetas</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  idx_to_class <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">enumerate</span>(labels.breed.unique())) <span class="co"># id -&gt; clase</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  class_to_idx <span class="op">=</span> {c:i <span class="cf">for</span> i,c <span class="kw">in</span> idx_to_class.items()} <span class="co"># clase -&gt; id**</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Ahora nuestra clase dataset quedará como:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetDataSet(Dataset):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, config, labels, transform):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.labels <span class="op">=</span> labels <span class="co"># DataFrame de etiquetas</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.<span class="bu">dir</span> <span class="op">=</span> config.IMG_PATH <span class="co">#&nbsp;Path de imagenes</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config <span class="co"># Configuraciones</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.transform <span class="op">=</span> transform <span class="co"># Transformaciones</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.labels)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    breed <span class="op">=</span> <span class="va">self</span>.labels.iloc[idx, <span class="dv">1</span>] <span class="co"># Etiqueta desde dataframe</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    class_id <span class="op">=</span> <span class="va">self</span>.config.class_to_idx[breed]<span class="op">**</span> <span class="co"># Convertimos clase a número</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    img_path <span class="op">=</span> <span class="va">self</span>.labels.iloc[idx, <span class="dv">0</span>] <span class="co">#&nbsp;Nombre imagen</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    full_path <span class="op">=</span> os.path.join(<span class="va">self</span>.<span class="bu">dir</span>, <span class="ss">f'</span><span class="sc">{</span>img_path<span class="sc">}</span><span class="ss">.jpg'</span>) <span class="co"># Path completo a imagen</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> read_image(full_path)<span class="op">/</span><span class="dv">255</span> <span class="co"># Normalización de la imagen</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> <span class="va">self</span>.transform(image)  <span class="co"># Función que cambia el tamaño de la imagen</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> img, class_id <span class="co"># Se retorna la imagen y el indice de la clase**</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Voíla! Hemos terminado nuestra clase Dataset, sólo falta inicializarla.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> PetDataSet(config <span class="op">=</span> CFG, labels <span class="op">=</span> train_labels, transform <span class="op">=</span> train_transform)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>val_dataset <span class="op">=</span> PetDataSet(config <span class="op">=</span> CFG, labels <span class="op">=</span> val_labels, transform <span class="op">=</span> test_transform)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>test_dataset <span class="op">=</span> PetDataSet(config <span class="op">=</span> CFG, labels <span class="op">=</span> test_labels, transform <span class="op">=</span> test_transform)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Ahora podemos consultar nuestra data, por ejemplo:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(train_dataset) <span class="co"># -&gt; nos entregará el largo del dataset</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>pixels, class_id <span class="op">=</span> train_dataset[<span class="dv">0</span>] <span class="co"># nos entregara la información del elemento 0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="dataloader" class="level2">
+<h2 class="anchored" data-anchor-id="dataloader">2. DataLoader</h2>
+<p>El modelo no irá consultando nuestra data uno por uno, ni toda a la vez. En realidad, nosotros le iremos entregando nuestras imágenes en <strong>batches</strong>. Gracias a esto, nuestro modelo es más eficiente y evitamos cualquier problemas de memoria (imagina cargar un millón de imágenes a la vez en nuestra memoria RAM 💥).</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>train_dataloader <span class="op">=</span> DataLoader(train_dataset, batch_size<span class="op">=</span><span class="dv">64</span>, shuffle<span class="op">=</span><span class="va">True</span>, num_workers <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>val_dataloader <span class="op">=</span> DataLoader(val_dataset, batch_size<span class="op">=</span><span class="dv">64</span>, shuffle<span class="op">=</span><span class="va">False</span>, num_workers <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>test_dataloader <span class="op">=</span> DataLoader(test_dataset, batch_size<span class="op">=</span><span class="dv">64</span>, shuffle<span class="op">=</span><span class="va">False</span>, num_workers <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Existen otras cosas que los DataLoader pueden hacer, pero por ahora con esto basta. Para mayor información visita la <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">documentación</a>.</p>
+</section>
+<section id="model" class="level2">
+<h2 class="anchored" data-anchor-id="model">3. Model</h2>
+<p>Para el modelo, utilizaremos una técnica llamada Transfer Learning.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🤖
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Transfer learning (aprendizaje por transferencia) es una técnica de aprendizaje automático en la que se aprovecha el conocimiento adquirido por un modelo entrenado en una tarea específica y se aplica a una tarea relacionada. En lugar de entrenar un modelo desde cero, se toma un modelo pre-entrenado y se ajusta o se “transfiere el conocimiento” para adaptarse a una nueva tarea. Esto a menudo ahorra tiempo y recursos, y puede resultar en un rendimiento mejorado en la nueva tarea, especialmente cuando los datos de entrenamiento son limitados.</p>
+</div>
+</div>
+<p>Existe una gran variedad de modelos de Computer Vision, los más conocidos son las redes convolucionales. Por bastante tiempo esta técnica ha estado en el estado del arte de computer vision. Te recomiendo leer más <a href="https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939">acá</a>.</p>
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 2.png" class="img-fluid"></p>
+<p>En este caso, utilizaremos como base alguna de las arquitecturas más conocidas pre-entrenadas. Luego, cambiaremos la parte de Clasificación, para que prediga entre las clases de nuestro propio caso de uso y entrenaremos en base a eso.</p>
+<p>Debemos recordar que cuando uno entrena un modelo, lo que hace es ajustar ciertos pesos(parámetros) de forma que se reduzca la función de pérdida. En estas arquitecturas, existen millones de pesos a lo largo de la red. Debido a que el modelo está pre-entrenado, estos pesos ya han logrado capturar ciertos patrones, lo que facilitará la convergencia de nuestro modelo en el caso de uso que queremos: detectar razas de mascotas.</p>
+<p>Intentar ajustar todos los pesos hará que nuestro modelo demore en converger y requiramos más recursos computacionales, además puede que no tengamos los mejores resultados. Una práctica común es <strong>congelar🥶</strong> los pesos de la red pre-entrenada, y sólo ajustar los pesos de la parte de clasificación, y a veces algunas de las últimas capas. ¿ Porque sólo las últimas capas? Existen estudios que señalan que las últimas capas son aquellas que capturan los patrones más específicos/complejos de los casos de uso. Entonces si el modelo fue pre-entrenado en cebras, las últimas capas probablemente se fijarán en características específicas o más complejas de las cebras, mientras las primeras capas en características más generales de los animales. Esto es muy conveniente, nos gustaría conservar las características generales y ajustar aquellos pesos que detectan las características más específicas, para así detectar patrones complejos en nuestro propio caso de uso.</p>
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 3.png" class="img-fluid"></p>
+<p>Para resumir, el procedimiento será el siguiente:</p>
+<ol type="1">
+<li>Tomamos una arquitectura base (Backbone)</li>
+<li>Sustituimos la sección de clasificación por una propia.</li>
+<li>Congelamos los parámetros (pesos) de el modelo pre-entrenado.</li>
+<li>Entrenamos con nuestra data.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 4.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Arriba, el modelo pre-entrenado en el dataset ImageNet. Abajo el mismo modelo (parámetros) aplicado a salud, utilizando un dataset médico. Notar que la sección de Fully Connected Layers no es la misma, ya que la primera fue diseñada para predecir una gran variedad de clases, mientras que la segunda para predecir entre benigno o maligno (dos clases). Fuente: <a href="https://www.mdpi.com/1424-8220/23/2/570">https://www.mdpi.com/1424-8220/23/2/570</a></figcaption>
+</figure>
+</div>
+<section id="timm-pytorch-image-models" class="level3">
+<h3 class="anchored" data-anchor-id="timm-pytorch-image-models">TIMM (pyTorch Image Models)</h3>
+<p>Una primera pregunta sería ¿Que modelo base utilizar? No hay una respuesta completamente teórica, creo que la respuesta simple sería: <strong>experimentar</strong>.</p>
+<p>Existe un sin-fin de modelos base pre-entrenados, nosotros probaremos algunos de los más conocidos: <strong>EfficientNet, VGG, Inception y Resnet.</strong> Lo que haremos será entrenar estos modelos y quedarnos con aquél que nos entregue mejores resultados.</p>
+<p>Para extraer los modelos pre-entrenados, utilizaremos <strong>timm:</strong> <code>timm</code> es una biblioteca de aprendizaje profundo creada por Ross Wightman y es una colección de modelos, capas, utilidades, optimizadores, programadores, cargadores de datos, aumentos y también scripts de entrenamiento/validación de computer vision SOTA models con capacidad para reproducir resultados de entrenamiento de ImageNet.</p>
+<p>Básicamente es un repositorio de modelos pre-entrenados. Existen varios, Pytorch y tensorflow también tienen sus propios HUBs.</p>
+<p>Traer un modelo pre-entrenado en timm es muy simple. Sólo debemos:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timm</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>base_model <span class="op">=</span> timm.create_model(<span class="st">"model_name"</span>, pretrained <span class="op">=</span> <span class="va">True</span>, num_classes <span class="op">=</span> <span class="bu">len</span>(CFG.idx_to_class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Al entregarle el parámetro <code>num_classes</code>. Timm automáticamente reemplaza la capa final de clasificación para que nos entregue predicciones acordes a nuestro caso de uso!</p>
+<p>Aún así, para utilizar Pytorch Lighting debemos crear nuestra clase Model.</p>
+<p>Antes de comenzar a crear nuestra clase modelo, actualicemos nuestra clase configuración con parámetros relacionados a ésta.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CFG:</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  IMG_PATH <span class="op">=</span> <span class="st">'PATH/TO/IMAGES'</span> <span class="co"># Ruta a imagenes</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  LABEL_PATH <span class="op">=</span> <span class="st">'/PATH/TO/labels.csv'</span> <span class="co"># Ruta a archivo de etiquetas</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Data</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  TEST_SIZE <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  VAL_SIZE <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> pd.read_csv(LABEL_PATH) <span class="co"># leemos archivo de etiquetas</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  idx_to_class <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">enumerate</span>(labels.breed.unique())) <span class="co"># id -&gt; clase</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  class_to_idx <span class="op">=</span> {c:i <span class="cf">for</span> i,c <span class="kw">in</span> idx_to_class.items()} <span class="co"># clase -&gt; id</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Model related</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  LEARNING_RATE <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  MODEL <span class="op">=</span> <span class="st">'inception_v4'</span> <span class="co"># timm name</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  PRETRAINED <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="pytorch-lighting" class="level3">
+<h3 class="anchored" data-anchor-id="pytorch-lighting">Pytorch Lighting ⚡️</h3>
+<p>Al igual que en Dataset, <strong>Pytorch</strong> requiere algunos métodos fundamentales en la creación de la clase Model. Estos son:</p>
+<ul>
+<li><strong><code>__init__()</code>:</strong> Método que define las capas y otros componentes de un modelo.</li>
+<li><strong><code>forward()</code>&nbsp;:</strong> método donde se realiza el cálculo a través de la red. Tener en cuenta que podemos imprimir el modelo, o cualquiera de sus submódulos, para conocer su estructura.</li>
+</ul>
+<p>Aún así, <strong>Pytorch Lighting</strong> necesita unos métodos extras:</p>
+<ul>
+<li><strong><code>training_step()</code></strong>: lógica de entrenamiento.</li>
+<li><strong><code>configure_optimizers()</code>:</strong> definir optimizadores y/o programadores LR.</li>
+</ul>
+<p>Existen un montón de otros métodos importantes y útiles, los puedes ver <a href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#training">acá</a>.</p>
+<ul>
+<li>Comencemos con el paso 0:</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetRecognitionModel(<span class="op">**</span>L.LightningModule<span class="op">**</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> training_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> configure_optimizers(<span class="va">self</span>):</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>En el código original, agregué otros métodos que utilicé, pero que sólo mostraré en este blog. Muchos de ellos eran para hacer la validación, testeo, predicción y logging.</p>
+<ul>
+<li>En cuanto al método <strong><code>__init__()</code>,</strong> inicializaremos la configuración, el modelo base y la métrica a utilizar:</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetRecognitionModel(L.LightningModule):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base_model, config):</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.num_classes <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.config.idx_to_class)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.metric <span class="op">=</span> Accuracy(task<span class="op">=</span><span class="st">"multiclass"</span>, num_classes<span class="op">=</span><span class="va">self</span>.num_classes)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pretrained_model <span class="op">=</span> base_model</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> training_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> configure_optimizers(<span class="va">self</span>):</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>forward()</code></strong> el método forward es bastante sencillo, debemos definir como nuestro input pasará a través de nuestra arquitectura. Debido a que es sencilla, simplemente hará un paso por el modelo base, resultando:</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetRecognitionModel(L.LightningModule):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base_model, config):</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.num_classes <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.config.idx_to_class)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.metric <span class="op">=</span> Accuracy(task<span class="op">=</span><span class="st">"multiclass"</span>, num_classes<span class="op">=</span><span class="va">self</span>.num_classes)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pretrained_model <span class="op">=</span> base_model</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pretrained_model(x)<span class="op">**</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> training_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> configure_optimizers(<span class="va">self</span>):</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>training_step()</code></strong> puede ser un poco más complicado, la entrada de esta función será el batch de imágenes y labels, y debemos retornar la función de pérdida para ese batch.</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetRecognitionModel(L.LightningModule):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base_model, config):</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.num_classes <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.config.idx_to_class)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.metric <span class="op">=</span> Accuracy(task<span class="op">=</span><span class="st">"multiclass"</span>, num_classes<span class="op">=</span><span class="va">self</span>.num_classes)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pretrained_model <span class="op">=</span> base_model</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pretrained_model(x)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> training_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    x,y <span class="op">=</span> batch <span class="co"># dividimos el batch en data y labels</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> <span class="va">self</span>.forward(x) <span class="co"># la data pasa a través del modelo</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> F.cross_entropy(logits, y) <span class="co"># Calculamos la función de pérdida</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({<span class="st">'train_loss'</span>: loss}) <span class="co"># Logueamos el resultado</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss <span class="co">#&nbsp;retornamos la pérdida</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> configure_optimizers(<span class="va">self</span>):</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Por ahora, no te preocupes de la linea <code>self.log_dict({'train_loss': loss})</code>, más adelante veremos para que es.</p>
+<ul>
+<li><strong><code>configure_optimizers()</code>:</strong> Finalmente debemos definir nuestro optimizador, el cuál será bastante estándar: utilizaremos <em>Adam</em> con algún <em>learning_rate</em> dado.</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> optim</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetRecognitionModel(L.LightningModule):</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base_model, config):</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.num_classes <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.config.idx_to_class)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.metric <span class="op">=</span> Accuracy(task<span class="op">=</span><span class="st">"multiclass"</span>, num_classes<span class="op">=</span><span class="va">self</span>.num_classes)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pretrained_model <span class="op">=</span> base_model</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">self</span>.pretrained_model(x)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> training_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    x,y <span class="op">=</span> batch <span class="co"># dividimos el batch en data y labels</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> <span class="va">self</span>.forward(x) <span class="co"># la data pasa a través del modelo</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> F.cross_entropy(logits, y) <span class="co"># Calculamos la función de pérdida</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({<span class="st">'train_loss'</span>: loss}) <span class="co"># Logueamos el resultado</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss <span class="co">#&nbsp;retornamos la pérdida</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> configure_optimizers(<span class="va">self</span>):</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    optimizer <span class="op">=</span> optim.Adam(<span class="va">self</span>.parameters(), lr<span class="op">=</span><span class="va">self</span>.config.LEARNING_RATE)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">'optimizer'</span>: optimizer}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Listo! ya tenemos nuestro modelo para entrenar. Si quieres ver la implementación completa, te recomiendo visitar el código en el repositorio de <a href="https://github.com/diegulio/pytorch-breed-classification">github</a>. Aún así, ahora te mostraré el código final luego de agregarle métodos adicionales:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PetRecognitionModel(L.LightningModule):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base_model, config):</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.config <span class="op">=</span> config</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.num_classes <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.config.idx_to_class)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    metric <span class="op">=</span> Accuracy(task<span class="op">=</span><span class="st">"multiclass"</span>, num_classes<span class="op">=</span><span class="va">self</span>.num_classes)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.train_acc <span class="op">=</span> metric.clone()</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.val_acc <span class="op">=</span> metric.clone()</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.test_acc <span class="op">=</span> metric.clone()</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.training_step_outputs <span class="op">=</span> []</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.validation_step_outputs <span class="op">=</span> []</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.test_step_outputs <span class="op">=</span> []</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.pretrained_model <span class="op">=</span> base_model</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="va">self</span>.pretrained_model(x)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> training_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    x,y <span class="op">=</span> batch</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> <span class="va">self</span>.forward(x) <span class="co"># -&gt; logits</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> F.cross_entropy(logits, y)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({<span class="st">'train_loss'</span>: loss})</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.training_step_outputs.append({<span class="st">'loss'</span>: loss, <span class="st">'logits'</span>: logits, <span class="st">'y'</span>:y})</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_train_epoch_end(<span class="va">self</span>):</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Concat batches</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> <span class="va">self</span>.training_step_outputs</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> torch.cat([x[<span class="st">'logits'</span>] <span class="cf">for</span> x <span class="kw">in</span> outputs])</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> torch.cat([x[<span class="st">'y'</span>] <span class="cf">for</span> x <span class="kw">in</span> outputs])</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.train_acc(logits, y)</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">'train_acc'</span>: <span class="va">self</span>.train_acc,</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>      on_step <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>      on_epoch <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>      prog_bar <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.training_step_outputs.clear()</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> validation_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>    x,y <span class="op">=</span> batch</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> <span class="va">self</span>.forward(x)</span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> F.cross_entropy(logits, y)</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({<span class="st">'val_loss'</span>: loss})</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.validation_step_outputs.append({<span class="st">'loss'</span>: loss, <span class="st">'logits'</span>: logits, <span class="st">'y'</span>:y})</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_validation_epoch_end(<span class="va">self</span>):</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Concat batches</span></span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> <span class="va">self</span>.validation_step_outputs</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> torch.cat([x[<span class="st">'logits'</span>] <span class="cf">for</span> x <span class="kw">in</span> outputs])</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> torch.cat([x[<span class="st">'y'</span>] <span class="cf">for</span> x <span class="kw">in</span> outputs])</span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.val_acc(logits, y)</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">'val_acc'</span>: <span class="va">self</span>.val_acc,</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>      on_step <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>      on_epoch <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>      prog_bar <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.validation_step_outputs.clear()</span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> test_step(<span class="va">self</span>, batch, batch_idx):</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>    x,y <span class="op">=</span> batch</span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> <span class="va">self</span>.forward(x)</span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> F.cross_entropy(logits, y)</span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({<span class="st">'test_loss'</span>: loss})</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.test_step_outputs.append({<span class="st">'loss'</span>: loss, <span class="st">'logits'</span>: logits, <span class="st">'y'</span>:y})</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loss</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_test_epoch_end(<span class="va">self</span>):</span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Concat batches</span></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> <span class="va">self</span>.test_step_outputs</span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> torch.cat([x[<span class="st">'logits'</span>] <span class="cf">for</span> x <span class="kw">in</span> outputs])</span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> torch.cat([x[<span class="st">'y'</span>] <span class="cf">for</span> x <span class="kw">in</span> outputs])</span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.test_acc(logits, y)</span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.log_dict({</span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a>        <span class="st">'test_acc'</span>: <span class="va">self</span>.test_acc,</span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a>      on_step <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a>      on_epoch <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>      prog_bar <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.test_step_outputs.clear()</span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> predict_step(<span class="va">self</span>, batch):</span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a>        x, y <span class="op">=</span> batch</span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.model(x, y)</span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> configure_optimizers(<span class="va">self</span>):</span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a>    optimizer <span class="op">=</span> optim.Adam(<span class="va">self</span>.parameters(), lr<span class="op">=</span><span class="va">self</span>.config.LEARNING_RATE)</span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a>    lr_scheduler <span class="op">=</span> ReduceLROnPlateau(optimizer, mode <span class="op">=</span> <span class="st">'min'</span>, patience <span class="op">=</span> <span class="dv">3</span>)</span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a>    lr_scheduler_dict <span class="op">=</span> {</span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a>        <span class="st">"scheduler"</span>: lr_scheduler,</span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a>        <span class="st">"interval"</span>: <span class="st">"epoch"</span>,</span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>         <span class="st">"monitor"</span>: <span class="st">"val_loss"</span>,</span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">'optimizer'</span>: optimizer, <span class="st">'lr_scheduler'</span>: lr_scheduler_dict}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>La mayor parte de los métodos adicionales fueron hechos para poder ir monitoreando las métricas de el modelo, más adelante veremos por qué.</p>
+<p>Finalmente, sólo nos falta instanciar el modelo.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> PetRecognitionModel(base_model, config <span class="op">=</span> CFG)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Ahora, una parte importante será congelar aquellos parámetros que no queremos entrenar. Para esto, congelaremos todos los parámetros del modelo, y luego descongelaremos aquellos pertenecientes a las últimas capas:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> freeze_pretrained_layers(model, model_name):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''Freeze all layers except the last layer(fc or classifier)'''</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">#&nbsp;Freeze All params</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> param <span class="kw">in</span> model.parameters():</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>            param.requires_grad <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Unfreeze Classifier Parameters EfficientNET</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> model_name <span class="op">==</span> <span class="st">'efficientnet_b2'</span>:</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.classifier.weight.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.classifier.bias.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Unfreeze Classifier Parameters VGG19</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> model_name <span class="op">==</span> <span class="st">'vgg19_bn'</span>:</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.head.fc.weight.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.head.fc.bias.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Unfreeze Classifier Parameters Inception</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> model_name <span class="op">==</span> <span class="st">'inception_v4'</span>:</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.last_linear.weight.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.last_linear.bias.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Unfreeze Classifier Parameters Resnet</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> model_name <span class="op">==</span> <span class="st">'resnet50'</span>:</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.fc.weight.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>      model.pretrained_model.fc.bias.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">'Modelo no encontrado'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Puedes notar que los nombres de las capas varian según el modelo. Ahora sólo debemos aplicar la función.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>freeze_pretrained_layers(model, model_name <span class="op">=</span> CFG.MODEL)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="trainer" class="level2">
+<h2 class="anchored" data-anchor-id="trainer">4. Trainer</h2>
+<p>Alfin, ahora sólo nos queda entrenar. Esto será muy sencillo gracias al módulo <strong>Trainer</strong> de Pytorch Lighting, el cual se encargará de elaborar la rutina de entrenamiento en base a lo que definimos anteriormente.</p>
+<p>Primero, definimos Trainer junto con las configuraciones que deseemos:</p>
+<ul>
+<li>Actualizamos clase CFG</li>
+</ul>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CFG:</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  IMG_PATH <span class="op">=</span> <span class="st">'PATH/TO/IMAGES'</span> <span class="co"># Ruta a imagenes</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  LABEL_PATH <span class="op">=</span> <span class="st">'/PATH/TO/labels.csv'</span> <span class="co"># Ruta a archivo de etiquetas</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Data</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  TEST_SIZE <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  VAL_SIZE <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> pd.read_csv(LABEL_PATH) <span class="co"># leemos archivo de etiquetas</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  idx_to_class <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">enumerate</span>(labels.breed.unique())) <span class="co"># id -&gt; clase</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  class_to_idx <span class="op">=</span> {c:i <span class="cf">for</span> i,c <span class="kw">in</span> idx_to_class.items()} <span class="co"># clase -&gt; id</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model related</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  LEARNING_RATE <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  MODEL <span class="op">=</span> <span class="st">'inception_v4'</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  PRETRAINED <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trainer</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  PRECISION <span class="op">=</span> <span class="dv">16</span> <span class="co"># Float Precision</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  MIN_EPOCHS <span class="op">=</span> <span class="dv">1</span> <span class="co"># Min epochs</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  MAX_EPOCHS <span class="op">=</span> <span class="dv">3</span> <span class="co"># Max epochs</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  ACCELERATOR <span class="op">=</span> <span class="st">'gpu'</span> <span class="co"># Device</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Instanciamos el módulo Trainer</li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightning <span class="im">as</span> L</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> L.Trainer(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    accelerator<span class="op">=</span>CFG.ACCELERATOR,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    devices<span class="op">=</span><span class="dv">1</span>, <span class="co">#&nbsp;solo 1 device (gpu en nuestro caso)</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    min_epochs<span class="op">=</span>CFG.MIN_EPOCHS,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    max_epochs<span class="op">=</span>CFG.MAX_EPOCHS,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    precision<span class="op">=</span>CFG.PRECISION,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>🚀&nbsp;listo! ahora sólo nos queda ejecutar el ansiado <code>.fit()</code>. Pero aún falta algo importante ¿Como sabremos que modelo es mejor? Nos basaremos en la métrica <code>Accuracy</code>. Pero ¿donde la monitorearemos?</p>
+<section id="weight-and-biases-logging" class="level3">
+<h3 class="anchored" data-anchor-id="weight-and-biases-logging">🐝&nbsp;Weight and Biases Logging</h3>
+<p>Weight and Biases (W&amp;B) es una plataforma que permite realizar un seguimiento, visualización y colaboración en proyectos de aprendizaje automático, lo que facilita el registro y el análisis de experimentos y modelos de Machine Learning.</p>
+<p>En este caso, la utilizaremos para monitorear las métricas de nuestros modelos! Quizá en un futuro haga un blog de como utilizar esta maravillosa herramienta. En este caso es sencillo, sólo debemos inicializar <strong>Wandb logger</strong>, y comunicárselo a nuestro módulo Trainer.</p>
+<ul>
+<li>Actualizamos CFG con la info de nuestro proyecto en WandB</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CFG:</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  IMG_PATH <span class="op">=</span> <span class="st">'PATH/TO/IMAGES'</span> <span class="co"># Ruta a imagenes</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  LABEL_PATH <span class="op">=</span> <span class="st">'/PATH/TO/labels.csv'</span> <span class="co"># Ruta a archivo de etiquetas</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Data</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  TEST_SIZE <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  VAL_SIZE <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> pd.read_csv(LABEL_PATH) <span class="co"># leemos archivo de etiquetas</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  idx_to_class <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">enumerate</span>(labels.breed.unique())) <span class="co"># id -&gt; clase</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  class_to_idx <span class="op">=</span> {c:i <span class="cf">for</span> i,c <span class="kw">in</span> idx_to_class.items()} <span class="co"># clase -&gt; id</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Model related</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  LEARNING_RATE <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  MODEL <span class="op">=</span> <span class="st">'inception_v4'</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  PRETRAINED <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trainer</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  PRECISION <span class="op">=</span> <span class="dv">16</span> <span class="co"># Float Precision</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  MIN_EPOCHS <span class="op">=</span> <span class="dv">1</span> <span class="co"># Min epochs</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>  MAX_EPOCHS <span class="op">=</span> <span class="dv">20</span> <span class="co"># Max epochs</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  ACCELERATOR <span class="op">=</span> <span class="st">'gpu'</span> <span class="co"># Device</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Wandb related</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>  WANDB_PROJECT <span class="op">=</span> <span class="st">'My-wandb-project'</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>  WANDB_ENTITY <span class="op">=</span> <span class="st">'diegulio'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Instanciamos el logger</li>
+</ul>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>wandb_logger <span class="op">=</span> WandbLogger(project <span class="op">=</span> CFG.WANDB_PROJECT,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                           entity <span class="op">=</span> CFG.WANDB_ENTITY,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                           name <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>CFG<span class="sc">.</span>MODEL<span class="sc">}</span><span class="ss">_baseline"</span>, <span class="co"># exp name</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                           log_model<span class="op">=</span><span class="va">False</span>, <span class="co"># no guardar artefacto</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                           config <span class="op">=</span> wandb_config, <span class="co"># config</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                           group <span class="op">=</span> <span class="st">'pretrained'</span>, <span class="co">#&nbsp;grupo</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                           job_type <span class="op">=</span> <span class="st">'training'</span>) <span class="co"># tipo de trabajo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Agregamos el logger al Trainer</li>
+</ul>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> L.Trainer(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    accelerator<span class="op">=</span>CFG.ACCELERATOR,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    devices<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    min_epochs<span class="op">=</span>CFG.MIN_EPOCHS,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    max_epochs<span class="op">=</span>CFG.MAX_EPOCHS,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    precision<span class="op">=</span>CFG.PRECISION,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    logger <span class="op">=</span> wandb_logger, <span class="co"># Agregamos el logger</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="fit" class="level2">
+<h2 class="anchored" data-anchor-id="fit">5. Fit</h2>
+<p>Ahora somos libres de entrenar!</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>trainer.fit(model, train_dataloader, val_dataloader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Veremos algo este estilo más una barrita de carga:</p>
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 5.png" class="img-fluid"></p>
+<p>Observemos que la cantidad total de parámetros es de 43.3 Millones ! Aún así nosotros sólo entrenamos 2.1 Millones, y el resto lo congelamos 🥶</p>
+</section>
+<section id="evaluate" class="level2">
+<h2 class="anchored" data-anchor-id="evaluate">6. Evaluate</h2>
+<p>Con Pytorch Lighting la evaluación también es sencilla ya que previamente establecimos el método <code>on_test_epoch_end()</code>. Sólo debemos ejectuar:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>trainer.test(model, test_dataloader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 6.png" class="img-fluid"></p>
+<p><strong>Nota</strong>: El test accuracy mostrado acá fue con el modelo sin pre-entrenar. Podemos notar lo mal que le fue debido a que necesitaba más tiempo para converger.</p>
+</section>
+</section>
+<section id="resultados" class="level1">
+<h1>🎯&nbsp;Resultados</h1>
+<p>Todos los resultados los puedes ver en el <a href="https://wandb.ai/diegulio/breed-classification-pytorch/workspace?workspace=user-diegulio">panel de Wandb</a> 🐝&nbsp;!</p>
+<p>Veamos el accuracy para los modelos baseline:</p>
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 7.png" class="img-fluid"></p>
+<p>Vemos que Inception_v4 se queda con el trono 👑&nbsp;(para este caso de uso, claro) con un accuracy de un <strong>85%</strong> con sólo 3 epochs! Podemos ver un montón de otras métricas en <strong>Wandb</strong>, incluso podemos ver que tanto cómputo fue utilizado!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 8.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Métricas de sistema en wandb</figcaption>
+</figure>
+</div>
+<p>El hecho de que haya tenido un buen performance con sólo 3 iteraciones sobre el dataset, se lo debemos al uso de <strong>Transfer Learning</strong> 🧠.</p>
+<p>En el panel, podrás ver que también hice otros experimentos, en donde varíe algunos parámetros, o agregué <strong>Data Augmentation (</strong>Ésta técnica es muy poderosa, permitiendo al modelo poder generalizar mejor agregándole variaciones a las imágenes.)</p>
+<p>Luego de esto, el accuracy final fue de un <strong>89%,</strong> lo cual es totalmente mejorable<strong>.</strong> En el repositorio de Github podrás ver el código final agregándole técnicas como:</p>
+<ul>
+<li>Data Augmentation</li>
+<li>Custom Layers</li>
+<li>Learning Scheduler</li>
+<li>Early Stopping</li>
+</ul>
+</section>
+<section id="front-end" class="level1">
+<h1>🧐&nbsp;Front-End</h1>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🐕‍🦺
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://huggingface.co/spaces/Diegulio/breed-classification">Prueba la aplicación acá</a> !!</p>
+</div>
+</div>
+<p>Como siempre, no nos podemos quedar en puro código, es por esto que utilizaremos <strong>Gradio</strong> para poder crear una app utilizando nuestro modelo. Primero te dejaré el código, el cual es bastante sencillo gracias a Gradio!</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gradio <span class="im">as</span> gr</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision <span class="im">import</span> transforms</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> app.backbone <span class="im">import</span> Backbone</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> app.config <span class="im">import</span> CFG</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> app.model <span class="im">import</span> PetClassificationModel</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargamos modelos</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>backbone <span class="op">=</span> Backbone(CFG.MODEL, <span class="bu">len</span>(CFG.idx_to_class), pretrained<span class="op">=</span>CFG.PRETRAINED)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> PetClassificationModel(base_model<span class="op">=</span>backbone.model, config<span class="op">=</span>CFG)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(torch.load(<span class="st">"models/best_model.pt"</span>))</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Modo evaluacion</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>model.to(device)</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Funcion que cambia tamaño de la imagen de entrada</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>pred_transforms <span class="op">=</span> transforms.Compose(</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>        transforms.Resize(CFG.IMG_SIZE),</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>        transforms.ToTensor(),</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Función de predicción</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict(x):</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> pred_transforms(x).unsqueeze(<span class="dv">0</span>)  <span class="co"># transform and batched</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> x.to(device)</span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>        prediction <span class="op">=</span> torch.nn.functional.softmax(model(x)[<span class="dv">0</span>], dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>        confidences <span class="op">=</span> {</span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a>            CFG.idx_to_class[i]: <span class="bu">float</span>(prediction[i])</span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(CFG.idx_to_class))</span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> confidences</span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Interfaz Gradio</span></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a>gr.Interface(</span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a>    fn<span class="op">=</span>predict,</span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Breed Classifier 🐶🧡🐱"</span>,</span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">"Clasifica una imagen entre: 120 razas, gato o ninguno!"</span>,</span>
+<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a>    inputs<span class="op">=</span>gr.Image(<span class="bu">type</span><span class="op">=</span><span class="st">"pil"</span>),</span>
+<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a>    outputs<span class="op">=</span>gr.Label(num_top_classes<span class="op">=</span><span class="dv">5</span>),</span>
+<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a>    examples<span class="op">=</span>[</span>
+<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a>        <span class="st">"statics/pug.jpg"</span>,</span>
+<span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a>        <span class="st">"statics/poodle.jpg"</span>,</span>
+<span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a>        <span class="st">"statics/cat.jpg"</span>,</span>
+<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a>        <span class="st">"statics/no.jpg"</span>,</span>
+<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a>).launch()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Finalmente, nuestra aplicación queda como:</p>
+<p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 9.png" class="img-fluid"></p>
+</section>
+<section id="próximos-pasos" class="level1">
+<h1>🚀&nbsp;Próximos Pasos</h1>
+<p>Para mejorar la solución podriamos intentar distintas técnicas, algunas de estas son:</p>
+<ul>
+<li><strong>Unfreeze more layers:</strong> Descongelar más capas, esto suele ser efectivo cuando la tarea para la cual fue entrenado el modelo base es muy distinta a la tarea para la cual estamos trabajando.</li>
+<li><strong>Más Data Augmentation</strong>: Si nuestro modelo generaliza mal, creando otros tipos de variaciones puede mejorar el performance de nuestro modelo</li>
+<li><strong>Agregar más layers:</strong> Podemos agregar más capas en la parte de clasificación, así pudiendo capturar patrones más complejos. Esto puede ser efectivo en casos donde tu modelo esté sufriendo de Underfitting.</li>
+<li><strong>Data Oriented</strong>: En los datos, me di cuenta que hay algunas imágenes mal etiquetadas, esto puede provocar pérdida de performance. Un buen enfoque podría ser dedicarse a mejorar la calidad de los datos. Recordemos que si basura entra, basura sale.</li>
+<li><strong>Transformers</strong>: Probar los nuevos modelos de computer vision basados en transformers (ViT).</li>
+</ul>
+</section>
+<section id="conclusión" class="level1">
+<h1>🥳&nbsp;Conclusión</h1>
+<p>En este blog hemos abordado un desafío de clasificación de imágenes que abarca 120 razas de perros, la categoría de gato y la opción “No detectado”. Hemos demostrado cómo PyTorch Lightning y la técnica de transfer learning pueden simplificar drásticamente el proceso de desarrollo y entrenamiento de modelos de Convolutional Neural Networks (CNN) preentrenados. Este enfoque nos ha permitido aprovechar el conocimiento previo de modelos preentrenados para resolver un problema altamente complejo y ha allanado el camino hacia soluciones efectivas y eficientes en tareas de clasificación de imágenes. Con estas herramientas a nuestro alcance, estamos preparados para abordar desafíos aún mayores y avanzar en la investigación y aplicaciones del aprendizaje profundo en el mundo de la visión por computadora.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🤖
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>conclusión creada por ChatGPT jeje</p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">diegulio🧡2023</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

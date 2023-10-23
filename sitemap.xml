@@ -2,50 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://diegulio.github.io/posts/llm-recipe/main.html</loc>
-    <lastmod>2023-07-24T14:44:27.822Z</lastmod>
+    <lastmod>2023-10-23T14:32:38.000Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/back_to_sit/main.html</loc>
-    <lastmod>2023-07-24T14:44:28.294Z</lastmod>
+    <lastmod>2023-10-23T14:32:38.476Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/birdclef2023/main.html</loc>
-    <lastmod>2023-07-24T14:44:31.158Z</lastmod>
+    <lastmod>2023-10-23T14:32:41.249Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/pytorch_breed_classification/main.html</loc>
+    <lastmod>2023-10-23T14:32:42.415Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/llm-cv-assistant/main.html</loc>
-    <lastmod>2023-07-24T14:44:32.427Z</lastmod>
+    <lastmod>2023-10-23T14:32:43.634Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/main.html</loc>
-    <lastmod>2023-07-24T14:44:33.102Z</lastmod>
+    <lastmod>2023-10-23T14:32:44.275Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-1-simple-nn.html</loc>
-    <lastmod>2023-07-24T14:44:33.584Z</lastmod>
+    <lastmod>2023-10-23T14:32:44.759Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-3-rnn.html</loc>
-    <lastmod>2023-07-24T14:44:34.288Z</lastmod>
+    <lastmod>2023-10-23T14:32:45.462Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-5-mybestsolution.html</loc>
-    <lastmod>2023-07-24T14:44:34.745Z</lastmod>
+    <lastmod>2023-10-23T14:32:45.947Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-4-bert-tensorflow-huggingface.html</loc>
-    <lastmod>2023-07-24T14:44:35.606Z</lastmod>
+    <lastmod>2023-10-23T14:32:46.798Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-2-embeddings.html</loc>
-    <lastmod>2023-07-24T14:44:36.664Z</lastmod>
+    <lastmod>2023-10-23T14:32:47.878Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/index.html</loc>
-    <lastmod>2023-07-24T14:44:37.271Z</lastmod>
+    <lastmod>2023-10-23T14:32:48.543Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/about.html</loc>
-    <lastmod>2023-07-24T14:44:37.563Z</lastmod>
+    <lastmod>2023-10-23T14:32:48.819Z</lastmod>
   </url>
 </urlset>

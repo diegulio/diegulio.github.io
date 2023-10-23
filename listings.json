@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/pytorch_breed_classification/main.html",
       "/posts/llm-cv-assistant/main.html",
       "/posts/llm-recipe/main.html",
       "/posts/birdclef2023/main.html",
