@@ -9,7 +9,7 @@
 <meta name="author" content="Diegulio">
 <meta name="dcterms.date" content="2023-10-23">
 
-<title>Image Classification with Pytorch Lighting</title>
+<title>Image Classification with Pytorch Lightning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,8 +100,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Image Classification with Pytorch Lighting">
-<meta property="og:description" content="Classify images of pets using Pytorch Lighting">
+<meta property="og:title" content="Image Classification with Pytorch Lightning">
+<meta property="og:description" content="Classify images of pets using Pytorch Lightning">
 <meta property="og:image" content="https://diegulio.github.io/posts/pytorch_breed_classification/dc.jpg">
 </head>
 
@@ -152,11 +152,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Image Classification with Pytorch Lighting</h1>
-            <p class="subtitle lead">Classify images of pets using Pytorch Lighting</p>
+      <h1 class="title">Image Classification with Pytorch Lightning</h1>
+            <p class="subtitle lead">Classify images of pets using Pytorch Lightning</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Pytorch</div>
-                <div class="quarto-category">Lighting</div>
+                <div class="quarto-category">Lightning</div>
                 <div class="quarto-category">Wandb</div>
                 <div class="quarto-category">Timm</div>
                 <div class="quarto-category">Gradio</div>
@@ -193,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#tópico-breed-classification-with-pytorch-lighting" id="toc-tópico-breed-classification-with-pytorch-lighting" class="nav-link active" data-scroll-target="#tópico-breed-classification-with-pytorch-lighting">⚡️ Tópico: Breed Classification with Pytorch Lighting</a></li>
+  <li><a href="#tópico-breed-classification-with-pytorch-lightning" id="toc-tópico-breed-classification-with-pytorch-lightning" class="nav-link active" data-scroll-target="#tópico-breed-classification-with-pytorch-lightning">⚡️ Tópico: Breed Classification with Pytorch Lightning</a></li>
   <li><a href="#motivación-find-your-pet" id="toc-motivación-find-your-pet" class="nav-link" data-scroll-target="#motivación-find-your-pet">🔎&nbsp;Motivación: Find your pet</a></li>
   <li><a href="#tool-path-que-utilizaremos" id="toc-tool-path-que-utilizaremos" class="nav-link" data-scroll-target="#tool-path-que-utilizaremos">🔨&nbsp;Tool Path: Que utilizaremos</a></li>
   <li><a href="#concept-path-que-aprenderemos" id="toc-concept-path-que-aprenderemos" class="nav-link" data-scroll-target="#concept-path-que-aprenderemos">💭&nbsp;Concept Path: Que aprenderemos</a></li>
@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model" id="toc-model" class="nav-link" data-scroll-target="#model">3. Model</a>
   <ul class="collapse">
   <li><a href="#timm-pytorch-image-models" id="toc-timm-pytorch-image-models" class="nav-link" data-scroll-target="#timm-pytorch-image-models">TIMM (pyTorch Image Models)</a></li>
-  <li><a href="#pytorch-lighting" id="toc-pytorch-lighting" class="nav-link" data-scroll-target="#pytorch-lighting">Pytorch Lighting ⚡️</a></li>
+  <li><a href="#pytorch-lightning" id="toc-pytorch-lightning" class="nav-link" data-scroll-target="#pytorch-lightning">Pytorch Lightning ⚡️</a></li>
   </ul></li>
   <li><a href="#trainer" id="toc-trainer" class="nav-link" data-scroll-target="#trainer">4. Trainer</a>
   <ul class="collapse">
@@ -233,8 +233,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><a href="https://huggingface.co/spaces/Diegulio/breed-classification"><img src="https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-md-dark.svg" class="img-fluid" alt="Open in Spaces"></a> <a href="https://github.com/diegulio/pytorch-breed-classification"><img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" class="img-fluid" alt="GitHub"></a></p>
-<section id="tópico-breed-classification-with-pytorch-lighting" class="level1">
-<h1>⚡️ Tópico: Breed Classification with Pytorch Lighting</h1>
+<section id="tópico-breed-classification-with-pytorch-lightning" class="level1">
+<h1>⚡️ Tópico: Breed Classification with Pytorch Lightning</h1>
 <p>En este post, resolveremos un problema clásico de Machine Learning: <strong>Clasificación</strong>. Lo interesante, es que no será un problema tabular, si no que será un problema de <strong>Computer Vision</strong> 👁️. Esto quiere decir que utilizaremos modelos de Deep Learning para clasificar imágenes dentro de un set de categorias (o clases) pre-definidas. Si bien es un problema clásico, el hecho de que la entrada de nuestro modelo sean imágenes hace todo el tema mucho más motivante, y es un buen punto de partida para escalar y luego resolver problemas tales como: Object detection, Segmentation, Image generation, entre otros.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -261,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>A continuación les dejo las herramientas que utilizaremos en este post:</p>
 <ol type="1">
 <li><strong>Pytorch</strong>: es una biblioteca de código abierto para el desarrollo de aplicaciones de aprendizaje profundo y la investigación en inteligencia artificial.</li>
-<li><strong>Pytorch Lighting</strong>: es una extensión de PyTorch que simplifica y estandariza el proceso de entrenamiento y desarrollo de modelos de aprendizaje profundo en PyTorch, facilitando la creación de código limpio y modular.</li>
+<li><strong>Pytorch Lightning</strong>: es una extensión de PyTorch que simplifica y estandariza el proceso de entrenamiento y desarrollo de modelos de aprendizaje profundo en PyTorch, facilitando la creación de código limpio y modular.</li>
 <li><strong>Weight and Biases</strong>: plataforma que permite realizar un seguimiento, visualización y colaboración en proyectos de Machine Learning.</li>
 <li><strong>Timm</strong>: biblioteca que proporciona una amplia variedad de modelos de redes neuronales pre-entrenados para tareas de computer vision en PyTorch.</li>
 <li><strong>Gradio</strong>: facilita la creación de interfaces de usuario interactivas para modelos de Machine Learning.</li>
@@ -293,20 +293,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="prototyping" class="level1">
 <h1>🧠&nbsp;Prototyping</h1>
-<p>Recordar que en esta ocasión utilizaremos <strong>Pytorch Lighting</strong>. Esta herramienta es un wrapper de Pytorch, que nos permite reducir la duplicidad de código y aumentar la modularidad. En otras palabras, es más fácil crear las rutinas de entrenamiento.</p>
+<p>Recordar que en esta ocasión utilizaremos <strong>Pytorch Lightning</strong>. Esta herramienta es un wrapper de Pytorch, que nos permite reducir la duplicidad de código y aumentar la modularidad. En otras palabras, es más fácil crear las rutinas de entrenamiento.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">En la izquierda, podemos ver la rutina de entrenamiento utilizando Pytorch puro. A la derecha podemos ver como es reducida al utilizar Pytorch Lighting, sacrificando sólo una pizca de flexibilidad.<br> Fuente: <a href="https://towardsdatascience.com/from-pytorch-to-pytorch-lightning-a-gentle-introduction-b371b7caaf09">https://towardsdatascience.com/from-pytorch-to-pytorch-lightning-a-gentle-introduction-b371b7caaf09</a></figcaption>
+<figcaption class="figure-caption">En la izquierda, podemos ver la rutina de entrenamiento utilizando Pytorch puro. A la derecha podemos ver como es reducida al utilizar Pytorch Lightning, sacrificando sólo una pizca de flexibilidad.<br> Fuente: <a href="https://towardsdatascience.com/from-pytorch-to-pytorch-lightning-a-gentle-introduction-b371b7caaf09">https://towardsdatascience.com/from-pytorch-to-pytorch-lightning-a-gentle-introduction-b371b7caaf09</a></figcaption>
 </figure>
 </div>
-<p>En resumen, Pytorch Lighting hace por nosotros un montón de cosas como: el loop de epochs, utilizar gpu o no, calcular o no gradientes, computar métricas a través de cada paso, etc.</p>
+<p>En resumen, Pytorch Lightning hace por nosotros un montón de cosas como: el loop de epochs, utilizar gpu o no, calcular o no gradientes, computar métricas a través de cada paso, etc.</p>
 <p>Aún así, lo que necesitamos es muy similar a lo que se necesita en Pytorch puro. Esto es:</p>
 <ol type="1">
 <li><strong>Una clase Dataset</strong>: clase que facilita el acceso a la data. En este caso, a las imágenes.</li>
 <li><strong>Un Dataloader</strong>: La forma en como los datos son cargados al momento de entrenar.</li>
 <li><strong>Una clase Modelo</strong>: Acá indicamos de que se compone nuestro modelo, las capas que utiliza, el optimizador, la predicción, etc.</li>
-<li>Todo lo anterior es utilizado en la clase <strong>Trainer</strong> de Pytorch Lighting. La cual se preocupa de hacer toda la rutina de entrenamiento por nosotros!</li>
+<li>Todo lo anterior es utilizado en la clase <strong>Trainer</strong> de Pytorch Lightning. La cual se preocupa de hacer toda la rutina de entrenamiento por nosotros!</li>
 </ol>
 <p>A grandes rasgos, todo el proceso debería ser algo como:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -587,7 +587,7 @@ La verdad es que esto es un error, por lo que debemos arregarlo. Para eso, le as
 <div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timm</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>base_model <span class="op">=</span> timm.create_model(<span class="st">"model_name"</span>, pretrained <span class="op">=</span> <span class="va">True</span>, num_classes <span class="op">=</span> <span class="bu">len</span>(CFG.idx_to_class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Al entregarle el parámetro <code>num_classes</code>. Timm automáticamente reemplaza la capa final de clasificación para que nos entregue predicciones acordes a nuestro caso de uso!</p>
-<p>Aún así, para utilizar Pytorch Lighting debemos crear nuestra clase Model.</p>
+<p>Aún así, para utilizar Pytorch Lightning debemos crear nuestra clase Model.</p>
 <p>Antes de comenzar a crear nuestra clase modelo, actualicemos nuestra clase configuración con parámetros relacionados a ésta.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CFG:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  IMG_PATH <span class="op">=</span> <span class="st">'PATH/TO/IMAGES'</span> <span class="co"># Ruta a imagenes</span></span>
@@ -606,14 +606,14 @@ La verdad es que esto es un error, por lo que debemos arregarlo. Para eso, le as
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  MODEL <span class="op">=</span> <span class="st">'inception_v4'</span> <span class="co"># timm name</span></span>
 <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  PRETRAINED <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="pytorch-lighting" class="level3">
-<h3 class="anchored" data-anchor-id="pytorch-lighting">Pytorch Lighting ⚡️</h3>
+<section id="pytorch-lightning" class="level3">
+<h3 class="anchored" data-anchor-id="pytorch-lightning">Pytorch Lightning ⚡️</h3>
 <p>Al igual que en Dataset, <strong>Pytorch</strong> requiere algunos métodos fundamentales en la creación de la clase Model. Estos son:</p>
 <ul>
 <li><strong><code>__init__()</code>:</strong> Método que define las capas y otros componentes de un modelo.</li>
 <li><strong><code>forward()</code>&nbsp;:</strong> método donde se realiza el cálculo a través de la red. Tener en cuenta que podemos imprimir el modelo, o cualquiera de sus submódulos, para conocer su estructura.</li>
 </ul>
-<p>Aún así, <strong>Pytorch Lighting</strong> necesita unos métodos extras:</p>
+<p>Aún así, <strong>Pytorch Lightning</strong> necesita unos métodos extras:</p>
 <ul>
 <li><strong><code>training_step()</code></strong>: lógica de entrenamiento.</li>
 <li><strong><code>configure_optimizers()</code>:</strong> definir optimizadores y/o programadores LR.</li>
@@ -863,7 +863,7 @@ La verdad es que esto es un error, por lo que debemos arregarlo. Para eso, le as
 </section>
 <section id="trainer" class="level2">
 <h2 class="anchored" data-anchor-id="trainer">4. Trainer</h2>
-<p>Alfin, ahora sólo nos queda entrenar. Esto será muy sencillo gracias al módulo <strong>Trainer</strong> de Pytorch Lighting, el cual se encargará de elaborar la rutina de entrenamiento en base a lo que definimos anteriormente.</p>
+<p>Alfin, ahora sólo nos queda entrenar. Esto será muy sencillo gracias al módulo <strong>Trainer</strong> de Pytorch Lightning, el cual se encargará de elaborar la rutina de entrenamiento en base a lo que definimos anteriormente.</p>
 <p>Primero, definimos Trainer junto con las configuraciones que deseemos:</p>
 <ul>
 <li>Actualizamos clase CFG</li>
@@ -969,7 +969,7 @@ La verdad es que esto es un error, por lo que debemos arregarlo. Para eso, le as
 </section>
 <section id="evaluate" class="level2">
 <h2 class="anchored" data-anchor-id="evaluate">6. Evaluate</h2>
-<p>Con Pytorch Lighting la evaluación también es sencilla ya que previamente establecimos el método <code>on_test_epoch_end()</code>. Sólo debemos ejectuar:</p>
+<p>Con Pytorch Lightning la evaluación también es sencilla ya que previamente establecimos el método <code>on_test_epoch_end()</code>. Sólo debemos ejectuar:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>trainer.test(model, test_dataloader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="Pytorch Breed Classification cf29b2ea83e645a897f1c0ae8daf3dbb/Untitled 6.png" class="img-fluid"></p>
 <p><strong>Nota</strong>: El test accuracy mostrado acá fue con el modelo sin pre-entrenar. Podemos notar lo mal que le fue debido a que necesitaba más tiempo para converger.</p>
