@@ -1,55 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://diegulio.github.io/posts/gan/main.html</loc>
+    <lastmod>2024-02-27T21:37:05.824Z</lastmod>
+  </url>
+  <url>
+    <loc>https://diegulio.github.io/posts/gan/GAN Paper Implementation 52ba99d208bf45dfb1a22f2077ec3f77.html</loc>
+    <lastmod>2024-02-27T21:37:07.106Z</lastmod>
+  </url>
+  <url>
     <loc>https://diegulio.github.io/posts/llm-recipe/main.html</loc>
-    <lastmod>2023-10-26T23:13:47.425Z</lastmod>
+    <lastmod>2024-02-27T21:37:08.268Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/back_to_sit/main.html</loc>
-    <lastmod>2023-10-26T23:13:47.945Z</lastmod>
+    <lastmod>2024-02-27T21:37:08.765Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/birdclef2023/main.html</loc>
-    <lastmod>2023-10-26T23:13:50.945Z</lastmod>
+    <lastmod>2024-02-27T21:37:11.901Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/pytorch_breed_classification/main.html</loc>
-    <lastmod>2023-10-26T23:13:52.251Z</lastmod>
+    <lastmod>2024-02-27T21:37:13.107Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/llm-cv-assistant/main.html</loc>
-    <lastmod>2023-10-26T23:13:53.691Z</lastmod>
+    <lastmod>2024-02-27T21:37:14.403Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/main.html</loc>
-    <lastmod>2023-10-26T23:13:54.425Z</lastmod>
+    <lastmod>2024-02-27T21:37:15.076Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-1-simple-nn.html</loc>
-    <lastmod>2023-10-26T23:13:54.962Z</lastmod>
+    <lastmod>2024-02-27T21:37:15.588Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-3-rnn.html</loc>
-    <lastmod>2023-10-26T23:13:55.722Z</lastmod>
+    <lastmod>2024-02-27T21:37:16.309Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-5-mybestsolution.html</loc>
-    <lastmod>2023-10-26T23:13:56.232Z</lastmod>
+    <lastmod>2024-02-27T21:37:16.841Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-4-bert-tensorflow-huggingface.html</loc>
-    <lastmod>2023-10-26T23:13:57.179Z</lastmod>
+    <lastmod>2024-02-27T21:37:17.722Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/posts/kaggle_nlp_disaster/seqclass-2-embeddings.html</loc>
-    <lastmod>2023-10-26T23:13:58.366Z</lastmod>
+    <lastmod>2024-02-27T21:37:18.854Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/index.html</loc>
-    <lastmod>2023-10-26T23:13:59.103Z</lastmod>
+    <lastmod>2024-02-27T21:37:19.613Z</lastmod>
   </url>
   <url>
     <loc>https://diegulio.github.io/about.html</loc>
-    <lastmod>2023-10-26T23:13:59.435Z</lastmod>
+    <lastmod>2024-02-27T21:37:19.931Z</lastmod>
   </url>
 </urlset>
