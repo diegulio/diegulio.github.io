@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Diegulio">
-<meta name="dcterms.date" content="2024-02-25">
+<meta name="dcterms.date" content="2024-02-28">
 
 <title>🎯 - Paper Implementation Series: Generative Adversarial Networks</title>
 <style>
@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 25, 2024</p>
+        <p class="date">February 28, 2024</p>
       </div>
     </div>
     
@@ -266,7 +266,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="motivación-implementar-un-paper" class="level1">
 <h1>Motivación: Implementar un Paper</h1>
-<p>Una muy buena práctica que grandes mentes en tecnología normalmente recomiendan es implementar un paper. Esto hace mucho sentido, ya que con esto realmente nos ensuciamos las manos con los algoritmos, ponemos atención a detalles técnicos, aprendemos nuevas metodologías, mejora sustancialmente nuestros skills técnicos, y finalmente nos ayuda a leer mejor los papers.</p>
+<p>Una muy buena práctica que grandes mentes en tecnología normalmente recomiendan es implementar un paper. Esto hace mucho sentido, ya que con esto realmente nos ensuciamos las manos con los algoritmos, ponemos atención a detalles técnicos, aprendemos nuevas metodologías, mejora sustancialmente nuestros skills técnicos, y finalmente nos ayuda a leer mejor los papers. Incluso en muchas publicaciones de trabajo en las big tech es un requisito</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="GAN Paper Implementation 52ba99d208bf45dfb1a22f2077ec3f77/interview.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">AI Post</figcaption>
+</figure>
+</div>
 <p>Personalmente, a veces navego por Kaggle viendo soluciones, donde muchas veces los ganadores utilizan soluciones hechas “a mano”. Con esto me refiero a no simplemente llamar un modelo y ejecutar el <code>.fit()</code> , si no que crear la estructura de tu modelo desde 0, e incluso innovar en la rutina de entrenamiento. En ocasiones, los puntitos de performance que se gana con esto hace la diferencia en el Leaderboard.</p>
 <p>La ofuscación me recorre cuando me doy cuenta que yo no sería capaz de implementar algo así (siempre lo pienso sin siquiera intentarlo). Es por esto que me decidí a pasar por este proceso, y me propuse implementar un paper que me llame la atención, y apuntar a obtener los mismos resultados (caso ideal).</p>
 <p>En este post, no quiero sólo mostrar la solución final, porque siento que eso desalienta al lector, haciéndolo creer que llegué a la solución al primer intento. En esta ocasión, mostraré la mayoría de los desafíos por los que tuve que pasar, los éxitos y los fracasos; el paso a paso de como llegué a lo que sería mi solución final.</p>
