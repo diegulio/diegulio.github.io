@@ -6,7 +6,7 @@ about:
   links:
     - icon: file-pdf
       text: Resume
-      href: "CV.pdf"
+      href: "cv.pdf"
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/dieguliomachado/
