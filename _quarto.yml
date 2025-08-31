@@ -2,19 +2,31 @@ project:
   type: website
 
 website:
-  title: "blog🎯"
+  title: "🎯"
+  description: "A blog about Machine Learning"
+  site-url: "https://diegulio.github.io"
+  open-graph: true
+  favicon: "logo3.png"
+  page-footer: "diegulio🧡2023"
   navbar:
+    logo: logo3.png
     right:
+      - text: "Blog"
+        href: index.html
       - about.qmd
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/diegulio
+      - icon: linkedin
+        href: https://www.linkedin.com/in/dieguliomachado/
+    background: "#044f31"
 format:
   html:
-    theme: journal
+    theme: 
+      light: journal
+      dark: [darkly, dark.scss]
     css: styles.css
     toc: true
+    highlight-style: github  
 
 
 
