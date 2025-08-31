@@ -414,12 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>La primera solución a este problema fue lo que se llamó <em>Prompt Engineering</em>: agregar <strong>contexto</strong> directamente en la pregunta. Al principio, la gente copiaba y pegaba fragmentos de texto de otras fuentes, pero pronto ese contexto empezó a incluir bloques más largos, imágenes, sonidos o incluso conexiones a APIs. Con el tiempo, lo que empezó como <em>Prompt Engineering</em> evolucionó al concepto más amplio de <em>Context Engineering</em>.</p>
 <p>El gran desafío era que no había un estándar. Cada persona que quería conectar un sistema a un LLM debía crear sus propias funciones personalizadas: para extraer transcripciones de YouTube, leer correos de Gmail, scrapear datos de la web, etc. Básicamente, todos reinventaban la rueda una y otra vez, leyendo documentación distinta para cada API.</p>
 <p>Ahí es donde entra en juego <strong>Model Context Protocol (MCP)</strong>: un estándar que permite conectar asistentes de inteligencia artificial (como chatbots) con distintos sistemas, de forma ordenada y consistente.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image.png" class="img-fluid"></p>
 <p>En este post utilizaremos servidores MCPs ya definidos, crearemos un servidor MCP, y lo conectaremos a Claude Sonnet 4 dentro de Claude Desktop (Host MCP). Finalmente haremos el ejercicio de como sería conectar cualquier LLM a estos servidores sin utilizar un Host como Claude Desktop.</p>
 </section>
 <section id="motivación" class="level1">
@@ -431,7 +426,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Una de las clases del curso que haré</figcaption>
 </figure>
 </div>
-<p>Una de las clases del curso que haré</p>
 <p>Es por esto que pensé en conectar la clase e insertarla directamente en el contexto del LLM que estaba utilizando (Claude or ChatGPT), y darle los recursos y herramientas necesarias para que pueda escribir de forma ordenada y organizada el resumen de nuestras discusiones en una aplicación que utilizo un montón para esto, llamada <strong>Notion</strong> ❤️ (Si no la conoces, te recomiendo googlearla)</p>
 </section>
 <section id="tool-path-que-utilizaremos" class="level1">
@@ -491,12 +485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>source: <a href="https://pypi.org/project/youtube-transcript-api">https://pypi.org/project/youtube-transcript-api</a></p>
 <p>Su uso es bastante sencillo, sólo se necesita el ID del video, el cual encontraremos de forma sencilla en el url de este:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 3.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 3.png" class="img-fluid"></p>
 <p>y para obtener la transcripción sólo debemos hacer:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> youtube_transcript_api <span class="im">import</span> YouTubeTranscriptApi</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -626,7 +615,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/ScreenRecording2025-08-28at7.28.25PM-ezgif.com-video-to-gif-converter.gif" class="img-fluid figure-img"></p>
-<figcaption>ScreenRecording2025-08-28at7.28.25PM-ezgif.com-video-to-gif-converter.gif</figcaption>
+<figcaption>MCP Inspector</figcaption>
 </figure>
 </div>
 <p>Como vemos en el video, seleccionamos la única herramienta disponible y le ingresamos un <em>video_url</em> válido, obteniendo así un resultado success con la transcripción del video. Es bastante importante el manejo de Exceptions/errores en las funciones, pero esto se escapa del scope del post.</p>
@@ -641,19 +630,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>Crear integración en Notion: Notion requiere crear integraciones para cualquier conexión a sus APIs, o en este caso, para el MCP. Esto se hace ingresando a <a href="https://www.notion.so/profile/integrations">https://www.notion.so/profile/integrations</a></li>
 </ol>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 4.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 4.png" class="img-fluid"></p>
 <p>Acá podemos seleccionar que accesos tendrá el MCP Client</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 5.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 5.png" class="img-fluid"></p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -670,18 +649,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>Seleccionamos a que secciones o paginas de Notion queremos dar acceso a el MCP Client (Claude Desktop)</li>
 </ol>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 6.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 7.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 6.png" class="img-fluid"></p>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 7.png" class="img-fluid"></p>
 <p>y ya está! no es nada más complicado que eso. Ahora tenemos los MCP Server (Youtube y Notion) necesarios para conectarlos al MCP Client mediante el MCP Host (Claude Desktop en nuestro caso)</p>
 <p>Para ver estos pasos de forma más detallada, puedes visitar: https://github.com/makenotion/notion-mcp-server</p>
 </section>
@@ -690,12 +659,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="conectando-mcp-servers-a-claude-desktop">Conectando MCP Servers a Claude Desktop</h2>
 <p>Una vez que ya tenemos los servidores creados o configurados, nos toca conectarlos a el Host MCP (En este caso, Claude Desktop). Necesitamos informarle al Host sobre los servidores MCP para que éste inserte apropiadamente la información como contexto al LLM (Claude Sonnet).</p>
 <p>Claude Desktop cuenta con una conexión sencilla cuando se trata de conectar a servidores remotos (como lo es el caso de Notion MCP). Simplemente debemos ir a Settings → Connectors → Browse Connectors</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 8.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 8.png" class="img-fluid"></p>
 <p>En este lugar podremos encontrar un montón de herramientas, aunque sólo se permite si eres usuario Pro 💸&nbsp;😢. Felizmente existe una forma gratuita de conectar los servidores MCPs a Claude Desktop, agregando la información del servidor a un archivo <em>.json</em> de configuración, el cual se encuentra ingresando a <em>Settings → Developer → Edit Config</em>. Esto te dirigirá al archivo <code>claude_desktop_config.json</code> el cual debemos abrir con algún editor de texto; dentro verás el archivo con unas llaves <code>{}</code> . Acá debemos ingresar la información de nuestros MCP Servers para que Claude Desktop pueda instanciarlos.</p>
 <p>Siguiendo la documentación del <a href="https://github.com/makenotion/notion-mcp-server">Notion MCP</a>, debemos agregar algo como:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
@@ -747,14 +711,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>MCP Servers en el Chat</figcaption>
 </figure>
 </div>
-<p>MCP Servers en el Chat</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 10.png" class="img-fluid figure-img"></p>
 <figcaption>MCP Servers en Settings → Connectors</figcaption>
 </figure>
 </div>
-<p>MCP Servers en Settings → Connectors</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -780,12 +742,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="voilà-vamos-a-testear" class="level2">
 <h2 class="anchored" data-anchor-id="voilà-vamos-a-testear">🥖&nbsp;Voilà ! Vamos a testear</h2>
 <p>Probemos primero solicitando que nos hable de que trata algún video random de youtube, en mi caso probaré directamente con una de las clases:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 11.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 11.png" class="img-fluid"></p>
 <p>Funciona!! Ahora podemos darle ese contexto a Claude Sonnet a la hora de preguntarle respecto a la clase📝. Notemos que Claude Sonnet utilizó correctamente la función <code>get_yt_transcript</code> que creamos anteriormente.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -800,26 +757,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Notarás que Claude Desktop te pedirá autorización cada vez que quiera ejecutar una tool de alguno de tus servidores. Esto le agrega un componente importante llamado human-in-the-loop y nos permite checkear que el LLM no esté ejecutando acciones indebidas o que no estemos usando una herramienta peligrosa para nuestro sistema.</p>
 </div>
 </div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 12.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 12.png" class="img-fluid"></p>
 <p>Veámos como nos va con el MCP Server de Notion. Recordemos que sólo tiene acceso a la página que le permitimos en la creación de la integración:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 13.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 13.png" class="img-fluid"></p>
 <p>En Notion, vemos:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 14.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 14.png" class="img-fluid"></p>
 <p>Agregó la página e incluso añadió material introductorio dentro 💥&nbsp;Ahora ya tenemos todo listo para poder estudiar eficientemente! Alguna de las solicitudes podrian ser tales como:</p>
 <blockquote class="blockquote">
 <p>Porfavor resume los puntos importantes de la clase y agregalas en una clase nueva en Notion, elige el titulo que prefieras!</p>
@@ -890,12 +832,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
 <span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Ahora las fórmulas y headlines son escritos de forma apropiada!</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 15.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 15.png" class="img-fluid"></p>
 </section>
 </section>
 <section id="opcional-client-mcp-con-langchain" class="level1">
@@ -953,12 +890,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> create_react_agent(<span class="st">"openai:gpt-4.1"</span>, tools)</span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> <span class="cf">await</span> agent.ainvoke({<span class="st">"messages"</span>: [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is this video about? https://www.youtube.com/watch?v=z19HM7ANZlo"</span>}]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 16.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 16.png" class="img-fluid"></p>
 <p>Vemos que efectivamente logra llamar la Tool de transcripción y retorna la respuesta. Para el caso de <strong>resources</strong> y <em>prompts</em> es un poco diferente, ya que el agente no decide cuando utilizar uno o el otro, si no que se lo debemos explicitar nosotros en el contexto (ya sea con un prompt template u otro elemento). Acá igual podriamos jugar un poco para que el LLM sea quien decide si usar un prompt o no, pero lo dejaremos fuera del scope de este post.</p>
 <p>Utilizar nuestros propios MCP Clients nos va a permitir ser más flexibles a la hora de crear Agent Workflows o sistemas Multi-Agentes de forma personalizada.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -1408,7 +1340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>diegulio🧡2023</p>
+<p>diegulio🧡2025</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;
