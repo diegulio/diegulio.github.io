@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.21">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Diegulio">
+<meta name="dcterms.date" content="2025-09-02">
+
+<title>Leveraging MCPs with LLMs – 🎯</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo3.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-f9d2e688c83043042fa051765c26f29b.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-67839544912bc898267f15026188952a.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-f9d2e688c83043042fa051765c26f29b.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-1e494f7d463c62844c0a5ba0ca2952b9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-2bc1395d7f116208967e2be16dafdae1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-1e494f7d463c62844c0a5ba0ca2952b9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Leveraging MCPs with LLMs – 🎯">
+<meta property="og:description" content="Desarrollamos un framework para el estudio eficiente utilizando MCPs">
+<meta property="og:image" content="https://diegulio.github.io/posts/mcp/portada.png">
+<meta property="og:site_name" content="🎯">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:width" content="1024">
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo3.png" alt="" class="navbar-logo light-content">
+    <img src="../../logo3.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">🎯</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/diegulio"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/dieguliomachado/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Leveraging MCPs with LLMs</h1>
+            <p class="subtitle lead">Desarrollamos un framework para el estudio eficiente utilizando MCPs</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">mcp</div>
+                <div class="quarto-category">llm</div>
+                <div class="quarto-category">application</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Diegulio </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 2, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tópico-leveraging-model-context-protocols" id="toc-tópico-leveraging-model-context-protocols" class="nav-link active" data-scroll-target="#tópico-leveraging-model-context-protocols">Tópico: Leveraging Model Context Protocols</a></li>
+  <li><a href="#motivación" id="toc-motivación" class="nav-link" data-scroll-target="#motivación">Motivación 📖</a></li>
+  <li><a href="#tool-path-que-utilizaremos" id="toc-tool-path-que-utilizaremos" class="nav-link" data-scroll-target="#tool-path-que-utilizaremos">🔨&nbsp;Tool Path: Que utilizaremos</a></li>
+  <li><a href="#estrategia-como-abordamos" id="toc-estrategia-como-abordamos" class="nav-link" data-scroll-target="#estrategia-como-abordamos">♟️&nbsp;Estrategia: Como abordamos</a></li>
+  <li><a href="#prototyping" id="toc-prototyping" class="nav-link" data-scroll-target="#prototyping">👨🏽‍🏭&nbsp;Prototyping</a>
+  <ul class="collapse">
+  <li><a href="#youtube-transcriptions" id="toc-youtube-transcriptions" class="nav-link" data-scroll-target="#youtube-transcriptions">Youtube Transcriptions</a></li>
+  <li><a href="#mcp-server-youtube" id="toc-mcp-server-youtube" class="nav-link" data-scroll-target="#mcp-server-youtube">MCP Server: Youtube</a>
+  <ul class="collapse">
+  <li><a href="#test-mcp-server" id="toc-test-mcp-server" class="nav-link" data-scroll-target="#test-mcp-server">Test MCP Server</a></li>
+  </ul></li>
+  <li><a href="#mcp-server-notion" id="toc-mcp-server-notion" class="nav-link" data-scroll-target="#mcp-server-notion">MCP Server: Notion</a>
+  <ul class="collapse">
+  <li><a href="#pasos-configuración-notion-mcp" id="toc-pasos-configuración-notion-mcp" class="nav-link" data-scroll-target="#pasos-configuración-notion-mcp">Pasos configuración Notion MCP</a></li>
+  </ul></li>
+  <li><a href="#conectando-mcp-servers-a-claude-desktop" id="toc-conectando-mcp-servers-a-claude-desktop" class="nav-link" data-scroll-target="#conectando-mcp-servers-a-claude-desktop">Conectando MCP Servers a Claude Desktop</a></li>
+  <li><a href="#voilà-vamos-a-testear" id="toc-voilà-vamos-a-testear" class="nav-link" data-scroll-target="#voilà-vamos-a-testear">🥖&nbsp;Voilà ! Vamos a testear</a></li>
+  <li><a href="#que-sucede-tras-bambalinas" id="toc-que-sucede-tras-bambalinas" class="nav-link" data-scroll-target="#que-sucede-tras-bambalinas">📸&nbsp;Que sucede tras bambalinas?</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
+  </ul></li>
+  <li><a href="#opcional-client-mcp-con-langchain" id="toc-opcional-client-mcp-con-langchain" class="nav-link" data-scroll-target="#opcional-client-mcp-con-langchain">🤓&nbsp;(Opcional) Client MCP con Langchain 🦜</a></li>
+  <li><a href="#conclusiones-y-palabras-finales" id="toc-conclusiones-y-palabras-finales" class="nav-link" data-scroll-target="#conclusiones-y-palabras-finales">🔚&nbsp;Conclusiones y palabras finales</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+
+<section id="tópico-leveraging-model-context-protocols" class="level1">
+<h1>Tópico: Leveraging Model Context Protocols</h1>
+<p>Hoy quiero hablarte de una “herramienta” que en el último tiempo se ha vuelto bastante famosa. No, no es un nuevo modelo de lenguaje, pero sí algo que hace que las aplicaciones que usan estos modelos sean mucho más fáciles de construir para los desarrolladores. Y digo desarrolladores, porque en apariencia no tiene un impacto directo para el usuario final.</p>
+<p>La idea de este post es acortar esa brecha y mostrar cómo podemos aprovechar sus beneficios incluso sin tener que desarrollar desde cero una aplicación con LLMs. Y, para quienes son más computines 🤖, también veremos cómo se conecta todo esto desde el código.</p>
+<p>Volvamos un poco atrás. En los primeros días de los <em>Large Language Models</em> (pensemos en el primer ChatGPT que todos recordamos), las respuestas se basaban únicamente en lo aprendido durante su entrenamiento: miles y miles de páginas de internet. Eso significaba que su conocimiento estaba limitado y, en la mayoría de los casos, desactualizado. Por ejemplo, la primera versión de ChatGPT lanzada a fines de 2022 solo sabía hasta septiembre de 2021. Por eso, preguntas como “¿cómo está hoy la inflación en Chile?”, “¿qué pasó con el precio del Bitcoin esta semana?” o “¿qué cambios trae Python 3.11?” eran imposibles de responder.</p>
+<p>La primera solución a este problema fue lo que se llamó <em>Prompt Engineering</em>: agregar <strong>contexto</strong> directamente en la pregunta. Al principio, la gente copiaba y pegaba fragmentos de texto de otras fuentes, pero pronto ese contexto empezó a incluir bloques más largos, imágenes, sonidos o incluso conexiones a APIs. Con el tiempo, lo que empezó como <em>Prompt Engineering</em> evolucionó al concepto más amplio de <em>Context Engineering</em>.</p>
+<p>El gran desafío era que no había un estándar. Cada persona que quería conectar un sistema a un LLM debía crear sus propias funciones personalizadas: para extraer transcripciones de YouTube, leer correos de Gmail, scrapear datos de la web, etc. Básicamente, todos reinventaban la rueda una y otra vez, leyendo documentación distinta para cada API.</p>
+<p>Ahí es donde entra en juego <strong>Model Context Protocol (MCP)</strong>: un estándar que permite conectar asistentes de inteligencia artificial (como chatbots) con distintos sistemas, de forma ordenada y consistente.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>En este post utilizaremos servidores MCPs ya definidos, crearemos un servidor MCP, y lo conectaremos a Claude Sonnet 4 dentro de Claude Desktop (Host MCP). Finalmente haremos el ejercicio de como sería conectar cualquier LLM a estos servidores sin utilizar un Host como Claude Desktop.</p>
+</section>
+<section id="motivación" class="level1">
+<h1>Motivación 📖</h1>
+<p>Me inscribí a un curso que es teóricamente pesado, por lo que me propuse estudiar desde antes para poder sobrellevar el curso + trabajo. Para esto, comencé a leer los apuntes y ver los videos de las clases de periodos anteriores. Muchas veces me surgen dudas respecto a alguna metodología o supuesto, por lo que lo discuto con ChatGPT. Cada vez que quiero hacer una pregunta, debo darle contexto de la clase o incluso del curso como tal, y además la respuesta se termina perdiendo en el historial de conversación con mi amigo ChatGPT, dificultando la búsqueda cuando quiero re consultar (me pasa mucho que se me olvida cierto detalle).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 1.png" class="img-fluid figure-img"></p>
+<figcaption>Una de las clases del curso que haré</figcaption>
+</figure>
+</div>
+<p>Una de las clases del curso que haré</p>
+<p>Es por esto que pensé en conectar la clase e insertarla directamente en el contexto del LLM que estaba utilizando (Claude or ChatGPT), y darle los recursos y herramientas necesarias para que pueda escribir de forma ordenada y organizada el resumen de nuestras discusiones en una aplicación que utilizo un montón para esto, llamada <strong>Notion</strong> ❤️ (Si no la conoces, te recomiendo googlearla)</p>
+</section>
+<section id="tool-path-que-utilizaremos" class="level1">
+<h1>🔨&nbsp;Tool Path: Que utilizaremos</h1>
+<p>Estas son las herramientas que utilizaremos para lograr nuestro objetivo:</p>
+<ol type="1">
+<li><strong>MCPs</strong>: Estándar abierto que permite a los modelos de IA conectarse de forma segura a datos, herramientas y APIs externas de manera consistente</li>
+<li><strong>Notion MCP</strong>: <em>Model Context Protocol</em> específicamente para <strong>Notion</strong>, que permite que un modelo de IA (como ChatGPT) se conecte de forma segura y estructurada con el contenido de tu espacio de trabajo en Notion</li>
+<li><strong>Claude Desktop</strong>: Aplicación de escritorio de Anthropic para usar a Claude (su modelo de IA) directamente en tu computador</li>
+<li><strong>Langchain</strong>: Framework que permite construir aplicaciones de IA conectando modelos de lenguaje con datos, herramientas y cadenas de razonamiento.</li>
+</ol>
+</section>
+<section id="estrategia-como-abordamos" class="level1">
+<h1>♟️&nbsp;Estrategia: Como abordamos</h1>
+<p>Para lograr nuestro cometido, pensé en lo siguiente:</p>
+<ol type="1">
+<li><strong>Obtener transcripciones de Youtube</strong>: Si bien es posible que exista. algún MCP para Youtube, con fines educativos me forcé a crearlo yo mismo.</li>
+<li><strong>Crear MCP Server Youtube</strong>: Acá creamos un servidor MCP con la herramienta de transcripciones obtenidas en el paso 1</li>
+<li><strong>Buscar MCP de Notion</strong>: Siendo este proceso más complicado, decidí que era mejor investigar si Notion tiene su propio MCP para poder utilizarlo. Así aprendemos de ambos mundos, como crear y como utilizar.</li>
+<li><strong>Conectar MCPs</strong>: Conectar tanto los servidors MCPs de Youtube y de Notion a el host Claude Desktop</li>
+<li><strong>Testear</strong>: Testeamos la funcionalidad de nuestra solución. Recordemos que buscamos agregarle contexto de las clases que están en youtube para hacerle preguntas a algún LLM, para que luego un resumen sea insertado de forma ordenada y organizada en Notion.</li>
+<li><strong>Client MCP (Opcional)</strong>: Intentar conectar directamente un LLM (MCP Client) a los MCPs de Youtube y Notion. Esto también es con fines de aprendizaje.</li>
+</ol>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>⏱️
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Al momento de escribir este artículo, OpenAI lanzó en ChatGPT la posibilidad de agregar conectores, por lo que ahora se expanden las posibilidades! 💯</p>
+</div>
+</div>
+</section>
+<section id="prototyping" class="level1">
+<h1>👨🏽‍🏭&nbsp;Prototyping</h1>
+<p>Seguiremos los pasos mencionados en la sección <em>Estrategia.</em> A grandes rasgos, la idea es crear/buscar los servidores MCPs para luego conectarlos a el Host (Claude Code). Tanto para crear como para utilizar servidores MCPs existen diferentes obstáculos (Crear código, conseguir API tokens, permisos, etc). Vamos paso a paso construyendo nuestra solución propuesta!</p>
+<p>Antes de comenzar, veamos los participantes en una arquitectura MCP:</p>
+<ul>
+<li><strong>MCP Host</strong>: La aplicación de IA que coordina y gestiona uno o varios clientes MCP.</li>
+<li><strong>MCP Client</strong>: Un componente que mantiene una conexión con un servidor MCP y obtiene contexto de este para que lo utilice el MCP host.</li>
+<li><strong>MCP Server</strong>: Un programa que proporciona contexto a los clientes MCP.</li>
+</ul>
+<section id="youtube-transcriptions" class="level2">
+<h2 class="anchored" data-anchor-id="youtube-transcriptions">Youtube Transcriptions</h2>
+<hr>
+<p>Queremos extraer la transcripción de la clases para ingresarla al LLM como contexto. En mi caso, las clases de periodos anteriores están en Youtube, pero en otros casos de uso podrían utilizarse distintas herramientas de transcripción.</p>
+<p>Para el caso de youtube, existe una librería específica para obtener transcripciones, esto nos va a facilitar la vida:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 2.png" class="img-fluid figure-img"></p>
+<figcaption>source: <a href="https://pypi.org/project/youtube-transcript-api">https://pypi.org/project/youtube-transcript-api</a></figcaption>
+</figure>
+</div>
+<p>source: <a href="https://pypi.org/project/youtube-transcript-api">https://pypi.org/project/youtube-transcript-api</a></p>
+<p>Su uso es bastante sencillo, sólo se necesita el ID del video, el cual encontraremos de forma sencilla en el url de este:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 3.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>y para obtener la transcripción sólo debemos hacer:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> youtube_transcript_api <span class="im">import</span> YouTubeTranscriptApi</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>transcript <span class="op">=</span> YouTubeTranscriptApi().fetch(video_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>En mi caso, yo queria insertar directamente el url del video de youtube, por lo que agregué una función auxiliar, resultando en:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Función auxiliar para obtener el video_id desde la url</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_video_id(url):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> <span class="vs">r"</span>(?:<span class="vs">v=</span><span class="cf">|</span><span class="ch">\/</span>)<span class="kw">(</span><span class="pp">[0-9A-Za-z_-]</span><span class="op">{11}</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="vs">"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(pattern, url)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> match.group(<span class="dv">1</span>) <span class="cf">if</span> match <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para obtener la transcripción del video</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_yt_transcript(video_url: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    video_id <span class="op">=</span> get_video_id(video_url)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    transcript <span class="op">=</span> YouTubeTranscriptApi().fetch(video_id)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="st">' '</span>.join(snippet.text <span class="cf">for</span> snippet <span class="kw">in</span> transcript)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Esto es todo lo que necesito para mi caso de uso, pero imagina que podriamos crear otras funciones más como: Un lector de comentarios, Obtener descripciones de los videos, búsqueda de titulos, etc.</p>
+</section>
+<section id="mcp-server-youtube" class="level2">
+<h2 class="anchored" data-anchor-id="mcp-server-youtube">MCP Server: Youtube</h2>
+<p>Ahora, como llevamos esto a que sea un Servidor MCP? Gracias a que Anthropic creó un SDK en variados lenguajes (en nuestro caso usaremos el de python), la tarea es muy sencilla.</p>
+<p>Antes, quiero detenerme un poco para explicar unos conceptos previos. Existen 3 elementos bases que los servidores MCPs pueden proveer:</p>
+<ol type="1">
+<li>📁&nbsp;<strong>Resources</strong>: Estos son archivos que pueden ser leidos por los clientes (imaginemos un .txt o algo por el estilo)</li>
+<li>🛠️&nbsp;<strong>Tools</strong>: Este elemento debe ser el más conocido y utilizado, son básicamente funciones que pueden ser llamadas por los LLM.</li>
+<li>💬&nbsp;<strong>Prompts</strong>: Estos son templates pre-hechos que pueden ayudar a los usuarios a ejecutar de mejor manera algunas tareas.</li>
+</ol>
+<p>En nuestro caso, lo que queremos incluir en el servidor es una función de Python, por lo que encaja con el elemento <em>Tool</em>. Como mencioné anteriormente, gracias al <a href="https://github.com/modelcontextprotocol/python-sdk">SDK</a> (Software Development Kit) de Python el esqueleto para crearlo es algo como:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Se importan librerias</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Se inicializa MCP Server</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"youtube"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Se definen elementos (resources, tools, prompts)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Se corre el servidor</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    mcp.run(transport<span class="op">=</span><span class="st">'stdio'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sólo nos falta definir el <code>tool</code> , y esto es muy sencillo, basta con agregar el decorador <code>@mcp.tool()</code> en la función que queremos transformar, resultando:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Función auxiliar para obtener el video_id desde la url</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_video_id(url):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> <span class="vs">r"</span>(?:<span class="vs">v=</span><span class="cf">|</span><span class="ch">\/</span>)<span class="kw">(</span><span class="pp">[0-9A-Za-z_-]</span><span class="op">{11}</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="vs">"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(pattern, url)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> match.group(<span class="dv">1</span>) <span class="cf">if</span> match <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para obtener la transcripción del video</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>() <span class="co"># &lt;--- Agregamos esto</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_yt_transcript(video_url: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    video_id <span class="op">=</span> get_video_id(video_url)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    transcript <span class="op">=</span> YouTubeTranscriptApi().fetch(video_id)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="st">' '</span>.join(snippet.text <span class="cf">for</span> snippet <span class="kw">in</span> transcript)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sin embargo, recordemos que esta información es entregada por el MCP como contexto. Una pregunta válida es <strong>¿</strong>Como sabe el modelo qué hace la función? podriamos quizás pensar que lee el código para entender bien de que trata, pero en realidad es mas directo que esto.</p>
+<p>El MCP server le entrega metadata como los tipos de entrada, salida y descripción de la función. Por esto último es que es muy importante comentar de forma adecuada nuestro <code>tool</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Función auxiliar para obtener el video_id desde la url</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_video_id(url):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> <span class="vs">r"</span>(?:<span class="vs">v=</span><span class="cf">|</span><span class="ch">\/</span>)<span class="kw">(</span><span class="pp">[0-9A-Za-z_-]</span><span class="op">{11}</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="vs">"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(pattern, url)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> match.group(<span class="dv">1</span>) <span class="cf">if</span> match <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para obtener la transcripción del video</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_yt_transcript(video_url: <span class="op">**</span><span class="bu">str</span><span class="op">**</span>) <span class="op">-&gt;</span> <span class="op">**</span><span class="bu">str</span><span class="op">**</span>:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span><span class="st">"""Fetches the transcript of a YouTube video.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">    Args:</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">        video_url (str): The URL of the YouTube video.</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">    Returns:</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">        str: The transcript of the video."""</span><span class="op">**</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    video_id <span class="op">=</span> get_video_id(video_url)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    transcript <span class="op">=</span> YouTubeTranscriptApi().fetch(video_id)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="st">' '</span>.join(snippet.text <span class="cf">for</span> snippet <span class="kw">in</span> transcript)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Finalmente, nuestro <a href="http://main.py">main.py</a> o <a href="http://server.py">server.py</a> resulta:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> youtube_transcript_api <span class="im">import</span> YouTubeTranscriptApi</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize FastMCP server</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>mcp <span class="op">=</span> FastMCP(<span class="st">"youtube"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_video_id(url):</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> <span class="vs">r"</span>(?:<span class="vs">v=</span><span class="cf">|</span><span class="ch">\/</span>)<span class="kw">(</span><span class="pp">[0-9A-Za-z_-]</span><span class="op">{11}</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="vs">"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(pattern, url)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> match.group(<span class="dv">1</span>) <span class="cf">if</span> match <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_yt_transcript(video_url: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Fetches the transcript of a YouTube video.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">        video_url (str): The URL of the YouTube video.</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">        str: The transcript of the video."""</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    video_id <span class="op">=</span> get_video_id(video_url)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    transcript <span class="op">=</span> YouTubeTranscriptApi().fetch(video_id)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> <span class="st">' '</span>.join(snippet.text <span class="cf">for</span> snippet <span class="kw">in</span> transcript)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    mcp.run(transport<span class="op">=</span><span class="st">'stdio'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="test-mcp-server" class="level3">
+<h3 class="anchored" data-anchor-id="test-mcp-server">Test MCP Server</h3>
+<p>Ahora que hemos definido la configuración de nuestro MCP Server de forma sencilla (existen un montón de otras configuraciones más complejas posibles), podemos utilizar la herramienta <a href="https://modelcontextprotocol.io/legacy/tools/inspector#pypi-package">Inspector</a> para probar el servidor, para esto debemos correr en nuestra terminal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> @modelcontextprotocol/inspector <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  uv <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--directory</span> path/to/server <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  run <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  package-name <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  args...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>En mi caso, corrí:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> @modelcontextprotocol/inspector <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  uv <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--directory</span> path/to/server <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  run <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  main.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Esto nos abrirá una interfaz donde podremos interactuar con nuestro servidor. Ver alguno de los elementos que hayamos definido, ejecutar herramientas, entre otros.</p>
+<p><a href="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/Screen_Recording_2025-08-28_at_7.28.25_PM.mov">Screen Recording 2025-08-28 at 7.28.25 PM.mov</a></p>
+<p>Como vemos en el video, seleccionamos la única herramienta disponible y le ingresamos un <em>video_url</em> válido, obteniendo así un resultado success con la transcripción del video. Es bastante importante el manejo de Exceptions/errores en las funciones, pero esto se escapa del scope del post.</p>
+</section>
+</section>
+<section id="mcp-server-notion" class="level2">
+<h2 class="anchored" data-anchor-id="mcp-server-notion">MCP Server: Notion</h2>
+<p>Una vez ya tenemos el MCP de Youtube, que ayudará a nuestro LLM a obtener contexto sobre la clase, necesitamos conectarlo con Notion, que es el lugar donde queremos dejar el resumen de las notas discutidas con el LLM.</p>
+<p>La parte buena de esto, es que Notion ya tiene definido su propio <a href="https://developers.notion.com/docs/mcp">Notion MCP Server</a>. A continuación definiremos el paso a paso para configurar este servidor, ya que requiere ciertos parámetros; como a que páginas les daremos accesos, y que tipo de accesos. Cabe destacar que el requisito mínimo es tener una cuenta en Notion.</p>
+<section id="pasos-configuración-notion-mcp" class="level3">
+<h3 class="anchored" data-anchor-id="pasos-configuración-notion-mcp">Pasos configuración Notion MCP</h3>
+<ol type="1">
+<li>Crear integración en Notion: Notion requiere crear integraciones para cualquier conexión a sus APIs, o en este caso, para el MCP. Esto se hace ingresando a <a href="https://www.notion.so/profile/integrations">https://www.notion.so/profile/integrations</a></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 4.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>Acá podemos seleccionar que accesos tendrá el MCP Client</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 5.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔑
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Al crear esta integración, Notion nos entregará un token, este token nos permitirá hacer la conexión a nuestra cuenta.</p>
+</div>
+</div>
+<ol type="1">
+<li>Seleccionamos a que secciones o paginas de Notion queremos dar acceso a el MCP Client (Claude Desktop)</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 6.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 7.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>y ya está! no es nada más complicado que eso. Ahora tenemos los MCP Server (Youtube y Notion) necesarios para conectarlos al MCP Client mediante el MCP Host (Claude Desktop en nuestro caso)</p>
+<p>Para ver estos pasos de forma más detallada, puedes visitar: https://github.com/makenotion/notion-mcp-server</p>
+</section>
+</section>
+<section id="conectando-mcp-servers-a-claude-desktop" class="level2">
+<h2 class="anchored" data-anchor-id="conectando-mcp-servers-a-claude-desktop">Conectando MCP Servers a Claude Desktop</h2>
+<p>Una vez que ya tenemos los servidores creados o configurados, nos toca conectarlos a el Host MCP (En este caso, Claude Desktop). Necesitamos informarle al Host sobre los servidores MCP para que éste inserte apropiadamente la información como contexto al LLM (Claude Sonnet).</p>
+<p>Claude Desktop cuenta con una conexión sencilla cuando se trata de conectar a servidores remotos (como lo es el caso de Notion MCP). Simplemente debemos ir a Settings → Connectors → Browse Connectors</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 8.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>En este lugar podremos encontrar un montón de herramientas, aunque sólo se permite si eres usuario Pro 💸&nbsp;😢. Felizmente existe una forma gratuita de conectar los servidores MCPs a Claude Desktop, agregando la información del servidor a un archivo <em>.json</em> de configuración, el cual se encuentra ingresando a <em>Settings → Developer → Edit Config</em>. Esto te dirigirá al archivo <code>claude_desktop_config.json</code> el cual debemos abrir con algún editor de texto; dentro verás el archivo con unas llaves <code>{}</code> . Acá debemos ingresar la información de nuestros MCP Servers para que Claude Desktop pueda instanciarlos.</p>
+<p>Siguiendo la documentación del <a href="https://github.com/makenotion/notion-mcp-server">Notion MCP</a>, debemos agregar algo como:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="er">"notionApi":</span> <span class="fu">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"npx"</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"-y"</span><span class="ot">,</span> <span class="st">"@notionhq/notion-mcp-server"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"env"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"OPENAPI_MCP_HEADERS"</span><span class="fu">:</span> <span class="st">"{</span><span class="ch">\"</span><span class="st">Authorization</span><span class="ch">\"</span><span class="st">: </span><span class="ch">\"</span><span class="st">Bearer ntn_****</span><span class="ch">\"</span><span class="st">, </span><span class="ch">\"</span><span class="st">Notion-Version</span><span class="ch">\"</span><span class="st">: </span><span class="ch">\"</span><span class="st">2022-06-28</span><span class="ch">\"</span><span class="st"> }"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>En donde debemos reemplazar <code>ntn_****</code> con el token de Notion que obtuvimos cuando creamos la <a href="https://www.notion.so/Leveraging-MCPs-with-LLMs-254da060cb6180f192c3d9ddd73631e8?pvs=21">integración</a>. Notemos que esto son sólo instrucciones para lograr inicializar el servidor, con sus respectivos argumentos y/o variables de ambiente.</p>
+<p>Es por esto que para el caso de nuestro Youtube MCP Server la cosa no es muy diferente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="er">"youtube":</span> <span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"uv"</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"--directory"</span><span class="ot">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"/Path/to/server/"</span><span class="ot">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"run"</span><span class="ot">,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"server.py"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Para notion utilizamos <code>npx</code> para correr el MCP Server, en el caso de Youtube utilizamos <code>uv</code> (es lo recomendado por la documentación de MCP).</p>
+<p>Estas son las configuraciones por separado, para agregarlo correctamente a <code>claude_desktop_config.json</code> queda:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"mcpServers"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"notionApi"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"npx"</span><span class="fu">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"-y"</span><span class="ot">,</span> <span class="st">"@notionhq/notion-mcp-server"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"env"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"OPENAPI_MCP_HEADERS"</span><span class="fu">:</span> <span class="st">"{</span><span class="ch">\"</span><span class="st">Authorization</span><span class="ch">\"</span><span class="st">: </span><span class="ch">\"</span><span class="st">Bearer ntn_***</span><span class="ch">\"</span><span class="st">, </span><span class="ch">\"</span><span class="st">Notion-Version</span><span class="ch">\"</span><span class="st">: </span><span class="ch">\"</span><span class="st">2022-06-28</span><span class="ch">\"</span><span class="st"> }"</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"youtube"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"uv"</span><span class="fu">,</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"--directory"</span><span class="ot">,</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"/Path/to/server/"</span><span class="ot">,</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"run"</span><span class="ot">,</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"server.py"</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>   <span class="fu">}</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a> <span class="fu">}</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Podrás imaginar que para seguir agregando MCP Servers debemos ir añadiendolos acá y listo. Ahora sólo queda guardar 💾&nbsp; el archivo y reiniciar Claude Desktop ! 💥&nbsp;Deberias poder ver las conexiones cuando seleccionas “Search and Tools” , o incluso en Settings → Connectors</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 9.png" class="img-fluid figure-img"></p>
+<figcaption>MCP Servers en el Chat</figcaption>
+</figure>
+</div>
+<p>MCP Servers en el Chat</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 10.png" class="img-fluid figure-img"></p>
+<figcaption>MCP Servers en Settings → Connectors</figcaption>
+</figure>
+</div>
+<p>MCP Servers en Settings → Connectors</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>⚠️
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para que Claude Desktop pueda inicializar los servidores localmente, necesitamos installar <strong>nodejs</strong> (para el uso de npx) y <strong>uv.</strong></p>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Puedes usar tu administrador de paquetes favorito (o seguir las instrucciones</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># de la web de cada uno). En mi caso, utilizo brew </span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install node@22</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install uv</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Si no te funciona con brew, prueba descargando el instalador directamente desde la web</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="voilà-vamos-a-testear" class="level2">
+<h2 class="anchored" data-anchor-id="voilà-vamos-a-testear">🥖&nbsp;Voilà ! Vamos a testear</h2>
+<p>Probemos primero solicitando que nos hable de que trata algún video random de youtube, en mi caso probaré directamente con una de las clases:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 11.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>Funciona!! Ahora podemos darle ese contexto a Claude Sonnet a la hora de preguntarle respecto a la clase📝. Notemos que Claude Sonnet utilizó correctamente la función <code>get_yt_transcript</code> que creamos anteriormente.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>👀
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Notarás que Claude Desktop te pedirá autorización cada vez que quiera ejecutar una tool de alguno de tus servidores. Esto le agrega un componente importante llamado human-in-the-loop y nos permite checkear que el LLM no esté ejecutando acciones indebidas o que no estemos usando una herramienta peligrosa para nuestro sistema.</p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 12.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>Veámos como nos va con el MCP Server de Notion. Recordemos que sólo tiene acceso a la página que le permitimos en la creación de la integración:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 13.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>En Notion, vemos:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 14.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>Agregó la página e incluso añadió material introductorio dentro 💥&nbsp;Ahora ya tenemos todo listo para poder estudiar eficientemente! Alguna de las solicitudes podrian ser tales como:</p>
+<blockquote class="blockquote">
+<p>Porfavor resume los puntos importantes de la clase y agregalas en una clase nueva en Notion, elige el titulo que prefieras!</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Como llegó a ese resultado utilizando la regla de la cadena? Escribe el paso a paso en la sección “troubleshooting” de mi página en notion</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Por qué la regla de la cadena se aplica de esa forma en los LSTM? …. (luego de una discusión intensa)… perfecto, deja los puntos que aclaramos en la pagina de la clase correspondiente en Notion</p>
+</blockquote>
+</section>
+<section id="que-sucede-tras-bambalinas" class="level2">
+<h2 class="anchored" data-anchor-id="que-sucede-tras-bambalinas">📸&nbsp;Que sucede tras bambalinas?</h2>
+<ol type="1">
+<li>(Previo a la pregunta) El Client MCP (Claude Desktop) le da el <strong><em>contexto</em></strong> de los elementos disponibles para utilizar al LLM (Claude Sonnet).</li>
+<li>Se envía la pregunta a Claude Sonnet</li>
+<li>Claude Sonnet analiza las herramientas disponibles y decide si es necesario o no utilizar alguna</li>
+<li>El MCP Client ejecuta la herramienta seleccionada (si es que seleccionó una) mediante el MCP Server</li>
+<li>Los resultados son enviados a Claude Sonnet (y agregados al contexto)</li>
+<li>Claude Sonnet formula la respuesta a enviar al usuario (nosotros) mediante el MCP Host (Claude Desktop)</li>
+</ol>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<p>Un problema que estuve teniendo en el uso de este sistema que acabamos de crear, es que Claude Sonnet estaba teniendo problemas para escribir los titulos o formulas en Notion. Para solucionar esto, utilicé el elemento <strong>prompting</strong> de los MCPs Servers. Para iterar rápido, esto lo agregué en el MCP Youtube que creamos 😅. Claramente lo ideal sería que estuviese en el MCP de Notion.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">## server.py</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.prompt</span>()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> notion_formatting() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">    This prompt give useful information about how to use the notion tools</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">    when you want to use headlines or formulas.</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">    If you want to write titles/headlines or formulas, you mus include this prompt</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"""</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="st">    This is the schema for writing formula blocks in Notion:</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="st">      {</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="st">        "children": [</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="st">            {</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="st">                "object": "block",</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="st">                "type": "equation",</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="st">                "equation": {</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="st">                    "expression": "a^2 + b^2 = c^2"</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="st">                }</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="st">            }</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="st">        ]</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="st">    This is the schema for writing headlines/titles in Notion:</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="st">    {</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="st">        "children": [</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="st">            {</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="st">                "object": "block",</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="st">                "type": "heading_1",</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="st">                "heading_1": {</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="st">                    "rich_text": [</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="st">                        {</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="st">                            "type": "text",</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="st">                            "text": {</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="st">                                "content": "Your Headline Text Here"</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="st">                            }</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="st">                        }</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="st">                    ]</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="st">                }</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="st">            }</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="st">        ]</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ahora las fórmulas y headlines son escritos de forma apropiada!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 15.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="opcional-client-mcp-con-langchain" class="level1">
+<h1>🤓&nbsp;(Opcional) Client MCP con Langchain 🦜</h1>
+<p>En esta sección veremos como conectar un LLM cualquiera a uno (o más) servidor(es) MCP, sin tener que hacer uso de un MCP Host. Si bien hemos tratado los LLMs como MCP Client a lo largo del post, esto no es del todo correcto, ya que un MCP Client es un poco más que eso; funciona como intermediario entre el Host LLM y el servidor.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>⚠️
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Disclaimer: No crearemos el MCP Client de 0, utilizaremos Langchain para hacernos la vida más fácil. De todas formas te dejo una documentación donde podrás encontrar como hacerlo desde 0 <a href="https://modelcontextprotocol.io/quickstart/client">Build an MCP Client</a></p>
+</div>
+</div>
+<p>Este paso es bastante sencillo ya que Langchain hace todo por nosotros. Sólo debemos instanciar el cliente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain_mcp_adapters.client <span class="im">import</span> MultiServerMCPClient</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langgraph.prebuilt <span class="im">import</span> create_react_agent</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> MultiServerMCPClient(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"notionApi"</span>: {</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"command"</span>: <span class="st">"npx"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"args"</span>: [<span class="st">"-y"</span>, <span class="st">"@notionhq/notion-mcp-server"</span>],</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"env"</span>: {</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"OPENAPI_MCP_HEADERS"</span>: <span class="st">"{</span><span class="ch">\"</span><span class="st">Authorization</span><span class="ch">\"</span><span class="st">: </span><span class="ch">\"</span><span class="st">Bearer ntn_***</span><span class="ch">\"</span><span class="st">, </span><span class="ch">\"</span><span class="st">Notion-Version</span><span class="ch">\"</span><span class="st">: </span><span class="ch">\"</span><span class="st">2022-06-28</span><span class="ch">\"</span><span class="st"> }"</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"transport"</span>: <span class="st">"stdio"</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"youtube"</span>: {</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"command"</span>: <span class="st">"uv"</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"args"</span>: [</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"--directory"</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Path/to/server"</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"run"</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"server.py"</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>      ],</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"transport"</span>: <span class="st">"stdio"</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a> }</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Podemos obtener las herramientas disponibles con</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> <span class="cf">await</span> client.get_tools()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>De forma similar podemos obtener los otros elementos tales como prompts o resources. Veamos un ejemplo para el prompt que comentamos en la sección anterior:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Debemos explicitar tanto el nombre del servidor como el nombre del prompt</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>prompts <span class="op">=</span> <span class="cf">await</span> client.get_prompt(<span class="st">'youtube'</span>, <span class="st">'notion_formatting'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Una vez tenemos las herramientas, podemos informarlas a los LLMs, ya sea con <code>model.bind_tools(tools)</code> , o mediante otras alternativas. En este caso utilizaremos la función predefinida de Langchain, que nos permite crear ReAct agents agregando los tools como un parámetro.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langgraph.prebuilt <span class="im">import</span> create_react_agent</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Recordemos setear la OPENAI_KEY previamente</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> create_react_agent(<span class="st">"openai:gpt-4.1"</span>, tools)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> <span class="cf">await</span> agent.ainvoke({<span class="st">"messages"</span>: [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is this video about? https://www.youtube.com/watch?v=z19HM7ANZlo"</span>}]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 16.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>Vemos que efectivamente logra llamar la Tool de transcripción y retorna la respuesta. Para el caso de <strong>resources</strong> y <em>prompts</em> es un poco diferente, ya que el agente no decide cuando utilizar uno o el otro, si no que se lo debemos explicitar nosotros en el contexto (ya sea con un prompt template u otro elemento). Acá igual podriamos jugar un poco para que el LLM sea quien decide si usar un prompt o no, pero lo dejaremos fuera del scope de este post.</p>
+<p>Utilizar nuestros propios MCP Clients nos va a permitir ser más flexibles a la hora de crear Agent Workflows o sistemas Multi-Agentes de forma personalizada.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>⚠️
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Disclaimer Final: Se pasaron por alto varios conceptos más técnicos, como la transferencia de los datos desde el servidor (transport=’stdio’), donde existen otras opciones mejores y seguras.</p>
+<p>También se pasó por alto el uso de funciones asíncronas o la definición más formal entre Host, cliente y servidor.</p>
+<p>La mayoría las pasé por alto para no agregar mucho ruido en el post, y porque creo que no soy la persona indicada para explicar estos conceptos de forma clara aún. Pero recomiendo al lector hacer un estudio profundo de estos conceptos ya que los considero importantes.</p>
+</div>
+</div>
+</section>
+<section id="conclusiones-y-palabras-finales" class="level1">
+<h1>🔚&nbsp;Conclusiones y palabras finales</h1>
+<p>Al final del día, lo que vimos en este post es más que un ejercicio técnico: es un cambio de paradigma en cómo interactuamos con los LLMs. El <strong>Model Context Protocol (MCP)</strong> nos ayuda a dejar atrás la fragmentación y la reinvención de la rueda, entregándonos un estándar que hace que los modelos puedan conectarse a múltiples fuentes de datos y herramientas de una manera clara, ordenada y, sobre todo, segura.</p>
+<p>Conectar YouTube + Notion a Claude Desktop fue solo un ejemplo concreto, pero las posibilidades son casi infinitas: desde integrar correos, bases de datos o sistemas internos de una empresa, hasta diseñar flujos de estudio o investigación totalmente personalizados.</p>
+<p>Lo más potente de MCP es que <strong>lleva el concepto de “contexto” al siguiente nivel</strong>: ya no se trata solo de lo que copiamos y pegamos en un prompt, sino de cómo diseñamos ecosistemas donde el modelo puede acceder a la información correcta en el momento correcto. Y eso, para los que usamos estas herramientas a diario, significa eficiencia, orden y menos fricción.</p>
+<p>Personalmente, me quedo con la idea de que <strong>no necesitamos esperar a que los grandes players nos entreguen todo listo</strong>. Con un poco de código y entendiendo la filosofía detrás de MCP, cualquiera puede armar sus propios conectores y workflows, adaptados a sus necesidades reales.</p>
+<p>🚀 Así que, si llegaste hasta acá, te invito a experimentar, probar y equivocarte. Conectar un MCP puede parecer enredado al inicio, pero una vez que lo logras, la sensación de tener al LLM trabajando codo a codo contigo, con acceso a tus recursos y herramientas, no tiene precio.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/diegulio\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>diegulio🧡2023</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
