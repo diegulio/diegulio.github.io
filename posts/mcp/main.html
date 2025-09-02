@@ -406,11 +406,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://github.com/diegulio/class-note-taking"><img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" class="img-fluid figure-img"></a></p>
+<figcaption>GitHub</figcaption>
+</figure>
+</div>
 <section id="tópico-leveraging-model-context-protocols" class="level1">
 <h1>Tópico: Leveraging Model Context Protocols</h1>
 <p>Hoy quiero hablarte de una “herramienta” que en el último tiempo se ha vuelto bastante famosa. No, no es un nuevo modelo de lenguaje, pero sí algo que hace que las aplicaciones que usan estos modelos sean mucho más fáciles de construir para los desarrolladores. Y digo desarrolladores, porque en apariencia no tiene un impacto directo para el usuario final.</p>
 <p>La idea de este post es acortar esa brecha y mostrar cómo podemos aprovechar sus beneficios incluso sin tener que desarrollar desde cero una aplicación con LLMs. Y, para quienes son más computines 🤖, también veremos cómo se conecta todo esto desde el código.</p>
-<p>Volvamos un poco atrás. En los primeros días de los <em>Large Language Models</em> (pensemos en el primer ChatGPT que todos recordamos), las respuestas se basaban únicamente en lo aprendido durante su entrenamiento: miles y miles de páginas de internet. Eso significaba que su conocimiento estaba limitado y, en la mayoría de los casos, desactualizado. Por ejemplo, la primera versión de ChatGPT lanzada a fines de 2022 solo sabía hasta septiembre de 2021. Por eso, preguntas como “¿cómo está hoy la inflación en Chile?”, “¿qué pasó con el precio del Bitcoin esta semana?” o “¿qué cambios trae Python 3.11?” eran imposibles de responder.</p>
+<p>Volvamos un poco atrás. En los primeros días de los <em>Large Language Models</em> (pensemos en el primer ChatGPT que todos recordamos), las respuestas se basaban únicamente en lo aprendido durante su entrenamiento: miles y miles de páginas de internet. Eso significaba que su conocimiento estaba limitado y, en la mayoría de los casos, desactualizado. Por ejemplo, la primera versión de ChatGPT lanzada a fines de 2022 solo tenía información hasta septiembre de 2021. Por eso, preguntas como “¿cómo está hoy la inflación en Chile?”, “¿qué pasó con el precio del Bitcoin esta semana?” o “¿qué cambios trae Python 3.11?” eran imposibles de responder.</p>
 <p>La primera solución a este problema fue lo que se llamó <em>Prompt Engineering</em>: agregar <strong>contexto</strong> directamente en la pregunta. Al principio, la gente copiaba y pegaba fragmentos de texto de otras fuentes, pero pronto ese contexto empezó a incluir bloques más largos, imágenes, sonidos o incluso conexiones a APIs. Con el tiempo, lo que empezó como <em>Prompt Engineering</em> evolucionó al concepto más amplio de <em>Context Engineering</em>.</p>
 <p>El gran desafío era que no había un estándar. Cada persona que quería conectar un sistema a un LLM debía crear sus propias funciones personalizadas: para extraer transcripciones de YouTube, leer correos de Gmail, scrapear datos de la web, etc. Básicamente, todos reinventaban la rueda una y otra vez, leyendo documentación distinta para cada API.</p>
 <p>Ahí es donde entra en juego <strong>Model Context Protocol (MCP)</strong>: un estándar que permite conectar asistentes de inteligencia artificial (como chatbots) con distintos sistemas, de forma ordenada y consistente.</p>
@@ -442,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>♟️&nbsp;Estrategia: Como abordamos</h1>
 <p>Para lograr nuestro cometido, pensé en lo siguiente:</p>
 <ol type="1">
-<li><strong>Obtener transcripciones de Youtube</strong>: Si bien es posible que exista. algún MCP para Youtube, con fines educativos me forcé a crearlo yo mismo.</li>
+<li><strong>Obtener transcripciones de Youtube</strong>: Si bien es posible que exista algún MCP para Youtube, con fines educativos me forcé a crearlo yo mismo.</li>
 <li><strong>Crear MCP Server Youtube</strong>: Acá creamos un servidor MCP con la herramienta de transcripciones obtenidas en el paso 1</li>
 <li><strong>Buscar MCP de Notion</strong>: Siendo este proceso más complicado, decidí que era mejor investigar si Notion tiene su propio MCP para poder utilizarlo. Así aprendemos de ambos mundos, como crear y como utilizar.</li>
 <li><strong>Conectar MCPs</strong>: Conectar tanto los servidors MCPs de Youtube y de Notion a el host Claude Desktop</li>
@@ -483,7 +489,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>source: <a href="https://pypi.org/project/youtube-transcript-api">https://pypi.org/project/youtube-transcript-api</a></figcaption>
 </figure>
 </div>
-<p>source: <a href="https://pypi.org/project/youtube-transcript-api">https://pypi.org/project/youtube-transcript-api</a></p>
 <p>Su uso es bastante sencillo, sólo se necesita el ID del video, el cual encontraremos de forma sencilla en el url de este:</p>
 <p><img src="Leveraging MCPs with LLMs 254da060cb6180f192c3d9ddd73631e8/image 3.png" class="img-fluid"></p>
 <p>y para obtener la transcripción sólo debemos hacer:</p>
@@ -509,7 +514,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="mcp-server-youtube" class="level2">
 <h2 class="anchored" data-anchor-id="mcp-server-youtube">MCP Server: Youtube</h2>
-<p>Ahora, como llevamos esto a que sea un Servidor MCP? Gracias a que Anthropic creó un SDK en variados lenguajes (en nuestro caso usaremos el de python), la tarea es muy sencilla.</p>
+<p>Ahora, ¿ como llevamos esto a que sea un Servidor MCP? Gracias a que Anthropic creó un SDK en variados lenguajes (en nuestro caso usaremos el de python), la tarea es muy sencilla.</p>
 <p>Antes, quiero detenerme un poco para explicar unos conceptos previos. Existen 3 elementos bases que los servidores MCPs pueden proveer:</p>
 <ol type="1">
 <li>📁&nbsp;<strong>Resources</strong>: Estos son archivos que pueden ser leidos por los clientes (imaginemos un .txt o algo por el estilo)</li>
@@ -546,7 +551,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Sin embargo, recordemos que esta información es entregada por el MCP como contexto. Una pregunta válida es <strong>¿</strong>Como sabe el modelo qué hace la función? podriamos quizás pensar que lee el código para entender bien de que trata, pero en realidad es mas directo que esto.</p>
-<p>El MCP server le entrega metadata como los tipos de entrada, salida y descripción de la función. Por esto último es que es muy importante comentar de forma adecuada nuestro <code>tool</code>:</p>
+<p>El MCP server le entrega metadata, tales como tipos de entrada, tipos de salida y descripción de la función. Por esto último es que es muy importante comentar de forma adecuada nuestro <code>tool</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Función auxiliar para obtener el video_id desde la url</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_video_id(url):</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> <span class="vs">r"</span>(?:<span class="vs">v=</span><span class="cf">|</span><span class="ch">\/</span>)<span class="kw">(</span><span class="pp">[0-9A-Za-z_-]</span><span class="op">{11}</span><span class="kw">)</span><span class="dv">.</span><span class="op">*</span><span class="vs">"</span></span>
@@ -555,12 +560,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para obtener la transcripción del video</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">@mcp.tool</span>()</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_yt_transcript(video_url: <span class="op">**</span><span class="bu">str</span><span class="op">**</span>) <span class="op">-&gt;</span> <span class="op">**</span><span class="bu">str</span><span class="op">**</span>:</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span><span class="st">"""Fetches the transcript of a YouTube video.</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="st">    Args:</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="st">        video_url (str): The URL of the YouTube video.</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="st">    Returns:</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="st">        str: The transcript of the video."""</span><span class="op">**</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_yt_transcript(video_url: <span class="bu">str</span> <span class="op">-&gt;</span> <span class="bu">str</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        Fetches the transcript of a YouTube video.</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    Args:</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        video_url (<span class="bu">str</span>): The URL of the YouTube video.</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    Returns:</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">str</span>: The transcript of the video</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    video_id <span class="op">=</span> get_video_id(video_url)</span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    transcript <span class="op">=</span> YouTubeTranscriptApi().fetch(video_id)</span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
