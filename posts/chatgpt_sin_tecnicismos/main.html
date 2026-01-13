@@ -408,13 +408,8 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Grandes compañias y sus respectivos LLMs</figcaption>
 </figure>
 </div>
-<p>Básicamente, estas compañias se vieron forzadas a crear sus propios modelos y así comenzar a formar parte en la carrera por la búsqueda de la Inteligencia Artificial General. Hoy en día está una carrera constante, en donde cada ciertos meses una de estas empresas lanza una nueva versión de su LLM asegurando que es la mejor del mercado.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 2.png" class="img-fluid figure-img"></p>
-<figcaption>Empresas y sus LLMs</figcaption>
-</figure>
-</div>
+<p>Básicamente, estas compañias se vieron forzadas a crear sus propios modelos y así comenzar a formar parte en la carrera por la búsqueda de la Inteligencia Artificial General. Hoy en día esta es una carrera constante, en donde cada ciertos meses una de estas empresas lanza una nueva versión de su LLM asegurando que es la mejor del mercado.</p>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 2.png" class="img-fluid"></p>
 <p>Actualmente, los LLMs son ampliamente utilizados en tópicos tan importantes como la salud o el trabajo; muchas veces sin tener conciencia de que hay detrás, y por consiguiente, que estos modelos suelen equivocarse o derechamente mentir (término conocido como <strong>alucinación</strong>).</p>
 <p>Este post busca desmitificar lo que sucede dentro de ChatGPT, democratizando así el conocimiento y buscando que cualquier persona que esté leyendo esto entienda como estos modelos funcionan y responden a nuestras preguntas. Así, también lograremos entender en que son buenos, en que son malos, y lo mas importante, <strong><em>por qué</em></strong>. La intención es provocar esa misma reacción que aparece cuando un mago finalmente revela su truco. 🪄</p>
 <p>El entender esto también nos habilitará para discutir y filosofar sobre si creemos o no que este es el camino a la Inteligencia General Artificial (AGI), o pensar si estos modelos pueden llegar a revolucionar el mundo, reemplazar nuestros trabajos y tantas otras cosas que se dicen en redes sociales. Por lo que este post busca empoderar al lector a no dejarse llevar por lo que cualquiera dice, y elaborar nuestros propios pensamientos según nuestras creencias y entendimientos. Esto último es nuestro propósito principal.</p>
@@ -487,8 +482,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>Andrej Karpathy, co-fundador de OpenAI, habla de que existen distintos espacios de inteligencia, y que ChatGPT tiene un tipo de inteligencia que el humano no habia visto jamás, es nuestro primer contacto con ella. Suena a algo extraterrestre, pero a lo que se refiere, es que no vive en el mismo espacio de inteligencia que la nuestra, la cual viene de una evolución biológica en la búsqueda de sobrevivir. ChatGPT tiene una misión distinta, forma una inteligencia en base a una evolución comercial, en donde al fallar en la tarea no le espera la muerte, si no un dedito hacia abajo de algún usuario.</p>
-<p>Solté la bomba y ahora tenemos mucho que aclarar sobre esto. ChatGPT elige la siguiente palabra basado en el contexto.</p>
-<p>ChatGPT posee un conjunto finito de palabras, llamado vocabulario (<em>alerta de tecnicismo</em>). A cada palabra del vocabulario se le asigna una probabilidad de ser la siguiente según las palabras que la preceden (contexto). La manera más fácil de escoger entonces que palabra es la siguiente, es tomando aquella con mayor probabilidad (Existen otras metodologias de elección pero eso no nos importa ahora mismo).</p>
+<p>Solté la bomba y ahora tenemos mucho que aclarar sobre esto: ChatGPT elige la siguiente palabra basado en el contexto.ChatGPT posee un conjunto finito de palabras, llamado vocabulario (<em>alerta de tecnicismo</em>). A cada palabra del vocabulario se le asigna una probabilidad de ser la siguiente según las palabras que la preceden (contexto). La manera más fácil de escoger que palabra es la siguiente, es tomando aquella con mayor probabilidad (Existen otras metodologias de elección pero eso no nos importa ahora mismo).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 4.png" class="img-fluid figure-img"></p>
@@ -500,13 +494,13 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="aclaración-tokens">Aclaración: Tokens</h3>
 <p>Por motivos de eficiencia y generalización, los LLMs en realidad no predicen la siguiente palabra, si no que predicen el siguiente <em>token</em>. Un token es una pieza de texto, puede ser una letra, sub-palabra, palabra u otro tamaño. La elección del tamaño del token es importante, existen distintas metodologias para elegir el tamaño óptimo , en las que no ahondaremos en este post. Por simplicidad, en todo el <strong><em>post asumiremos que un token es una palabra.</em></strong></p>
 <p><img src="ChatGPT Sin Tecnicismos Show/image 5.png" class="img-fluid"></p>
-<p>En la imagen de arriba vemos como ChatGPT-4 divide el texto en tokens (proces. Cada color representa un token. Si nos fijamos, la mayoria de los tokens son palabras completas (incluyendo los espacios), pero vemos que la palabra “dividida” es separada en 2 sub-palabras (divid + ida).</p>
+<p>En la imagen de arriba vemos como ChatGPT-4 divide el texto en tokens (proceso que veremos en la siguiente sección). Cada color representa un token. Si nos fijamos, la mayoria de los tokens son palabras completas (incluyendo los espacios), pero vemos que la palabra “dividida” es separada en 2 sub-palabras (divid + ida).</p>
 <p>La lógica de dividir en tokens más pequeños es que, al hacerlo a nivel palabra, tendriamos en nuestro vocabulario palabras como: <em>rapidamente</em>, <em>lentamente</em>, <em>tristemente</em>, <em>actualmente</em>, junto con las palabras <em>rapida</em>, <em>lenta</em>, <em>triste</em> y <em>actual</em> (ya que son palabras distintas). En cambio, si usamos la sub-palabra “mente”, podemos construir todo con un vocabulario menor: <em>rapida</em>, <em>lenta</em>, <em>triste</em>, <em>actual</em> y <em>mente</em>. Pasamos de tener 8 tokens en el vocabulario cuando el token es a nivel palabra, a tener 5 tokens cuando es a nivel sub-palabra.</p>
 </section>
 </section>
 <section id="a-cerebro-abierto-del-prompt-a-la-respuesta" class="level1">
 <h1>🧠&nbsp;A cerebro abierto: del prompt a la respuesta</h1>
-<p>Me encantaría escribir que eso es todo, pero la verdad es que las palabras siguen un camino bastante largo en el proceso de predecir la siguiente palabra. El texto inicial <em>“Como me preparo para una triatlón?”</em> es dividido en palabras (tokens) por un proceso llamado <em>Tokenización</em>; cada palabra es transformada a números mediante el uso de <em>Embeddings</em>; las palabras, ahora de forma numérica entran al cerebro de ChatGPT, el cual utiliza una arquitectura llamada <em>Transformer</em>, que utiliza mecanismos de <em>atención</em> para así asignarle probabilidades a cada palabra de su vocabulario y elegir la siguiente.</p>
+<p>Me encantaría escribir que eso es todo, pero la verdad es que las palabras siguen un camino bastante largo en el proceso de predecir la siguiente palabra. El proceso es el siguiente: El texto inicial <em>“Como me preparo para una triatlón?”</em> es dividido en palabras (tokens) por un proceso llamado <em>Tokenización</em>; cada palabra es transformada a números mediante el uso de <em>Embeddings</em>; las palabras, ahora de forma numérica entran al cerebro de ChatGPT, el cual utiliza una arquitectura llamada <em>Transformer</em>, que utiliza mecanismos de <em>atención</em> para así asignarle probabilidades a cada palabra de su vocabulario y elegir la siguiente.</p>
 <p>Imagino esta es su reacción al ver que en el post que llamé deliberadamente “Sin Tecnicismos”, sin previo aviso lancé una gran cantidad de tecnicismos en tiempo récord:</p>
 <p><img src="ChatGPT Sin Tecnicismos Show/image 6.png" class="img-fluid"></p>
 <p>En mi defensa, no tuve elección. Les prometo que explicaré cada uno de estos pasos de manera que ustedes serán capaces de usar estos mismos tecnicismos en conversaciones con sus cercanos con la seguridad de que saben de que están hablando.</p>
