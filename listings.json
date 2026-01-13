@@ -3,6 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/mcp/main.html",
+      "/posts/chatgpt_sin_tecnicismos/main.html",
       "/posts/gan/main.html",
       "/posts/pytorch_breed_classification/main.html",
       "/posts/llm-cv-assistant/main.html",
