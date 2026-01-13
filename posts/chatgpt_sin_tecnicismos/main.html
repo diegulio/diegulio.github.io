@@ -372,14 +372,14 @@ ul.task-list li input[type="checkbox"] {
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
 
-<section id="introducción" class="level1 page-columns page-full">
+<section id="introducción" class="level1">
 <h1>🤖&nbsp;Introducción</h1>
 <p>En el año 2022 OpenAI lanzó ChatGPT con un simple tweet, un chatbot que buscaba ser un robot capaz de responder preguntas genéricas y mantener una conversación con los usuarios. Irónicamente, lanzaron esta herramienta como una versión preliminar, buscando que los usuarios la probaran y asi pudiesen recibir retroalimentación de la comunidad. OpenAI nunca pensó que causaría tal revolución y que alcanzaría el millón de usuarios en 5 días.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -388,48 +388,68 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Tweet de Sam Altman (CEO de OpenAI) comunicando el lanzamiento de ChatGPT. 30/10/2022</figcaption>
 </figure>
 </div>
-<p>Tweet de Sam Altman (CEO de OpenAI) comunicando el lanzamiento de ChatGPT. 30/10/2022</p>
 <p>Hoy en día, diversas empresas desplegaron su propio LLM. LLM (Large Language Model) es como se les llama a estos modelos, debido a que son <strong>modelos</strong> de <strong>lenguaje</strong> con una <strong>gran</strong> cantidad de parámetros. En otras palabras, son modelos que procesan texto y que tienen una gran cantidad de engranajes que ajustar para hacerlo.</p>
-<aside>
-<p>⚠️</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>⚠️
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>A partir de ahora nos referiremos a los modelos como ChatGPT con su nombre de pila: LLM</p>
-</aside>
+</div>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 1.png" class="img-fluid figure-img"></p>
 <figcaption>Grandes compañias y sus respectivos LLMs</figcaption>
 </figure>
 </div>
-<p>Grandes compañias y sus respectivos LLMs</p>
 <p>Básicamente, estas compañias se vieron forzadas a crear sus propios modelos y así comenzar a formar parte en la carrera por la búsqueda de la Inteligencia Artificial General. Hoy en día está una carrera constante, en donde cada ciertos meses una de estas empresas lanza una nueva versión de su LLM asegurando que es la mejor del mercado.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 2.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Empresas y sus LLMs</figcaption>
 </figure>
 </div>
 <p>Actualmente, los LLMs son ampliamente utilizados en tópicos tan importantes como la salud o el trabajo; muchas veces sin tener conciencia de que hay detrás, y por consiguiente, que estos modelos suelen equivocarse o derechamente mentir (término conocido como <strong>alucinación</strong>).</p>
 <p>Este post busca desmitificar lo que sucede dentro de ChatGPT, democratizando así el conocimiento y buscando que cualquier persona que esté leyendo esto entienda como estos modelos funcionan y responden a nuestras preguntas. Así, también lograremos entender en que son buenos, en que son malos, y lo mas importante, <strong><em>por qué</em></strong>. La intención es provocar esa misma reacción que aparece cuando un mago finalmente revela su truco. 🪄</p>
 <p>El entender esto también nos habilitará para discutir y filosofar sobre si creemos o no que este es el camino a la Inteligencia General Artificial (AGI), o pensar si estos modelos pueden llegar a revolucionar el mundo, reemplazar nuestros trabajos y tantas otras cosas que se dicen en redes sociales. Por lo que este post busca empoderar al lector a no dejarse llevar por lo que cualquiera dice, y elaborar nuestros propios pensamientos según nuestras creencias y entendimientos. Esto último es nuestro propósito principal.</p>
-<aside>
-<p>🧠</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🧠
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Antes de avanzar, motivo al lector a describir con sus propias palabras que cree que hacen estos modelos tras bambalinas.</p>
-</aside>
+</div>
+</div>
 <p>Antes de empezar, una aclaración importante: nos centraremos en los cimientos reales de esta tecnología. Aunque con el tiempo los investigadores han ido ajustando y optimizando detalles técnicos para hacer los modelos más eficientes, la arquitectura base sigue siendo la misma. Por eso, lo que aprenderás aquí es exactamente la lógica fundamental que hace funcionar a los modelos más avanzados de hoy en día.</p>
-<aside>
-<p>🤖</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🤖
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Disclaimer: Si eres una persona técnica, notarás que para hacer la explicación simple, se omitieron ciertos detalles y se sacrificó un poco de exactitud técnica.</p>
-</aside>
+</div>
+</div>
 </section>
-<section id="as-simple-as-next-token-prediction" class="level1 page-columns page-full">
+<section id="as-simple-as-next-token-prediction" class="level1">
 <h1>🪄&nbsp;As simple as next token prediction</h1>
 <p>Comencemos con lo principal, la forma en la que interactuamos con ChatGPT desde nuestro punto de vista. Esto sería algo como:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 3.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 3.png" class="img-fluid"></p>
 <ol type="1">
 <li>Hacemos una pregunta (a esto usualmente se le llama <em>prompt</em>)</li>
 <li>ChatGPT nos responde.</li>
@@ -440,24 +460,27 @@ ul.task-list li input[type="checkbox"] {
 <blockquote class="blockquote">
 <p><strong><em>ChatGPT tiene como único propósito predecir la siguiente palabra</em>.</strong></p>
 </blockquote>
-<p><a href="ChatGPT Sin Tecnicismos Show/Screen_Recording_2026-01-08_at_11.33.42_PM.mov">Screen Recording 2026-01-08 at 11.33.42 PM.mov</a></p>
+<p><a href="ChatGPT Sin Tecnicismos Show/palabras.gif"></a></p>
 <p>Pero cómo? — Te preguntarás — si me responde párrafos enormes, incluso cuando quiero una respuesta corta, como sólo va a predecir la siguiente palabra?.</p>
 <p>Como diría ChatGPT: <em>&lt;&lt; Nice Catch! &gt;&gt;</em>, en realidad es un proceso iterativo en donde va palabra por palabra, prediciendo una a la vez. No es coincidencia que cuando ChatGPT nos responde lo hace con una animación progresiva de escritura.</p>
-<p><a href="ChatGPT Sin Tecnicismos Show/Screen_Recording_2026-01-08_at_11.13.17_PM.mov">ChatGPT responde de forma progresiva</a></p>
-<p>ChatGPT responde de forma progresiva</p>
+<p><a href="ChatGPT Sin Tecnicismos Show/animacion.gif">ChatGPT responde de forma progresiva</a></p>
 <p>Alguno de ustedes probablemente ya sabían esto, pero otro porcentaje de los lectores deberian tener una reacción del tipo</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/bobawooyo-dog-confused.gif" class="img-fluid figure-img"></p>
-<figcaption>bobawooyo-dog-confused.gif</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/bobawooyo-dog-confused.gif" class="img-fluid"></p>
 <p>Si no, dejenme explicar porque almenos a mi me vuela la cabeza. Pensemos en las herramientas actuales que existen hoy en dia: Asistentes de código, asistentes de compras, creadores de presentaciones, de hojas de cálculo, chatgpt como tu psicólogo o entrenador personal, etc. Todo esto por un modelito que predice que palabra debería venir después?</p>
 <p>Actualmente en la academia este es un punto de debate fuertísimo, mientras algunos confían que los LLMs actuales son el camino a la Inteligencia artificial General, otros dicen que la tarea de <em>predecir la siguiente palabra</em> no se acerca al pensamiento humano ni mucho menos es el camino correcto. Se ha estado investigando en otras técnicas para solucionar esto, pero eso es algo que se escapa del scope de este post.</p>
-<aside>
-<p>🧠</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🧠
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Abro a la reflexión, Crees que los humanos pensamos prediciendo la siguiente palabra? Crees que ChatGPT puede sentir empatía? o sólo la simula?</p>
-</aside>
+</div>
+</div>
 <p>Andrej Karpathy, co-fundador de OpenAI, habla de que existen distintos espacios de inteligencia, y que ChatGPT tiene un tipo de inteligencia que el humano no habia visto jamás, es nuestro primer contacto con ella. Suena a algo extraterrestre, pero a lo que se refiere, es que no vive en el mismo espacio de inteligencia que la nuestra, la cual viene de una evolución biológica en la búsqueda de sobrevivir. ChatGPT tiene una misión distinta, forma una inteligencia en base a una evolución comercial, en donde al fallar en la tarea no le espera la muerte, si no un dedito hacia abajo de algún usuario.</p>
 <p>Solté la bomba y ahora tenemos mucho que aclarar sobre esto. ChatGPT elige la siguiente palabra basado en el contexto.</p>
 <p>ChatGPT posee un conjunto finito de palabras, llamado vocabulario (<em>alerta de tecnicismo</em>). A cada palabra del vocabulario se le asigna una probabilidad de ser la siguiente según las palabras que la preceden (contexto). La manera más fácil de escoger entonces que palabra es la siguiente, es tomando aquella con mayor probabilidad (Existen otras metodologias de elección pero eso no nos importa ahora mismo).</p>
@@ -467,17 +490,11 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Según el contexto, la palabra siguiente más probable para la frase “Para la triatlón, debes saber” es nadar.</figcaption>
 </figure>
 </div>
-<p>Según el contexto, la palabra siguiente más probable para la frase “Para la triatlón, debes saber” es nadar.</p>
 <p>En las siguientes secciones navegaremos por las neuronas de ChatGPT para entender como estima estas probabilidades y logra exitosamente armar frases coherentes.</p>
 <section id="aclaración-tokens" class="level3">
 <h3 class="anchored" data-anchor-id="aclaración-tokens">Aclaración: Tokens</h3>
 <p>Por motivos de eficiencia y generalización, los LLMs en realidad no predicen la siguiente palabra, si no que predicen el siguiente <em>token</em>. Un token es una pieza de texto, puede ser una letra, sub-palabra, palabra u otro tamaño. La elección del tamaño del token es importante, existen distintas metodologias para elegir el tamaño óptimo , en las que no ahondaremos en este post. Por simplicidad, en todo el <strong><em>post asumiremos que un token es una palabra.</em></strong></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 5.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 5.png" class="img-fluid"></p>
 <p>En la imagen de arriba vemos como ChatGPT-4 divide el texto en tokens (proces. Cada color representa un token. Si nos fijamos, la mayoria de los tokens son palabras completas (incluyendo los espacios), pero vemos que la palabra “dividida” es separada en 2 sub-palabras (divid + ida).</p>
 <p>La lógica de dividir en tokens más pequeños es que, al hacerlo a nivel palabra, tendriamos en nuestro vocabulario palabras como: <em>rapidamente</em>, <em>lentamente</em>, <em>tristemente</em>, <em>actualmente</em>, junto con las palabras <em>rapida</em>, <em>lenta</em>, <em>triste</em> y <em>actual</em> (ya que son palabras distintas). En cambio, si usamos la sub-palabra “mente”, podemos construir todo con un vocabulario menor: <em>rapida</em>, <em>lenta</em>, <em>triste</em>, <em>actual</em> y <em>mente</em>. Pasamos de tener 8 tokens en el vocabulario cuando el token es a nivel palabra, a tener 5 tokens cuando es a nivel sub-palabra.</p>
 </section>
@@ -486,24 +503,14 @@ ul.task-list li input[type="checkbox"] {
 <h1>🧠&nbsp;A cerebro abierto: del prompt a la respuesta</h1>
 <p>Me encantaría escribir que eso es todo, pero la verdad es que las palabras siguen un camino bastante largo en el proceso de predecir la siguiente palabra. El texto inicial <em>“Como me preparo para una triatlón?”</em> es dividido en palabras (tokens) por un proceso llamado <em>Tokenización</em>; cada palabra es transformada a números mediante el uso de <em>Embeddings</em>; las palabras, ahora de forma numérica entran al cerebro de ChatGPT, el cual utiliza una arquitectura llamada <em>Transformer</em>, que utiliza mecanismos de <em>atención</em> para así asignarle probabilidades a cada palabra de su vocabulario y elegir la siguiente.</p>
 <p>Imagino esta es su reacción al ver que en el post que llamé deliberadamente “Sin Tecnicismos”, sin previo aviso lancé una gran cantidad de tecnicismos en tiempo récord:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 6.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 6.png" class="img-fluid"></p>
 <p>En mi defensa, no tuve elección. Les prometo que explicaré cada uno de estos pasos de manera que ustedes serán capaces de usar estos mismos tecnicismos en conversaciones con sus cercanos con la seguridad de que saben de que están hablando.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 7.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 7.png" class="img-fluid"></p>
 <p>El chat inicia cuando enviamos un prompt:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 8.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Prompt enviado por usuario a ChatGPT</figcaption>
 </figure>
 </div>
 <section id="tokenización" class="level2">
@@ -512,7 +519,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 9.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Tokenización</figcaption>
 </figure>
 </div>
 </section>
@@ -523,14 +530,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 10.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Embedding participante 1</figcaption>
 </figure>
 </div>
 <p>Tomemos al Participante 2, una persona más senior con menos kilómetros en el cuerpo, y comparemos los Embeddings:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 11.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Comparación embeddings</figcaption>
 </figure>
 </div>
 <p>Gracias a los Embeddings, podemos fácilmente estimar que el Participante 1 tiene mayor probabilidad que el Participante 2 para terminar la carrera.</p>
@@ -538,7 +545,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 12.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Embeddings</figcaption>
 </figure>
 </div>
 </section>
@@ -551,49 +558,40 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Arquitectura Transformer (Se lee de abajo hacia arriba)</figcaption>
 </figure>
 </div>
-<p>Arquitectura Transformer (Se lee de abajo hacia arriba)</p>
 <p>Se ve mucho más intimidante de lo que realmente es. Lamentablemente no veremos cada detalle, pero si ahondaremos en su corazón, el <em>mecanismo de atención</em>. El título del paper que publicó Google cuando presentó esta arquitectura fue: “Attention is All you need” → Atención es todo lo que necesitas.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="ChatGPT Sin Tecnicismos Show/image 14.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
+<figcaption>Paper donde se propone Transformers: Attention is all you need</figcaption>
 </figure>
 </div>
-<ul>
-<li><p>Tecnicismo Alert</p>
-<p>Para los curiosos, pueden notar que la arquitectura pareciese dividirse en 2 pilares a cada lado. El pilar de la izquierda se le llama Encoder, y al de la derecha Decoder. La mayoria de los LLMs actuales utilizan sólo la parte de la derecha, el Decoder. Vemos que bajo del todo aparecen lo que vimos anteriormente como <em>Embeddings</em></p></li>
-</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Alerta de Tecniciso
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<pre><code>Para los curiosos, pueden notar que la arquitectura pareciese dividirse en 2 pilares a cada lado. El pilar de la izquierda se le llama Encoder, y al de la derecha Decoder. La mayoria de los LLMs actuales utilizan sólo la parte de la derecha, el Decoder. Vemos que bajo del todo aparecen lo que vimos anteriormente como *Embeddings*</code></pre>
+</div>
+</div>
+</div>
 <section id="mecanismo-de-atención" class="level3">
 <h3 class="anchored" data-anchor-id="mecanismo-de-atención">3.1 Mecanismo de Atención</h3>
 <p>El mecanismo de atención es bastante simple pero poderoso. Se trata de identificar a que palabras del contexto actual debemos darle mayor importancia, o en otras palabras, más atención. Imaginemos el contexto <em>“… Para la triatlón, debes saber”</em>, el mecanismo de atención toma cada palabra y le asigna un peso de importancia:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 15.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 15.png" class="img-fluid"></p>
 <p>Las palabras “triatlón” y “saber” parecen ser importantes para predecir la siguiente palabra, por lo que el modelo le da mayor atención.</p>
 <p>Luego, se crea una especie de “contexto unificado”, promediando los embeddings dandole mayor peso a aquellos con una mayor atención:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 16.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 16.png" class="img-fluid"></p>
 <p>Este contexto unificado finalmente se utiliza para asignarle probabilidades a cada palabra del vocabulario, tal como lo vimos anteriormente.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 17.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 17.png" class="img-fluid"></p>
 <p>Voilá! Acabamos de presenciar el camino que sigue nuestro prompt cada vez que le hablamos a ChatGPT. Primero es dividido en pedacitos llamados tokens, cada pedacito es transformado a Embeddings, para finalmente crear un contexto unificado dandole mayor importancia a las palabras que el modelo considera más influyentes para predecir la siguiente palabra.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 18.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 18.png" class="img-fluid"></p>
 </section>
 </section>
 </section>
@@ -602,26 +600,28 @@ ul.task-list li input[type="checkbox"] {
 <p>Explicamos el flujo de como pasa el contexto a través del cerebro de ChatGPT, pero ChatGPT no “nació” sabiendo predecir la siguiente palabra, fue entrenado para eso. A continuación explicaremos brevemente como funciona el entrenamiento de los LLMs para que logren responder como actualmente lo hacen.</p>
 <p>ChatGPT tiene dentro unas pequeñas tuercas llamadas parámetros, podemos pensar en estas como las neuronas del cerebro humano. En el proceso de entrenamiento, ChatGPT debe ajustar esas tuercas hasta encontrar la combinación que tenga mayor éxito en la tarea de predecir la siguiente palabra. Para esto, le damos una gran cantidad de ejemplos y lo penalizamos si responde mal, o recompensamos si lo hace bien.</p>
 <p>Imaginemos tenemos la oración: <em>“Luego de la natación, me tocó correr”.</em> Tomamos este ejemplo y le quitamos la última palabra (<em>correr</em>). Luego se la entregamos al modelo para que prediga la siguiente palabra:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 19.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 19.png" class="img-fluid"></p>
 <p>Si el modelo elige “dormir” se le penalizará y ajustará sus tuercas, si elige “correr” se le recompensará y ajustará sus tuercas, así sucesivamente.</p>
 <p>Mientras más tuercas tengamos para ajustar, mayor capacidad tendrá nuestro modelo, pero a la vez mas ejemplos necesitaremos para ajustarlas adecuadamente. Los modelos actuales más grandes, son entrenados con trillones de tuercas en trillones de datos, de acá el “Large” en Large Language Models.</p>
 <p>No sabemos que tan grandes son los modelos actuales de ChatGPT o Gemini, porque las empresas no suelen revelarlo, es como la receta secreta de Coca-Cola. Por suerte, hay empresas que apoyan el Open-source en pro de la comunidad y el avance científico y si revelan su receta. Así es el caso del modelo Llama 3.1 de Meta, el cual fue entrenado con 405 Billones de parámetros y 15.6 Billones de tokens. Para que te hagas una idea, básicamente este modelo lo leyó casi 16 veces toda la información pública de alta calidad que existe en la web.</p>
 <p>A modo de resumen, para entrenar estos modelos y volverlos inteligentes, se les entrega billones de pedacitos de texto extraidos de internet, y se comienzan a ajustar sus billones de tuercas hasta que su desempeño sea suficiente. Este proceso se ve simple pero es sumamente complicado y costoso desde un punto de vista de Ingenieria. Como dato, Llama 3.1 utilizó 16.000 Tarjetas Gráficas y su entrenamiento se demoró entre 2 a 3 meses. Nuestras computadoras normalmente sólo tienen 1 tarjetas gráfica, si quisieramos entrenar algo así en nuestra casa, nos podriamos demorar 3.500 años. Si hablamos de dinero, se estima que a Meta le costó entre <a href="https://apxml.com/posts/training-cost-deepseek-v3-vs-llama-3">93 y 123 Millones de dólares</a>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 20.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 20.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<ul>
-<li><p>Alerta de Tecnicismo</p>
-<p>En realidad, al proceso de entregarle millones de bytes de información de internet a los LLMs para que se entrenen, se le llama “Pre-Entrenamiento”. Cuando esto termina los modelos no suelen responder de forma “humana” como ChatGPT lo hace. Posteriormente existe un proceso de Fine-Tuning en donde se le “enseña” como responder “humanamente”.</p></li>
-</ul>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Alerta de Tecnicismo
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<pre><code>En realidad, al proceso de entregarle millones de bytes de información de internet a los LLMs para que se entrenen, se le llama “Pre-Entrenamiento”. Cuando esto termina los modelos no suelen responder de forma “humana” como ChatGPT lo hace. Posteriormente existe un proceso de Fine-Tuning en donde se le “enseña” como responder “humanamente”. </code></pre>
+</div>
+</div>
+</div>
 </section>
 <section id="apliquemos-lo-aprendido-los-sino-de-chatgpt" class="level1">
 <h1>👩🏽‍🏫&nbsp;Apliquemos lo aprendido: Los Si/No de ChatGPT</h1>
@@ -633,12 +633,7 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="cuantas-r-tiene-la-palabra-strawberry">1. Cuantas ‘r’ tiene la palabra Strawberry?</h3>
 <p><strong>Respuesta</strong>: NO</p>
 <p><strong>Explicación</strong>: Como vimos, ChatGPT no lee a nivel de letras, si no a nivel de <em>tokens</em>. En este blog asumimos por simplicidad que los tokens eran palabras, pero señalamos que en realidad son sub-palabras, entonces ChatGPT no sabe lo que “Strawberry” es, si no que ChatGPT ve los 3 tokens (“Str” + “aw” + “berry”). Por lo tanto, al no ver a nivel de letra, ChatGPT inventa una respuesta:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 21.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 21.png" class="img-fluid"></p>
 <p>Disclaimer: Si lo intentas por tu lado, probablemente lo hará bien. Una de las razones es porque este caso se hizo tan famoso que ChatGPT puede haber incluido este ejemplo en sus datos de entrenamiento; otra razón es porque los modelos actuales utilizan algo que se llama “Cadena de Pensamiento” que le da mayor capacidad para responder este tipo de preguntas (Te has fijado que mientras ChatGPT demora en responder dice <em>“Thinking”</em> ?); y otra razón es que puede que ChatGPT esté utilizando herramientas externas por detrás cuando identifica que la pregunta requiere algún cálculo.</p>
 </section>
 <section id="quiero-que-me-resumas-el-final-de-harry-potter" class="level3">
@@ -661,12 +656,7 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="dime-que-es-una-triatlon-en-10-palabras">5. Dime que es una triatlon en 10 palabras</h3>
 <p><strong>Respuesta</strong>: NO</p>
 <p><strong>Explicación</strong>: Relacionado al punto 4, ChatGPT no tiene el concepto de contar palabras, sobre todo porque ve tokens y no palabras. Gracias a la metodología de “Cadena de Pensamiento” cada vez son mejores para este tipo de preguntas, pero aún no estamos ahí.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="ChatGPT Sin Tecnicismos Show/image 22.png" class="img-fluid figure-img"></p>
-<figcaption>image.png</figcaption>
-</figure>
-</div>
+<p><img src="ChatGPT Sin Tecnicismos Show/image 22.png" class="img-fluid"></p>
 <p>Acá vemos que utilizó 11 palabras</p>
 </section>
 <section id="dame-el-link-exacto-del-artículo-del-new-york-times-de-2015-donde-hablan-de-mi-pizzería-local" class="level3">
