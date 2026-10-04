@@ -463,6 +463,44 @@ function drawBus(ctx) {
   R(2,4,58,15,'#c16b57');R(4,1,52,3,'#e9e3d2');for(let i=0;i<6;i++)R(6+i*8,6,6,6,mode==='night'?'#f2d38f':'#acccbf');
   R(2,14,58,3,'#e6debe');circle(12,19,3,colors.ink);circle(48,19,3,colors.ink);R(56,13,3,2,'#f0d997');
 }
+/* Street sport: Diego (sunglasses, lime) runs or rides by, most of the time with her. */
+const HER={hair:'#4a3328', shirt:'#d9826f', skin:'#c99670', skinLight:'#e2b48c', bike:'#537c8e'};
+function sportHead(x,y,{her=false,helmet=false,bob=0}={}) {
+  const hair=her?HER.hair:colors.hair, skin=her?HER.skin:colors.skin, light=her?HER.skinLight:colors.skinLight;
+  R(x+1,y,5,2,hair);R(x,y+2,7,3,hair);
+  R(x+1,y+3,6,5,skin);R(x+4,y+3,3,4,light);R(x+6,y+5,2,2,light);
+  R(x+1,y+4,1,2,hair);R(x+3,y+8,3,2,skin);
+  if(her){R(x,y+2,2,6,hair);R(x-3,y+2-bob,3,2,hair);R(x-4,y+3-bob,2,4,hair);R(x+5,y+4,1,1,colors.ink);R(x+5,y+7,1,1,'#b9655a');}
+  else {R(x+3,y+3,5,2,colors.dark);R(x+4,y+3,1,1,'#738e85');}
+  if(helmet){R(x,y,7,2,her?HER.shirt:colors.lime);R(x+5,y+1,4,1,her?HER.shirt:colors.lime);}
+}
+function runner(x,F,t,her=false) {
+  const step=Math.floor(t*7)%4, bob=step%2, swing=[4,0,-4,0][step], y=F-28;
+  const shirt=her?HER.shirt:colors.lime, skin=her?HER.skin:colors.skin;
+  sportHead(x,y+bob,{her,bob});
+  R(x,y+9+bob,8,7,shirt);R(x+1,y+16+bob,7,3,her?colors.ink:colors.navy);
+  line(x+2,y+19,x+2+swing,y+24,skin,2);line(x+2+swing,y+24,x+5+swing,y+26,skin,2);R(x+4+swing,y+26,5,2,colors.white);
+  line(x+6,y+19,x+6-swing,y+23,skin,2);line(x+6-swing,y+23,x+4-swing,y+26,colors.ink,2);R(x+3-swing,y+26,5,2,colors.white);
+  const a=Math.max(0,swing/2);
+  line(x+1,y+10,x-3,y+14+a,skin,2);line(x-3,y+14+a,x-5+swing/2,y+11,skin,2);
+  line(x+7,y+10,x+11,y+14-a,skin,2);line(x+11,y+14-a,x+13-swing/2,y+10,skin,2);
+}
+function cyclist(x,F,t,her=false) {
+  const y=F-24, frame=her?HER.bike:colors.rust, shirt=her?HER.shirt:colors.lime, skin=her?HER.skin:colors.skin, light=her?HER.skinLight:colors.skinLight;
+  for(const wx of [x,x+25]){circle(wx,y+15,8,colors.ink);circle(wx,y+15,6,p.road);line(wx-5*Math.cos(t*9),y+15-5*Math.sin(t*9),wx+5*Math.cos(t*9),y+15+5*Math.sin(t*9),'#bac8ab');R(wx,y+15,2,1,colors.cream);}
+  line(x,y+15,x+9,y+4,frame,2);line(x+9,y+4,x+14,y+15,frame,2);line(x+14,y+15,x,y+15,frame);line(x+9,y+4,x+22,y+4,frame);line(x+22,y+4,x+14,y+15,frame);
+  line(x+20,y,x+25,y+15,colors.cream);line(x+20,y,x+25,y-1,colors.ink);R(x+6,y+1,7,2,colors.ink);
+  sportHead(x+13,y-17,{her,helmet:true});line(x+15,y-7,x+9,y+1,shirt,5);line(x+16,y-6,x+22,y-3,skin,2);line(x+22,y-3,x+24,y,skin,2);
+  const a=t*8+(her?1.6:0), px=x+14+Math.cos(a)*4, py=y+8+Math.sin(a)*3;
+  line(x+10,y+1,px,py,her?colors.ink:colors.navy,3);line(px,py,px,py+7,light,2);R(px-1,py+7,5,2,colors.white);
+}
+// Canvases hold the pair side by side; she rides a little behind him.
+const RUN_W=52, RUN_H=32, BIKE_W=100, BIKE_H=44;
+function drawSport(ctx,kind,together,t) {
+  c=ctx;c.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+  if(kind==='run'){const F=RUN_H-1;if(together){runner(8,F,t+.37,true);runner(32,F,t);}else runner(20,F,t);}
+  else {const F=BIKE_H-1;if(together){cyclist(10,F,t+.2,true);cyclist(60,F,t);}else cyclist(36,F,t);}
+}
 function drawTuft(ctx,i) {
   c=ctx;c.clearRect(0,0,16,12);
   R(3,6,2,6,p.grassDark);R(6,3,2,9,p.grassDark);R(9,5,2,7,p.grassDark);R(12,7,2,5,p.grassDark);
@@ -579,6 +617,29 @@ function start() {
   // A red Santiago bus keeps the street alive.
   const busCv=canvasOf(64,24), bus=billboard(busCv,64,24);bus.position.z=52;scene.add(bus);
   redrawers.push(()=>{drawBus(busCv.getContext('2d'));bus.material.map.needsUpdate=true;});
+
+  // Every so often Diego runs or rides past, usually (80%) together with her.
+  const sport={
+    run:{cv:canvasOf(RUN_W,RUN_H),z:22,speed:78},
+    bike:{cv:canvasOf(BIKE_W,BIKE_H),z:36,speed:140}
+  };
+  for(const k in sport){const s=sport[k];s.mesh=billboard(s.cv,s.cv.width,s.cv.height);s.mesh.position.z=s.z;s.mesh.visible=false;scene.add(s.mesh);}
+  let outing=null, nextOuting=4+Math.random()*6;
+  const SPORT_SPAN=720;
+  redrawers.push(()=>{if(outing)drawSport(outing.s.cv.getContext('2d'),outing.kind,outing.together,clock);});
+  function stepOuting(camX) {
+    if(!outing&&clock>=nextOuting){
+      const kind=Math.random()<.5?'run':'bike';
+      outing={kind,s:sport[kind],together:Math.random()<.8,dir:Math.random()<.5?1:-1,start:clock};
+      outing.s.mesh.visible=true;outing.s.mesh.scale.x=outing.dir;
+    }
+    if(!outing)return;
+    const travelled=(clock-outing.start)*outing.s.speed;
+    if(travelled>SPORT_SPAN*2){outing.s.mesh.visible=false;outing=null;nextOuting=clock+12+Math.random()*14;return;}
+    outing.s.mesh.position.x=camX-outing.dir*SPORT_SPAN+outing.dir*travelled;
+    drawSport(outing.s.cv.getContext('2d'),outing.kind,outing.together,clock);
+    outing.s.mesh.material.map.needsUpdate=true;
+  }
 
   // The rooms: pop-up pages hinged on the floor line.
   const rooms=keys.map((key,i)=>{
@@ -721,6 +782,7 @@ function start() {
 
     // Street life and sky.
     bus.position.x=camX+900-((clock*34)%1800);
+    stepOuting(camX);
     stepParticles(dt);
     const skyTick=Math.floor(clock*6);
     if(skyTick!==lastSky){lastSky=skyTick;drawSky(skyCtx,skyCanvas.width,skyCanvas.height,reduced?0:clock);sky.material.map.needsUpdate=true;}
