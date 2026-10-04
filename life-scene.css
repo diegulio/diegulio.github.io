@@ -1,0 +1,80 @@
+/* The hero is the world. A native 640 × 416 canvas preserves the pixel grid. */
+.life-hero { padding-block: 29px 10px; max-width: 1120px; }
+.life-slot { min-width:0; }
+.life-world { width:100%; }
+.world-heading { display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-bottom:16px; color:#747c68; }
+.world-heading h1 { display:flex; align-items:center; gap:10px; margin:0; font:500 11px var(--mono); letter-spacing:1.2px; color:var(--ink); }
+.world-heading h1>span { font-size:25px; }
+.world-location { display:flex; align-items:center; gap:7px; font:9px var(--mono); letter-spacing:1px; white-space:nowrap; }
+.world-location i { width:5px;height:5px;background:#809856;border-radius:50%; }
+.world-stage { position:relative; overflow:hidden; border:1px solid #aebca1; border-radius:9px; background:#acd0d2; isolation:isolate; box-shadow:0 12px 35px -24px #374e35; }
+#life-canvas { display:block; width:100%; height:auto; aspect-ratio:640 / 416; image-rendering:pixelated; cursor:zoom-in; }
+.world-stage[data-focused=true] #life-canvas { cursor:default; aspect-ratio:640 / 288; }
+.world-expand,.world-back { position:absolute; top:12px; display:flex; gap:6px; align-items:center; min-height:32px; padding:8px 11px; border:1px solid #f7f4e880; background:#f4f3edf0; color:#344231; border-radius:3px; font:10px var(--mono); z-index:3; }
+.world-expand { right:12px; }
+.world-back { left:12px; }
+.world-expand:hover,.world-back:hover { background:var(--lime); }
+.world-expand>span { font-size:9px; }
+.world-hotspots { position:absolute; inset:0; }
+.world-hotspot { position:absolute; padding:0; border:2px solid transparent; background:transparent; border-radius:2px; cursor:zoom-in; color:var(--ink); transition:background .15s,border-color .15s; }
+.world-hotspot:hover,.world-hotspot:focus-visible { background:#d0f87520; border-color:#ecf5ce; outline:1px solid #314b37; outline-offset:1px; }
+.hotspot-marker { position:absolute; top:4px; right:4px; width:19px; height:19px; border-radius:50%; background:#f4f3edf0; border:1px solid #65795880; display:grid; place-items:center; font:14px var(--mono); box-shadow:0 1px 4px #263b3520; }
+.hotspot-name { position:absolute; right:0; top:-26px; background:var(--ink); color:var(--paper); white-space:nowrap; padding:6px 9px; font:9px var(--mono); opacity:0; pointer-events:none; transform:translateY(3px); transition:opacity .15s,transform .15s; }
+.world-hotspot:hover .hotspot-name,.world-hotspot:focus-visible .hotspot-name { opacity:1;transform:none; }
+.world-toolbar { display:flex; justify-content:flex-end; gap:14px; align-items:start; margin-top:16px; }
+.world-chapters { display:none; gap:5px; flex-wrap:wrap; }
+.world-chapters button { border:1px solid transparent; min-height:34px; padding:9px 11px; background:transparent; color:#606b54; font:9px var(--mono); }
+.world-chapters button:hover { border-color:var(--line); }
+.world-chapters button[aria-pressed=true] { color:var(--paper); background:var(--ink); }
+.world-actions { display:flex; gap:6px; flex-shrink:0; }
+.world-actions button { width:34px; height:34px; border:1px solid #cdd4c2; background:transparent; color:#46533b; font-size:14px; }
+.world-actions button:hover { background:var(--lime); }
+.world-caption { font:10px/1.7 var(--mono); color:#777e6b; margin:16px 0 0; text-align:center; text-wrap:balance; }
+.world-story { margin-top:20px; padding:25px 0 23px; border-block:1px solid var(--line); display:grid; grid-template-columns:.8fr 1.2fr; gap:35px; }
+.story-eyebrow { font:9px var(--mono); letter-spacing:1px; color:#718052; margin:0 0 12px; }
+.world-story h2 { font:500 29px/1.12 var(--display); letter-spacing:-1px; margin:0; }
+.story-description>p { font-size:14px; line-height:1.8; color:#65705b; margin:0;max-width:570px; }
+.story-description>a { display:inline-block; font:10px var(--mono); padding-bottom:5px; border-bottom:1px solid #a8b68a; margin-top:15px; }
+.story-description>a:hover { color:#778e42; }
+.life-hero + .journal { padding-top:65px; }
+.world-dialog { width:min(1240px,96vw); max-width:96vw; max-height:96dvh; padding:22px; border:1px solid #cdd4c2; border-radius:12px; color:var(--ink); background:var(--paper); overflow:auto; }
+.world-dialog::backdrop { background:#162114c9; backdrop-filter:blur(8px); }
+.world-dialog .world-stage { max-width:min(100%,calc((96dvh - 250px) * 640 / 416)); margin-inline:auto; }
+.world-dialog .world-heading { font-size:10px; }
+.world-dialog .world-story { padding-block:16px; margin-top:12px; }
+.world-dialog .world-story h2 { font-size:24px; }
+.world-dialog .story-description>p { font-size:12px; }
+.world-dialog .world-caption { margin-bottom:0; }
+.life-world [hidden] { display:none!important; }
+@media(max-width:800px) {
+  .life-hero { padding-top:24px;width:calc(100% - 32px); }
+  .world-heading h1 { font-size:9px;letter-spacing:.6px; }
+  .world-location { font-size:8px; }
+  .world-chapters { gap:3px; }
+  .world-chapters button { font-size:9px;padding:8px; }
+  .world-story { grid-template-columns:1fr;gap:16px; }
+  .world-story h2 { font-size:27px; }
+  .story-description>p { font-size:13px; }
+}
+@media(max-width:480px) {
+  .life-hero { width:calc(100% - 24px);padding-top:20px; }
+  .world-heading { margin-bottom:12px; }
+  .world-heading h1 { font-size:7px;letter-spacing:.3px;gap:6px; }
+  .world-heading h1>span { font-size:19px; }
+  .world-location { font-size:6px;letter-spacing:.3px;gap:4px; }
+  .world-stage { border-radius:5px; }
+  .world-toolbar { flex-direction:column;gap:10px; }
+  .world-chapters { display:flex;width:100%;gap:3px; }
+  .world-chapters button { font-size:8px;min-height:33px;padding:8px; }
+  .world-actions { align-self:flex-end; }
+  .world-caption { font-size:8px;margin-top:9px; }
+  .world-expand,.world-back { top:6px;min-height:29px;font-size:8px;padding:7px; }
+  .world-expand { right:6px; }.world-back{left:6px;}
+  .world-expand>span { display:none; }
+  .hotspot-marker { width:14px;height:14px;font-size:10px;top:0;right:0; }
+  .world-hotspot { border-width:1px; }
+  .world-story { padding-block:19px;margin-top:17px; }
+  .world-story h2 { font-size:25px; }
+  .world-dialog { padding:11px; }.world-dialog .world-heading h1 {font-size:7px;}
+  .life-hero + .journal { padding-top:45px; }
+}

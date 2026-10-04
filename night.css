@@ -1,0 +1,28 @@
+/* One switch changes the journal and the time of day in Diego's world. */
+:root { color-scheme:light; }
+.nav-actions { display:flex; align-items:center; gap:12px; }
+.theme-toggle { display:flex; align-items:center; justify-content:center; gap:8px; min-width:44px; min-height:44px; padding:10px 13px; border:1px solid var(--line); border-radius:4px; background:transparent; color:var(--ink); }
+.theme-toggle>span:first-child { font-size:19px; line-height:1; }
+.theme-label { font:10px var(--mono); }
+.theme-toggle:hover { background:var(--lime); color:#20251f; border-color:var(--lime); }
+html[data-theme=night] { color-scheme:dark; --paper:#151e22; --ink:#edf0e3; --muted:#a5b3ad; --line:#34433f; --lime:#d0f875; }
+html[data-theme=night] .site-header { background:#151e22f2; }
+html[data-theme=night] .wordmark { font-weight:500; }
+html[data-theme=night] .featured { background:#202d2c; border-color:var(--line); }
+html[data-theme=night] :is(.feature-media,.post-media) { background:#283a36; }
+html[data-theme=night] :is(.feature-copy>p,.post-kicker,.post-index,.filter-button,.world-heading,.world-chapters button,.world-caption,.story-description>p) { color:var(--muted); }
+html[data-theme=night] :is(.post-kicker .post-tag,.story-eyebrow,.section-heading h2 span) { color:#b8d48f; }
+html[data-theme=night] :is(.post-kicker .post-tag,.search-box,.feature-link>span,.world-actions button,.world-dialog) { border-color:#4b6152; }
+html[data-theme=night] .world-stage { border-color:#4b6152; background:#172839; box-shadow:0 14px 45px -20px #0008; }
+html[data-theme=night] .world-actions button { color:var(--ink); }
+html[data-theme=night] :is(.world-expand,.world-back,.hotspot-marker) { color:#edf0e3; background:#1e302eeF; border-color:#6a806b; }
+html[data-theme=night] :is(.filter-button.active,.world-chapters button[aria-pressed=true],.empty-results button,.loading-note button,.skip-link) { background:var(--lime); color:#20251f; }
+html[data-theme=night] :is(.nav-resume:hover,.world-actions button:hover,.world-expand:hover,.world-back:hover,.featured:hover .feature-link>span) { background:var(--lime); color:#20251f; }
+html[data-theme=night] :is(.nav-links a:hover,.text-link:hover,.footer a:hover,.story-description>a:hover) { color:var(--lime); }
+html[data-theme=night] .world-location i { background:var(--lime); box-shadow:0 0 8px #d0f87570; }
+html[data-theme=night] .about-section { background:#1c2926; border-block:1px solid var(--line); }
+html[data-theme=night] .media-failed:before { background:#263b30; color:#c1d99f; }
+html[data-theme=night] ::selection { color:#20251f; }
+@media(max-width:1100px) { .theme-label { display:none; } }
+@media(max-width:480px) { .navigation { gap:10px; } .nav-links { gap:12px; } .nav-actions { gap:0; } .theme-toggle { padding:8px; } }
+@media(max-width:360px) { .navigation.wrap { width:calc(100% - 24px); } .navigation .wordmark { font-size:22px; } .nav-links { gap:8px; font-size:10px; } }

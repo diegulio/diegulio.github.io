@@ -1,0 +1,92 @@
+[
+  {
+    "slug": "mcp",
+    "title": "Leveraging MCPs with LLMs",
+    "subtitle": "Desarrollamos un framework para el estudio eficiente utilizando MCPs",
+    "date": "2025-09-02",
+    "author": "Diegulio",
+    "categories": ["mcp", "llm", "application"],
+    "image": "posts/mcp/portada.png",
+    "type": "local"
+  },
+  {
+    "slug": "chatgpt-sin-tecnicismos",
+    "title": "ChatGPT Sin Tecnicismos",
+    "subtitle": "Explicamos como funciona ChatGPT de forma intuitiva",
+    "date": "2026-01-13",
+    "author": "Diegulio",
+    "categories": ["llm", "explained"],
+    "image": "posts/chatgpt-sin-tecnicismos/chatgpt.png",
+    "type": "local"
+  },
+  {
+    "slug": "gan",
+    "title": "Paper Implementation: Generative Adversarial Networks",
+    "subtitle": "Implementamos el paper de Generative Adversarial Networks desde cero",
+    "date": "2024-02-28",
+    "author": "Diegulio",
+    "categories": ["python", "pytorch", "paper"],
+    "image": "posts/gan/paper.jpeg",
+    "type": "local"
+  },
+  {
+    "slug": "pytorch-breed-classification",
+    "title": "Image Classification with Pytorch Lightning",
+    "subtitle": "Classify images of pets using Pytorch Lightning",
+    "date": "2023-10-23",
+    "author": "Diegulio",
+    "categories": ["python", "pytorch", "lightning"],
+    "image": "posts/pytorch-breed-classification/dc.jpg",
+    "type": "local"
+  },
+  {
+    "slug": "llm-cv-assistant",
+    "title": "Data ❤️ Chat: Chatea con tu Curriculum",
+    "subtitle": "Creamos una aplicación web que te permite chatear con tu CV",
+    "date": "2023-07-25",
+    "author": "Diegulio",
+    "categories": ["python", "llm", "langchain"],
+    "image": "posts/llm-cv-assistant/cv-assistant.png",
+    "type": "local"
+  },
+  {
+    "slug": "llm-recipe",
+    "title": "Iniciando en LLM: Crea tu primera app con LangChain",
+    "subtitle": "Cocina tu comida favorita con la ayuda de LLM",
+    "date": "2023-07-05",
+    "author": "Diegulio",
+    "categories": ["python", "llm", "langchain"],
+    "image": "posts/llm-recipe/portada.jpeg",
+    "type": "local"
+  },
+  {
+    "slug": "back-to-sit",
+    "title": "Back To Sit 🐒",
+    "subtitle": "A library to notify you when your code is done!",
+    "date": "2023-05-01",
+    "author": "Diegulio",
+    "categories": ["python", "library"],
+    "image": "posts/back-to-sit/portada.jpg",
+    "type": "local"
+  },
+  {
+    "slug": "birdclef-2023",
+    "title": "BirdClef 2023 🐦",
+    "subtitle": "Bird sound classification with deep learning — Kaggle competition",
+    "date": "2023-06-01",
+    "author": "Diegulio",
+    "categories": ["python", "pytorch", "kaggle"],
+    "image": "posts/birdclef-2023/birdclef.png",
+    "type": "local"
+  },
+  {
+    "slug": "nlp-disaster",
+    "title": "Identificando desastres en Twitter con NLP",
+    "subtitle": "Clasificación de tweets de desastre con modelos de lenguaje",
+    "date": "2023-03-01",
+    "author": "Diegulio",
+    "categories": ["python", "nlp", "kaggle"],
+    "image": "posts/nlp-disaster/twitter_disaster.png",
+    "type": "local"
+  }
+]

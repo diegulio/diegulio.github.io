@@ -1,0 +1,82 @@
+/* Mi trayectoria: the CV as a scroll-driven pop-up pixel book.
+   Without WebGL (or before it loads) the chapters are a plain, readable list. */
+.tj-page { overflow-x:clip; }
+.tj-journey { position:relative; }
+.tj-stage { position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; background:#d4e2d3; }
+html[data-theme=night] .tj-stage { background:#263c4d; }
+#tj-canvas { display:block; width:100%; height:100%; }
+.tj-journey:not(.tj-ready) .tj-stage { display:none; }
+
+.tj-chapters { list-style:none; margin:0; padding:40px 0 80px; position:relative; z-index:2; }
+.tj-chapter { display:flex; align-items:center; padding:24px 0; }
+.tj-ready .tj-chapters { margin-top:-100vh; margin-top:-100svh; padding:0; pointer-events:none; }
+.tj-ready .tj-chapter { min-height:125vh; min-height:125svh; padding:96px 0 40px; }
+.tj-ready .tj-chapter:first-child, .tj-ready .tj-chapter:last-child { min-height:100vh; min-height:100svh; }
+
+/* Cards */
+.tj-card { pointer-events:auto; width:min(410px, calc(100% - 32px)); margin-left:max(56px, calc((100vw - 1392px) / 2)); padding:26px 28px 26px; background:color-mix(in srgb, var(--paper) 94%, transparent); border:1px solid var(--line); border-radius:6px; box-shadow:0 22px 50px -30px #1d2b2299; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); transition:opacity .35s, transform .35s; }
+.tj-ready .tj-card { opacity:.45; transform:translateY(10px); }
+.tj-ready .tj-card.is-active { opacity:1; transform:none; }
+.tj-eyebrow { display:flex; align-items:center; gap:10px; margin:0 0 16px; font:10px/1.6 var(--mono); letter-spacing:1.3px; color:#66763f; }
+.tj-eyebrow i { flex:none; width:7px; height:7px; background:var(--lime); box-shadow:0 0 0 1px var(--ink); }
+.tj-card h1, .tj-card h2 { margin:0 0 6px; font:500 34px/1.05 var(--display); letter-spacing:-1.4px; text-wrap:balance; }
+.tj-card h1 { font-size:46px; letter-spacing:-2.2px; margin-bottom:14px; }
+.tj-org { margin:0 0 14px; font:11px/1.6 var(--mono); color:var(--muted); }
+.tj-card p:not(.tj-eyebrow):not(.tj-org) { margin:0; font-size:14px; line-height:1.75; color:color-mix(in srgb, var(--ink) 74%, var(--paper)); }
+.tj-card p.tj-note { margin-top:12px; font:10px/1.6 var(--mono); letter-spacing:.6px; color:var(--muted); }
+.tj-card ul { list-style:none; margin:14px 0 0; padding:0; display:grid; gap:9px; }
+.tj-card ul:not(.tj-tags) li { position:relative; padding-left:18px; font-size:13.5px; line-height:1.65; color:color-mix(in srgb, var(--ink) 74%, var(--paper)); }
+.tj-card ul:not(.tj-tags) li::before { content:''; position:absolute; left:1px; top:.6em; width:6px; height:6px; background:var(--lime); box-shadow:0 0 0 1px color-mix(in srgb, var(--ink) 45%, transparent); }
+.tj-awards li strong { display:block; color:var(--ink); font-weight:600; }
+.tj-highlight { display:grid; gap:4px; margin-top:16px; padding:14px 16px; border:1px dashed color-mix(in srgb, var(--ink) 35%, transparent); border-radius:4px; background:color-mix(in srgb, var(--lime) 22%, transparent); }
+.tj-highlight strong { font-weight:600; font-size:14px; }
+.tj-highlight span { font-size:13px; line-height:1.6; color:color-mix(in srgb, var(--ink) 74%, var(--paper)); }
+.tj-card .tj-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.tj-tags li { padding:7px 10px; border:1px solid var(--line); border-radius:3px; font:10.5px var(--mono); }
+.tj-tags li:hover { background:var(--lime); border-color:var(--lime); color:#20251f; }
+.tj-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin-top:20px; }
+.tj-button { display:inline-flex; gap:18px; align-items:center; padding:13px 16px; background:var(--ink); color:var(--paper); font-size:12.5px; font-weight:550; transition:background .2s, color .2s; }
+.tj-button:hover { background:var(--lime); color:#20251f; }
+.tj-link { font:10.5px var(--mono); padding-bottom:3px; border-bottom:1px solid color-mix(in srgb, var(--ink) 35%, transparent); }
+.tj-link:hover { color:#647d27; }
+
+/* HUD over the 3D stage */
+.tj-hud { position:absolute; z-index:1; top:112px; right:max(32px, calc((100vw - 1392px) / 2)); display:grid; justify-items:end; gap:2px; color:var(--ink); pointer-events:none; text-shadow:0 1px 0 color-mix(in srgb, var(--paper) 55%, transparent); }
+.tj-hud-label, .tj-hud-count { font:9.5px var(--mono); letter-spacing:1.4px; }
+.tj-year { font:500 clamp(44px, 6.2vw, 84px)/1 var(--display); letter-spacing:-3px; font-variant-numeric:tabular-nums; }
+.tj-year.is-flipping { animation:tj-flip .32s steps(4); }
+@keyframes tj-flip { from { transform:translateY(-8px); opacity:.2; } }
+.tj-hint { position:absolute; z-index:1; left:50%; bottom:72px; transform:translateX(-50%); margin:0; padding:7px 10px; background:var(--ink); color:var(--paper); font:9px var(--mono); letter-spacing:1.4px; transition:opacity .3s; pointer-events:none; }
+.tj-hint span { display:inline-block; animation:tj-bob 1s steps(2) infinite; }
+.tj-hint.is-hidden { opacity:0; }
+@keyframes tj-bob { 50% { transform:translateY(3px); } }
+.tj-progress { position:absolute; z-index:3; left:50%; bottom:20px; transform:translateX(-50%); display:flex; gap:4px; padding:6px; background:color-mix(in srgb, var(--paper) 90%, transparent); border:1px solid var(--line); border-radius:4px; }
+.tj-progress a { position:relative; display:grid; place-items:center; width:26px; height:26px; }
+.tj-progress a i { width:8px; height:8px; border:1px solid var(--ink); transition:background .2s, transform .2s; }
+.tj-progress a:hover i { background:color-mix(in srgb, var(--lime) 60%, transparent); }
+.tj-progress a[aria-current=step] i { background:var(--lime); transform:scale(1.35); }
+.tj-progress a span { position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%) translateY(3px); padding:5px 8px; white-space:nowrap; background:var(--ink); color:var(--paper); font:9px var(--mono); opacity:0; pointer-events:none; transition:opacity .15s, transform .15s; }
+.tj-progress a:hover span, .tj-progress a:focus-visible span { opacity:1; transform:translateX(-50%); }
+
+html[data-theme=night] .tj-eyebrow { color:#b8d48f; }
+html[data-theme=night] .tj-card { box-shadow:0 22px 50px -26px #000c; }
+html[data-theme=night] .tj-link:hover { color:var(--lime); }
+html[data-theme=night] .tj-button:hover { color:#20251f; }
+
+@media (max-width:1100px) { .tj-card { margin-left:32px; } .tj-hud { right:32px; } }
+@media (max-width:800px) {
+  .tj-ready .tj-chapter { align-items:flex-start; padding:86px 0 0; }
+  .tj-card { margin-inline:auto; width:calc(100% - 32px); padding:20px 20px 22px; }
+  .tj-ready .tj-card { max-height:44svh; overflow:auto; }
+  .tj-card h1 { font-size:36px; }
+  .tj-card h2 { font-size:26px; letter-spacing:-1px; }
+  .tj-card p:not(.tj-eyebrow):not(.tj-org) { font-size:13px; }
+  .tj-card ul:not(.tj-tags) li { font-size:12.5px; }
+  .tj-hud { top:auto; bottom:14px; left:16px; right:16px; display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .tj-hud-label { order:2; }
+  .tj-hud-count { order:3; }
+  .tj-year { font-size:34px; letter-spacing:-1.5px; }
+  .tj-progress, .tj-hint { display:none; }
+}
+@media (prefers-reduced-motion:reduce) { .tj-card, .tj-ready .tj-card { transition:none; transform:none; } }
+.tj-card:focus { outline:none; }

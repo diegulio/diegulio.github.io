@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f3ed" />
+  <script>try { if (localStorage.getItem('diegulio-time') === 'night') document.documentElement.dataset.theme = 'night'; } catch {}</script>
+  <title>Diegulio — Código, datos y kilómetros</title>
+  <meta name="description" content="El laboratorio personal de Diego Machado. Experimentos, proyectos y explicaciones sobre inteligencia artificial, machine learning y las ideas que los hacen posibles." />
+  <meta property="og:title" content="Diegulio — Mi vida, en píxeles" />
+  <meta property="og:description" content="Explorando la inteligencia artificial, una idea y una línea de código a la vez." />
+  <meta property="og:url" content="https://diegulio.github.io" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700;750&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="home.css?v=pixel-1" />
+  <link rel="stylesheet" href="life-scene.css?v=pixel-5" />
+  <link rel="stylesheet" href="night.css?v=1" />
+  <script src="app.js?v=lab-2" defer></script>
+  <script type="module" src="life-scene.js?v=pixel-5"></script>
+</head>
+<body>
+  <a class="skip-link" href="#blog">Saltar a los artículos</a>
+  <header class="site-header">
+    <nav class="navigation wrap" aria-label="Navegación principal">
+      <a href="index.html" class="wordmark" aria-label="Diegulio, inicio">diegulio</a>
+      <div class="nav-links">
+        <a href="#blog">Explorar <span class="nav-count" id="nav-count"></span></a>
+        <a href="#about">Sobre mí</a>
+        <a href="https://github.com/diegulio" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="nav-actions"><a class="nav-resume" href="resume.html">Mi trayectoria <span aria-hidden="true">↗</span></a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Activar modo nocturno" aria-pressed="false" title="Activar modo nocturno"><span aria-hidden="true">☾</span><span class="theme-label">Noche</span></button></div>
+    </nav>
+  </header>
+  <main>
+    <section class="life-hero wrap" aria-labelledby="hero-title">
+      <div class="life-slot" id="life-slot">
+        <div class="life-world" id="life-world" role="group" aria-label="El pequeño mundo de Diego">
+          <h1 id="hero-title" class="visually-hidden">Diego Machado</h1>
+          <div class="world-heading"><span class="world-location"><i></i> SANTIAGO, CL</span></div>
+          <div class="world-stage">
+            <canvas id="life-canvas" width="640" height="416" role="img" aria-label="Santiago en pixel art: la cordillera y el cerro San Cristóbal, con varios Diegos programando, trabajando en ciencia de datos, enseñando, levantando pesas, corriendo, nadando y andando en bicicleta.">Una ciudad animada de baja resolución sobre mi vida: código, docencia, ciencia de datos y triatlón, al pie de la cordillera.</canvas>
+            <div class="world-hotspots" id="world-hotspots" aria-label="Escenas interactivas"></div>
+            <button class="world-back" id="world-back" type="button" hidden>← Vista completa</button>
+            <button class="world-expand" id="world-expand" type="button" aria-label="Ampliar mundo pixel art">⛶ <span>Ampliar</span></button>
+          </div>
+          <div class="world-toolbar">
+            <div class="world-chapters" role="group" aria-label="Explorar las escenas de mi vida">
+              <button type="button" data-world-zone="all" aria-pressed="true">Mi mundo</button>
+              <button type="button" data-world-zone="work" aria-pressed="false">01 Trabajo</button>
+              <button type="button" data-world-zone="teaching" aria-pressed="false">02 Docencia</button>
+              <button type="button" data-world-zone="code" aria-pressed="false">03 Código</button>
+              <button type="button" data-world-zone="gym" aria-pressed="false">04 Gym</button>
+              <button type="button" data-world-zone="swim" aria-pressed="false">05 Natación</button>
+              <button type="button" data-world-zone="run" aria-pressed="false">06 Running</button>
+              <button type="button" data-world-zone="bike" aria-pressed="false">07 Ciclismo</button>
+            </div>
+            <div class="world-actions"><button id="world-day" type="button" aria-label="Ver al atardecer" title="Día → Atardecer → Noche">☀</button><button id="world-pause" type="button" aria-label="Pausar animación" aria-pressed="false">Ⅱ</button></div>
+          </div>
+          <div class="world-story" id="world-story" role="region" aria-labelledby="story-title" hidden>
+            <div><p class="story-eyebrow" id="story-eyebrow"></p><h2 id="story-title"></h2></div>
+            <div class="story-description"><p id="story-text"></p><a id="story-link" hidden></a></div>
+          </div>
+          <p class="visually-hidden" id="world-announcement" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+    <section class="journal wrap" id="blog" aria-labelledby="blog-heading">
+      <div class="section-heading"><div><p class="eyebrow">01 / NOTAS DEL LABORATORIO</p><h2 id="blog-heading">Aprender. Construir. <span>Compartir.</span></h2></div><span class="section-aside">UNA PREGUNTA LLEVA A OTRA <span aria-hidden="true">↙</span></span></div>
+      <div id="featured-post" aria-live="polite"></div>
+      <div class="archive-heading"><h3>Para seguir explorando <span id="post-count"></span></h3><label class="search-box"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="post-search" type="search" placeholder="Buscar una idea…" aria-label="Buscar artículos" /></label></div>
+      <div class="filter-bar" id="filter-bar" role="group" aria-label="Filtrar artículos por tema"></div>
+      <p class="results-status visually-hidden" id="results-status" role="status"></p>
+      <div class="posts-grid" id="posts-grid"><p class="loading-note">Abriendo el cuaderno de experimentos…</p></div>
+      <noscript><p>Activa JavaScript para explorar el catálogo de artículos. Puedes empezar por <a href="post.html?slug=chatgpt-sin-tecnicismos">ChatGPT sin tecnicismos</a>.</p></noscript>
+      <div class="archive-end"><span>SIEMPRE HAY ALGO MÁS POR APRENDER.</span></div>
+    </section>
+    <section class="about-section" id="about" aria-labelledby="about-title">
+      <div class="wrap about-grid">
+        <div class="about-intro"><p class="eyebrow">02 / EL HUMANO DETRÁS DEL MODELO</p><div class="about-person"><img src="profile.jpg" alt="Diego Machado" width="72" height="72" loading="lazy" /><div><span>Diego Machado</span><p>Ingeniero. Constructor. Siempre aprendiz.</p></div></div><a href="resume.html" class="text-link">Conoce mi trayectoria <span aria-hidden="true">↗</span></a></div>
+        <div class="about-copy"><h2 id="about-title">Entender algo es bueno.<br /><span>Hacer algo con eso, mejor.</span></h2><p>Soy Ingeniero Civil Industrial con un magíster en Ciencias de la Ingeniería. Me mueve entender cómo funcionan las cosas y convertir ese conocimiento en proyectos que puedas probar.</p><p>Acá encontrarás papers llevados a código, experimentos con modelos y explicaciones sin vueltas. Mi forma de aprender es construir. Y mi forma de ordenar lo aprendido es compartirlo.</p><div class="about-topics"><span>LLMs & NLP</span><span>Visión & audio</span><span>De la teoría a Python</span></div></div>
+      </div>
+    </section>
+  </main>
+  <dialog class="world-dialog" id="world-dialog" aria-label="Mi mundo pixel art ampliado"></dialog>
+  <footer class="footer wrap"><div class="footer-top"><a class="wordmark" href="index.html">diegulio</a><p>Nos vemos en la próxima idea.</p><div><a href="https://github.com/diegulio" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://www.linkedin.com/in/dieguliomachado/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div></div><div class="footer-bottom"><span>© <span id="year"></span> DIEGO MACHADO</span><span>HECHO CON CURIOSIDAD Y UN POCO DE CAFÉ.</span><a href="#">VOLVER ARRIBA ↑</a></div></footer>
+</body>
+</html>

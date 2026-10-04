@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f3ed" />
+  <script>try { if (localStorage.getItem('diegulio-time') === 'night') document.documentElement.dataset.theme = 'night'; } catch {}</script>
+  <title>Mi trayectoria — Diego Machado</title>
+  <meta name="description" content="La trayectoria de Diego Machado, escena por escena: Ingeniería Civil Industrial y magíster en la USACH, ciencia de datos en Falabella, Walmart y Visa, y docencia en Applied Machine Learning." />
+  <meta property="og:title" content="Mi trayectoria — Diego Machado" />
+  <meta property="og:description" content="Un CV que se recorre caminando: escenas pixel art de cada capítulo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700;750&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="home.css?v=pixel-1" />
+  <link rel="stylesheet" href="night.css?v=1" />
+  <link rel="stylesheet" href="trayectoria.css?v=3" />
+  <script type="module" src="trayectoria.js?v=8"></script>
+</head>
+<body class="tj-page">
+  <a class="skip-link" href="#tj-chapters">Saltar al contenido</a>
+  <header class="site-header">
+    <nav class="navigation wrap" aria-label="Navegación principal">
+      <a href="index.html" class="wordmark" aria-label="Diegulio, inicio">diegulio</a>
+      <div class="nav-links">
+        <a href="index.html#blog">Explorar</a>
+        <a href="index.html#about">Sobre mí</a>
+        <a href="https://github.com/diegulio" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="nav-actions"><a class="nav-resume" href="CV.pdf" download>Descargar CV <span aria-hidden="true">↓</span></a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Activar modo nocturno" aria-pressed="false" title="Activar modo nocturno"><span aria-hidden="true">☾</span><span class="theme-label">Noche</span></button></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="tj-journey" id="journey" aria-labelledby="tj-title">
+      <div class="tj-stage" id="tj-stage">
+        <canvas id="tj-canvas" aria-hidden="true"></canvas>
+        <div class="tj-hud" aria-hidden="true">
+          <span class="tj-hud-label" id="tj-hud-label">PRÓLOGO</span>
+          <span class="tj-year" id="tj-year">2016</span>
+          <span class="tj-hud-count" id="tj-hud-count">00 / 09</span>
+        </div>
+        <p class="tj-hint" id="tj-hint" aria-hidden="true">SIGUE BAJANDO <span>↓</span></p>
+        <nav class="tj-progress" id="tj-progress" aria-label="Capítulos de mi trayectoria"></nav>
+      </div>
+
+      <ol class="tj-chapters" id="tj-chapters">
+        <li class="tj-chapter" id="inicio" data-scene="casa" data-hud="2016" data-label="Prólogo">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>00 / PRÓLOGO · SANTIAGO, CL</p>
+            <h1 id="tj-title">Mi trayectoria</h1>
+            <p>Ingeniero Civil Industrial y Magíster. Me especializo en el análisis y modelamiento de datos para resolver desafíos complejos con Machine Learning, Computer Vision y arquitecturas en la nube.</p>
+            <p class="tj-note">Baja con el scroll y acompáñame, escena por escena.</p>
+            <div class="tj-actions"><a class="tj-button" href="CV.pdf" download>Descargar CV en PDF <span aria-hidden="true">↓</span></a></div>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="universidad" data-scene="uni" data-hud="2016" data-label="Universidad">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>01 / 2016 — 2022 · EDUCACIÓN</p>
+            <h2>Ingeniería Civil Industrial</h2>
+            <p class="tj-org">Universidad de Santiago de Chile</p>
+            <p>Las bases: optimización, estadística y modelamiento. Aquí empezó el camino.</p>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="magister" data-scene="msc" data-hud="2020" data-label="Magíster">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>02 / 2020 — 2022 · POSTGRADO</p>
+            <h2>Magíster en Ciencias de la Ingeniería</h2>
+            <p class="tj-org">MSc. Industrial Engineering · USACH</p>
+            <div class="tj-highlight"><strong>★ Mejor Estudiante Egresado 2022</strong><span>Reconocimiento al Ingeniero Civil Industrial de la generación con las mejores calificaciones.</span></div>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="falabella" data-scene="falabella" data-hud="2022" data-label="Falabella">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>03 / FEB 2022 — ABR 2023</p>
+            <h2>Data Scientist</h2>
+            <p class="tj-org">Falabella Tecnología Corporativo</p>
+            <ul>
+              <li>Desarrollo de Forecast Benchmark, logrando una reducción del error (~15%).</li>
+              <li>Liderazgo de la arquitectura de MLOps del equipo en GCP.</li>
+              <li>Liderazgo en un proyecto de reducción de horas-hombre en verificación documental usando modelos multimodales Transformers.</li>
+              <li>Optimización de una herramienta VRP para rutas de transporte.</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="walmart" data-scene="walmart" data-hud="2023" data-label="Walmart">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>04 / MAY 2023 — ABR 2024</p>
+            <h2>Data Scientist</h2>
+            <p class="tj-org">Walmart Chile</p>
+            <ul>
+              <li>Desarrollo de modelos de Assortment Clustering y recomendaciones.</li>
+              <li>Inferencia causal para evaluar propuestas de cambio de inventario.</li>
+              <li>Construcción de pipelines de datos para proyectos de Marketshare.</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="docencia" data-scene="profe" data-hud="2024" data-label="Docencia">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>05 / MAR 2024 — PRESENTE · DOCENCIA</p>
+            <h2>Profesor de Applied Machine Learning</h2>
+            <p class="tj-org">Minor en Data Science · Universidad de Santiago de Chile</p>
+            <p>Curso de Applied Machine Learning. Lo que aprendo, lo comparto.</p>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="visa" data-scene="visa" data-hud="2024" data-label="Visa">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>06 / JUN 2024 — PRESENTE</p>
+            <h2>Data Scientist</h2>
+            <p class="tj-org">Visa Analytics &amp; Consulting</p>
+            <p>El capítulo actual: de los datos a las decisiones.</p>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="logros" data-scene="logros" data-hud="★" data-label="Logros">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>07 / LOGROS Y PREMIOS</p>
+            <h2>Algunos trofeos del camino.</h2>
+            <ul class="tj-awards">
+              <li><strong>1er lugar Hackathon “IA por el Futuro”</strong>Solución impulsada por LLMs (CodeGPT) alineada con los Objetivos de Desarrollo Sostenible de la ONU.</li>
+              <li><strong>Mejor Estudiante Egresado 2022</strong>Ingeniero Civil Industrial de la generación con las mejores calificaciones.</li>
+              <li><strong>Professional Machine Learning Engineer</strong>Certificación de Google Cloud Platform (feb 2023).</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="habilidades" data-scene="taller" data-hud="&lt;/&gt;" data-label="Taller">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>08 / HABILIDADES TÉCNICAS</p>
+            <h2>Mi caja de herramientas.</h2>
+            <ul class="tj-tags" aria-label="Habilidades técnicas">
+              <li>Python</li><li>SQL</li><li>GCP</li><li>AWS</li><li>PyTorch</li><li>TensorFlow</li><li>HuggingFace</li><li>Docker</li><li>FastAPI</li><li>Flask</li><li>Web Dev</li>
+            </ul>
+          </article>
+        </li>
+
+        <li class="tj-chapter" id="continuara" data-scene="epilogo" data-hud="HOY" data-label="Continuará">
+          <article class="tj-card">
+            <p class="tj-eyebrow"><i></i>09 / CONTINUARÁ…</p>
+            <h2>El próximo capítulo se escribe en el blog.</h2>
+            <p>Mientras tanto, sigo construyendo, enseñando y sumando kilómetros.</p>
+            <div class="tj-actions">
+              <a class="tj-button" href="index.html#blog">Explorar el blog <span aria-hidden="true">→</span></a>
+              <a class="tj-link" href="https://www.linkedin.com/in/dieguliomachado/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+              <a class="tj-link" href="https://github.com/diegulio" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+              <a class="tj-link" href="CV.pdf" download>CV en PDF ↓</a>
+            </div>
+          </article>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer wrap"><div class="footer-top"><a class="wordmark" href="index.html">diegulio</a><p>Nos vemos en la próxima idea.</p><div><a href="https://github.com/diegulio" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://www.linkedin.com/in/dieguliomachado/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div></div><div class="footer-bottom"><span>© <span id="year"></span> DIEGO MACHADO</span><span>HECHO CON CURIOSIDAD Y UN POCO DE CAFÉ.</span><a href="#">VOLVER ARRIBA ↑</a></div></footer>
+
+  <script>
+    // Same switch and storage key as the home page, so the mode follows you between pages.
+    (() => {
+      const button = document.getElementById('theme-toggle');
+      const sync = () => {
+        const night = document.documentElement.dataset.theme === 'night';
+        const label = night ? 'Activar modo diurno' : 'Activar modo nocturno';
+        button.setAttribute('aria-label', label); button.title = label;
+        button.setAttribute('aria-pressed', String(night));
+        button.firstElementChild.textContent = night ? '☀' : '☾';
+        button.lastElementChild.textContent = night ? 'Día' : 'Noche';
+        document.querySelector('meta[name="theme-color"]').content = night ? '#151e22' : '#f4f3ed';
+      };
+      button.addEventListener('click', () => {
+        const night = document.documentElement.dataset.theme !== 'night';
+        document.documentElement.dataset.theme = night ? 'night' : 'day';
+        try { localStorage.setItem('diegulio-time', night ? 'night' : 'day'); } catch {}
+        sync();
+      });
+      sync();
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

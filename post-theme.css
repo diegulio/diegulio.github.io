@@ -1,0 +1,35 @@
+/* Aligns article pages with the home palette: light by default, night when
+   localStorage "diegulio-time" is "night" (same switch as the home page). */
+:root {
+  color-scheme: light;
+  --bg:#f4f3ed; --bg-card:#fbfaf6; --bg-card-hover:#efeee6; --bg-glass:rgba(32,37,31,.05);
+  --border:#d9dcd1; --border-hover:#b9beb0;
+  --text-primary:#20251f; --text-secondary:#555b51; --text-muted:#6f746a;
+  --accent:#2f6b3c; --accent-dim:rgba(47,107,60,.1); --accent-glow:rgba(47,107,60,.2);
+  --font-sans:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'IBM Plex Mono','JetBrains Mono',monospace;
+}
+html[data-theme=night] {
+  color-scheme: dark;
+  --bg:#151e22; --bg-card:#1c2926; --bg-card-hover:#202d2c; --bg-glass:rgba(255,255,255,.04);
+  --border:#34433f; --border-hover:#4b6152;
+  --text-primary:#edf0e3; --text-secondary:#a5b3ad; --text-muted:#8a978f;
+  --accent:#d0f875; --accent-dim:rgba(208,248,117,.12); --accent-glow:rgba(208,248,117,.25);
+}
+#navbar, #navbar.scrolled { background: color-mix(in srgb, var(--bg) 92%, transparent); }
+::-webkit-scrollbar-thumb { background: var(--border-hover); }
+.post-body-content code { background: var(--bg-glass); color: #9a4a1f; }
+.post-body-content th { background: var(--bg-glass); }
+.post-body-content tr:hover td { background: var(--bg-glass); }
+.code-header { background: var(--bg-glass); }
+html[data-theme=night] .post-body-content code { color: #e0a875; }
+/* Code blocks keep a dark surface in both modes (hljs dark-dimmed theme). */
+.post-body-content pre code.hljs, .post-body-content pre code { background:#22272e; color:#adbac7; }
+.post-body-content pre .code-header { background:#2d333b; }
+.theme-toggle { display:flex; align-items:center; justify-content:center; gap:6px; min-height:36px; padding:6px 10px; border:1px solid var(--border); border-radius:4px; background:transparent; color:var(--text-primary); font:12px var(--font-mono); cursor:pointer; }
+.theme-toggle:hover { background:#d0f875; color:#20251f; border-color:#d0f875; }
+.post-body-content pre { background:#22272e; border-color:#34433f; }
+.post-body-content pre code { scrollbar-width: thin; scrollbar-color: #4b5560 transparent; }
+.post-body-content pre code::-webkit-scrollbar { height: 8px; }
+.post-body-content pre code::-webkit-scrollbar-track { background: transparent; }
+.post-body-content pre code::-webkit-scrollbar-thumb { background: #4b5560; border-radius: 4px; }
