@@ -21,6 +21,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
+  <!-- KaTeX (math: $...$ and $$...$$) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+
   <link rel="stylesheet" href="../style.css" />
 
   <style>
@@ -330,7 +334,56 @@
     .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
     .callout-body { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
     .callout-body p { margin: 0; color: inherit; }
+    .callout-body > * + * { margin-top: 0.6rem; }
     .callout-body strong { color: var(--text-primary); }
+    .callout-body .callout-title { font-weight: 600; color: var(--text-primary); }
+    .callout-body pre { margin: 0.75rem 0 0; }
+    .callout-body img { margin: 0.75rem 0 0; }
+    details.callout { display: block; }
+    details.callout summary {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      cursor: pointer;
+      list-style: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    details.callout summary::-webkit-details-marker { display: none; }
+    details.callout summary::after { content: '▸'; margin-left: auto; color: var(--text-muted); transition: transform var(--transition); }
+    details.callout[open] summary::after { transform: rotate(90deg); }
+    details.callout > .callout-body { margin-top: 0.85rem; }
+
+    /* Figures with caption */
+    .post-figure { margin: 1.5rem 0; }
+    .post-body-content .post-figure img { margin: 0; }
+    .post-figure figcaption {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* Math */
+    .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
+
+    /* Notebook outputs */
+    .nb-output { overflow-x: auto; margin: 1rem 0 1.5rem; }
+    .post-body-content .nb-output table { width: auto; font-size: 0.78rem; margin: 0; }
+    .post-body-content .nb-output th,
+    .post-body-content .nb-output td { padding: 0.35rem 0.75rem; white-space: nowrap; }
+    .nb-plot {
+      display: block;
+      width: 100%;
+      height: 560px;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+    .nb-audio { display: block; width: 100%; margin: 1rem 0 1.5rem; }
 
     /* ---- Post footer ---- */
     .post-footer {
@@ -537,7 +590,18 @@
       if (isBadge) {
         return `<img src="${src}" alt="${text || ''}" style="display:inline;width:auto;border:none;margin:0 3px 0 0;border-radius:3px;vertical-align:middle" />`;
       }
-      return `<img src="${src}" alt="${text || ''}" title="${title || ''}" loading="lazy" />`;
+      const img = `<img src="${src}" alt="${text || ''}" title="${title || ''}" loading="lazy" />`;
+      if (!text) return img;
+      // Alt text doubles as the caption (as Quarto/Notion showed it)
+      const caption = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      return `<figure class="post-figure">${img}<figcaption>${caption}</figcaption></figure>`;
+    };
+
+    // A paragraph holding only a figure shouldn't be wrapped in <p>
+    renderer.paragraph = function(text) {
+      const t = text.trim();
+      if (/^<figure[\s\S]*<\/figure>$/.test(t) && t.indexOf('<figure', 1) === -1) return t + '\n';
+      return `<p>${text}</p>\n`;
     };
 
     // Custom code block renderer with header
@@ -548,25 +612,65 @@
       return `<pre><div class="code-header"><span class="code-lang">${lang}</span><button class="code-copy" onclick="copyCode(this, &quot;${escapedCode.replace(/\n/g,'\\n')}&quot;)" aria-label="Copy code">Copy</button></div><code class="hljs language-${lang}">${hl}</code></pre>`;
     };
 
-    // Custom blockquote — detect [!NOTE] [!WARNING] etc.
+    // Custom blockquote — callouts:
+    //   > [!NOTE]            default icon
+    //   > [!NOTE] 🤖         custom icon
+    //   > [!NOTE] 📝 Nota    custom icon + title
+    //   > [!CAUTION]- Título  collapsible (closed by default)
+    const calloutMap = {
+      NOTE:      { cls: 'callout-note',    icon: '📝' },
+      TIP:       { cls: 'callout-tip',     icon: '💡' },
+      WARNING:   { cls: 'callout-warning', icon: '⚠️' },
+      CAUTION:   { cls: 'callout-caution', icon: '🔥' },
+      IMPORTANT: { cls: 'callout-note',    icon: 'ℹ️' },
+    };
     renderer.blockquote = function(quote) {
-      const calloutMap = {
-        '[!NOTE]':    { cls: 'callout-note',    icon: '📝' },
-        '[!TIP]':     { cls: 'callout-tip',     icon: '💡' },
-        '[!WARNING]': { cls: 'callout-warning', icon: '⚠️' },
-        '[!CAUTION]': { cls: 'callout-caution', icon: '🔥' },
-        '[!IMPORTANT]': { cls: 'callout-note',  icon: 'ℹ️' },
-      };
-      for (const [marker, { cls, icon }] of Object.entries(calloutMap)) {
-        if (quote.includes(marker)) {
-          const body = quote.replace(/<p>.*?\[!\w+\].*?<\/p>/s, '').trim() || quote.replace(marker,'').trim();
-          return `<div class="callout ${cls}"><span class="callout-icon">${icon}</span><div class="callout-body">${body}</div></div>`;
-        }
+      const m = /^\s*<p>\[!(NOTE|TIP|WARNING|CAUTION|IMPORTANT)\](-?)[ \t]*([^\n]*?)(\n|<\/p>)/.exec(quote);
+      if (!m) return `<blockquote>${quote}</blockquote>`;
+      const { cls, icon: defaultIcon } = calloutMap[m[1]];
+      let body = quote.slice(m[0].length).trim();
+      if (m[4] === '\n') body = '<p>' + body;
+      const em = /^((?:\p{Extended_Pictographic}|\p{Emoji_Modifier}|‍|️)+)\s*(.*)$/u.exec(m[3].trim());
+      const icon  = em ? em[1] : defaultIcon;
+      const title = em ? em[2] : m[3].trim();
+      if (m[2]) {
+        return `<details class="callout ${cls}"><summary><span class="callout-icon">${icon}</span><span>${title || 'Ver más'}</span></summary><div class="callout-body">${body}</div></details>`;
       }
-      return `<blockquote>${quote}</blockquote>`;
+      const titleHtml = title ? `<p class="callout-title">${title}</p>` : '';
+      return `<div class="callout ${cls}"><span class="callout-icon">${icon}</span><div class="callout-body">${titleHtml}${body}</div></div>`;
     };
 
-    marked.use({ renderer });
+    // Math: $$...$$ blocks and $...$ inline, rendered with KaTeX
+    function renderMath(tex, displayMode) {
+      try { return katex.renderToString(tex, { displayMode, throwOnError: false }); }
+      catch { return tex; }
+    }
+    const mathExtensions = [
+      {
+        name: 'mathBlock',
+        level: 'block',
+        start(src) { const m = /(^|\n) {0,3}\$\$/.exec(src); return m ? m.index + m[1].length : undefined; },
+        tokenizer(src) {
+          const m = /^ {0,3}\$\$([\s\S]+?)\$\$[ \t]*(?:\n|$)/.exec(src);
+          if (m) return { type: 'mathBlock', raw: m[0], text: m[1].trim() };
+        },
+        renderer(token) { return renderMath(token.text, true) + '\n'; },
+      },
+      {
+        name: 'mathInline',
+        level: 'inline',
+        start(src) { const i = src.indexOf('$'); return i < 0 ? undefined : i; },
+        tokenizer(src) {
+          let m = /^\$\$([^$]+?)\$\$/.exec(src);
+          if (m) return { type: 'mathInline', raw: m[0], text: m[1].trim(), display: true };
+          m = /^\$(?!\s)((?:\\.|[^\\$\n])+?)(?<!\s)\$(?!\d)/.exec(src);
+          if (m) return { type: 'mathInline', raw: m[0], text: m[1], display: false };
+        },
+        renderer(token) { return renderMath(token.text, token.display); },
+      },
+    ];
+
+    marked.use({ renderer, extensions: mathExtensions });
 
     // ---- Get slug from URL ----
     function getSlugFromURL() {

@@ -1,265 +1,527 @@
-# Identificando desastres en Twitter con NLP 🌪️
+---
+title: "Identificando desastres en Twitter con NLP"
+subtitle: "Aprende a usar Natural Language Processing (NLP) para identificar desastres en Twitter"
+author: "Diegulio"
+date: "2023-03-01"
+categories: [python, nlp, kaggle]
+image: "posts/nlp-disaster/twitter_disaster.png"
+---
+[![](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/code/diegomachado/seqclass-nn-embed-rnn-lstm-gru-bert-hf)
 
-[![Open in Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/code/diegomachado/seqclass-nn-embed-rnn-lstm-gru-bert-hf)
+# Goal 
 
-![Twitter Disaster](twitter_disaster.png)
+I'm learning NLP. So to do that I decided pass trough diverse NLP models, study the teory and code them! 
+I think that it is a good method to learn Machine Learning things. So, Disclaimer: All the content on the notebooks is what I understood from diverse references (I will put the links), somethings could be wrong, If you find any mistake please let me know, so I can learn of it. Also, if you have some doubt, it will be a pleasure to me to answer it (as long as I have the answer).
 
-# 🎯 Goal
+At the end, I achieve a score of 0.843 in the LB. Is beatifull to see how you are improving the solutions step by step!
 
-Estoy aprendiendo NLP. Para hacerlo decidí pasar por diversos modelos de NLP, estudiar la teoría e implementarlos — desde redes neuronales simples hasta BERT. Creo que es un buen método para aprender Machine Learning: no sólo leer, sino ensuciarse las manos con el código.
+So, this will be the embedding Notebook, I will put the link to each specific notebook here (So it will be more readable).
 
-**Disclaimer**: Todo el contenido en los notebooks es lo que entendí de diversas referencias. Si encuentras algún error por favor avísame para poder aprender de ello. 🙋🏽
+Methodologies & Notebooks:
 
-# 📚 Tópico: Natural Language Processing
+|           Model Notebook          | Score |
+|:-------------------------:|:-----:|
+| [Simple Neural Network](post.html?slug=nlp-disaster/1-simple-nn) ( [View on kaggle](https://www.kaggle.com/code/diegomachado/seqclass-1-simple-nn-0-56))    | 0.56  |
+| [Embeddings](post.html?slug=nlp-disaster/2-embeddings) ( [View on kaggle](https://www.kaggle.com/code/diegomachado/seqclass-2-embeddings-0-797))                | 0.797 |
+| [Recurrent Neural Networks](post.html?slug=nlp-disaster/3-rnn) ( [View on kaggle](https://www.kaggle.com/code/diegomachado/seqclass-3-rnn-0-809/notebook)) | 0.809 |
+| [BERT & HuggingFace](post.html?slug=nlp-disaster/4-bert) ( [View on kaggle](https://www.kaggle.com/code/diegomachado/seqclass-4-bert-tensorflow-huggingface-0-824/notebook))        | 0.824 |
+| [MyBestSolution](post.html?slug=nlp-disaster/5-my-best-solution) ( [View on kaggle](https://www.kaggle.com/code/diegomachado/seqclass-5-mybestsolution-0-843/notebook))            | 0.843 |
 
-La competición [NLP with Disaster Tweets](https://www.kaggle.com/competitions/nlp-getting-started) de Kaggle propone un problema de clasificación binaria: dado un tweet, determinar si está describiendo un **desastre real** o si usa el lenguaje de desastre de forma **metafórica/figurada**.
+# EDA 
+Here I will do some preprocessing and split the data. I will use that data to each notebook!
 
-Por ejemplo:
-- Tweet real de desastre: *"There's an emergency evacuation in my city due to wildfires 🔥"*
-- Tweet metafórico: *"My exam was a total disaster lol"*
+I think there is a lot of notebooks with a beatifull EDA, So I won't take to much around this.
 
-# 🔎 Motivación
-
-Twitter (ahora X) es una de las fuentes de información en tiempo real más importantes del mundo. Organizaciones de respuesta a emergencias, periodistas y ciudadanos usan esta plataforma para reportar desastres. Sin embargo, distinguir automáticamente tweets reales de desastre es un desafío no trivial — el lenguaje humano es ambiguo y contextual.
-
-🧠 **Solución: Aplicar técnicas de NLP progresivamente más complejas para clasificar tweets de desastre.**
-
-# 🔨 Tool Path: Que utilizaremos
-
-1. **TensorFlow / Keras**: Para modelos de redes neuronales
-2. **HuggingFace Transformers**: Para modelos BERT
-3. **PyTorch**: Para implementaciones más avanzadas
-4. **NLTK / SpaCy**: Para preprocesamiento de texto
-
-# 💭 Concept Path: Que aprenderemos
-
-Este proyecto nos lleva por una progresión de técnicas NLP modernas:
-
-1. **Simple Neural Network** — Baseline básico
-2. **Word Embeddings** — Representación semántica del texto
-3. **RNN / LSTM / GRU** — Modelos secuenciales
-4. **BERT (HuggingFace)** — Transformers y la mejor solución
-
-# 🧠 EDA
+### Libraries
 
 ```python
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+
 import seaborn as sns
-```
+import matplotlib.pyplot as plt
+import gc
 
-## Data
-
-```python
-train_df = pd.read_csv('/kaggle/input/nlp-getting-started/train.csv')
-test_df = pd.read_csv('/kaggle/input/nlp-getting-started/test.csv')
-
-print(train_df.head())
-print(f"Train shape: {train_df.shape}")
-print(f"Disaster tweets: {train_df.target.sum()}")
-print(f"Non-disaster tweets: {(train_df.target == 0).sum()}")
-```
-
-```
-   id keyword location                                               text  target
-0   1     NaN      NaN  Our Deeds are the Reason of this #earthquake M...       1
-1   4     NaN      NaN             Forest fire near La Ronge Sask. Canada       1
-2   5     NaN      NaN  All residents asked to 'shelter in place' are ...       1
-```
-
-El dataset está **bastante balanceado**: ~57% no-desastre, ~43% desastre.
-
-## Pre-processing
-
-```python
-import re
-import string
-
-def clean_text(text):
-    # Remover URLs
-    text = re.sub(r'http\S+', '', text)
-    # Remover menciones  
-    text = re.sub(r'@\w+', '', text)
-    # Remover hashtags (conservar la palabra)
-    text = re.sub(r'#', '', text)
-    # Remover puntuación
-    text = text.translate(str.maketrans('', '', string.punctuation))
-    # Lowercase
-    text = text.lower().strip()
-    return text
-
-train_df['clean_text'] = train_df['text'].apply(clean_text)
-```
-
-# ⚡️ Modelos
-
-## 1. Simple Neural Network (Baseline)
-
-El primer enfoque es una NN simple con representación **Bag of Words**:
-
-```python
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-
-# Tokenización
-tokenizer = Tokenizer(num_words=10000, oov_token='<OOV>')
-tokenizer.fit_on_texts(train_df['clean_text'])
-
-X_train = tokenizer.texts_to_sequences(train_df['clean_text'])
-X_train = pad_sequences(X_train, maxlen=100, padding='post', truncating='post')
-
-# Modelo
-model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(10000, 16, input_length=100),
-    tf.keras.layers.GlobalAveragePooling1D(),
-    tf.keras.layers.Dense(24, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
-])
-
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-model.fit(X_train, y_train, epochs=30, validation_split=0.2)
-```
-
-## 2. Word Embeddings
-
-Los embeddings representan palabras como vectores en un espacio semántico continuo. Palabras similares tienden a tener vectores cercanos:
-
-```python
-from tensorflow.keras.layers import Embedding
-
-# Pre-trained GloVe Embeddings
-def load_glove_embeddings(glove_file, word_index, embedding_dim=100):
-    embeddings_index = {}
-    with open(glove_file, encoding='utf-8') as f:
-        for line in f:
-            values = line.split()
-            word = values[0]
-            coefs = np.asarray(values[1:], dtype='float32')
-            embeddings_index[word] = coefs
-    
-    embedding_matrix = np.zeros((len(word_index) + 1, embedding_dim))
-    for word, i in word_index.items():
-        embedding_vector = embeddings_index.get(word)
-        if embedding_vector is not None:
-            embedding_matrix[i] = embedding_vector
-    
-    return embedding_matrix
-
-embedding_matrix = load_glove_embeddings('glove.6B.100d.txt', tokenizer.word_index)
-
-model = tf.keras.Sequential([
-    Embedding(len(tokenizer.word_index) + 1, 100, 
-              weights=[embedding_matrix], 
-              input_length=100, 
-              trainable=False),
-    GlobalAveragePooling1D(),
-    Dense(64, activation='relu'),
-    Dense(1, activation='sigmoid')
-])
-```
-
-## 3. RNN / LSTM / GRU
-
-Los modelos recurrentes capturan el **orden secuencial** del texto, algo que los embeddings simples no hacen:
-
-```python
-# LSTM
-model_lstm = tf.keras.Sequential([
-    Embedding(10000, 64, input_length=100),
-    tf.keras.layers.LSTM(64, return_sequences=True),
-    tf.keras.layers.LSTM(32),
-    Dense(32, activation='relu'),
-    Dense(1, activation='sigmoid')
-])
-
-# GRU (más eficiente que LSTM)
-model_gru = tf.keras.Sequential([
-    Embedding(10000, 64, input_length=100),
-    tf.keras.layers.GRU(64, return_sequences=True),
-    tf.keras.layers.GRU(32),
-    Dense(32, activation='relu'),
-    Dense(1, activation='sigmoid')
-])
-```
-
-Diferencia clave entre LSTM y GRU:
-- **LSTM**: Tiene "forget gate", "input gate" y "output gate" — más expresivo pero más lento
-- **GRU**: Simplifica con solo "reset gate" y "update gate" — más rápido con resultados similares
-
-## 4. BERT (La Solución Ganadora)
-
-BERT (Bidirectional Encoder Representations from Transformers) es un modelo pre-entrenado de HuggingFace que logra el mejor performance:
-
-```python
-from transformers import BertTokenizer, TFBertForSequenceClassification
 import tensorflow as tf
+from tensorflow.keras.layers import TextVectorization, Lambda
+from tensorflow.keras import layers
+from tensorflow.keras.utils import plot_model
+from tensorflow.keras.preprocessing.text import text_to_word_sequence
+from tensorflow.keras import losses
+from tensorflow.keras.callbacks import EarlyStopping, TensorBoard, ReduceLROnPlateau
+#import tensorflow_hub as hub
+#import tensorflow_text as text # Bert preprocess uses this 
+from tensorflow.keras.optimizers import Adam
 
-tokenizer_bert = BertTokenizer.from_pretrained('bert-base-uncased')
+import re
+import nltk
+from nltk.corpus import stopwords
+import string
+from gensim.models import KeyedVectors
 
-def encode_examples(ds, limit=-1):
-    input_ids_list = []
-    attention_mask_list = []
-    label_list = []
-    
-    if limit > 0:
-        ds = ds.take(limit)
-    
-    for text, label in zip(ds['clean_text'], ds['target']):
-        bert_input = tokenizer_bert(
-            text,
-            max_length=128,
-            padding='max_length',
-            truncation=True,
-            return_tensors='tf'
-        )
-        input_ids_list.append(bert_input['input_ids'])
-        attention_mask_list.append(bert_input['attention_mask'])
-        label_list.append([label])
-    
-    return (
-        tf.squeeze(tf.stack(input_ids_list), axis=1),
-        tf.squeeze(tf.stack(attention_mask_list), axis=1),
-        tf.stack(label_list)
-    )
-
-model_bert = TFBertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=1)
-
-optimizer = tf.keras.optimizers.Adam(learning_rate=2e-5)
-model_bert.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+#nltk.download('stopwords')
 ```
 
-> [!NOTE]
-> La diferencia clave de BERT vs los modelos anteriores es que es **bidireccional**: entiende el contexto de cada palabra mirando tanto lo que viene antes como lo que viene después. Esto es fundamental para entender el lenguaje humano con sus ambigüedades.
+### Data
 
-# 🎯 Resultados
+```python
+train_df = pd.read_csv("../input/nlp-getting-started/train.csv")
+train_df.head()
+```
 
-| Modelo | Accuracy Validación | F1-Score |
-|--------|-------------------|----------|
-| Simple NN | ~78% | ~0.76 |
-| GloVe Embeddings | ~80% | ~0.79 |
-| LSTM | ~81% | ~0.80 |
-| GRU | ~81% | ~0.80 |
-| **BERT** | **~84%** | **~0.83** |
+<div class="nb-output">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>keyword</th>
+      <th>location</th>
+      <th>text</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Our Deeds are the Reason of this #earthquake M...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Forest fire near La Ronge Sask. Canada</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>5</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>All residents asked to 'shelter in place' are ...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>13,000 people receive #wildfires evacuation or...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Just got sent this photo from Ruby #Alaska as ...</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
 
-BERT supera significativamente a los modelos anteriores gracias a su representación contextual bidireccional y su preentrenamiento en grandes corpus de texto.
+```python
+test_df = pd.read_csv("../input/nlp-getting-started/test.csv")
+test_df.head()
+```
 
-# 🚀 Próximos Pasos
+<div class="nb-output">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>keyword</th>
+      <th>location</th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Just happened a terrible car crash</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Heard about #earthquake is different cities, s...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>there is a forest fire at spot pond, geese are...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>9</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Apocalypse lighting. #Spokane #wildfires</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>11</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Typhoon Soudelor kills 28 in China and Taiwan</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
 
-- Fine-tuning de **RoBERTa** o **DeBERTa** para mayor performance
-- Explorar **ensemble** de BERT + LSTM
-- Aplicar técnicas de **data cleaning** más agresivas
-- Usar **knowledge distillation** para comprimir BERT en un modelo más pequeño
+### EDA
 
-# 🥳 Conclusión
+```python
+# Target Proportion
+sns.countplot(data=train_df, x = "target")
+```
 
-Este proyecto fue un gran viaje por el ecosistema de NLP moderno. Comenzamos con redes neuronales simples y step by step llegamos a BERT, experimentando cómo cada técnica mejora nuestra capacidad de entender el lenguaje humano.
+```text
+<AxesSubplot:xlabel='target', ylabel='count'>
+```
 
-La progresión Simple NN → Embeddings → LSTM/GRU → BERT ilustra perfectamente la evolución del campo de NLP en los últimos años. Cada paso resuelve limitaciones del anterior:
+![](assets/output-1.png)
 
-- **Simple NN**: No entiende semántica
-- **Embeddings**: Captura semántica pero no orden
-- **LSTM/GRU**: Captura orden pero ve el texto en una sola dirección
-- **BERT**: Contexto bidireccional completo con preentrenamiento masivo
+I think it is balanced!
 
-¡El código completo está en Kaggle — te invito a explorar y mejorar la solución!
+```python
+# Random example of disaster tweet
+train_df[train_df.target == 1].sample(1).text.values[0]
+```
+
+```text
+'California Bush fires please evacuate affected areas ASAP when california govts advised you to do so http://t.co/ubVEVUuAch'
+```
+
+```python
+# Random example of NO disaster tweet
+train_df[train_df.target == 0].sample(1).text.values[0]
+```
+
+```text
+'Someone split a mudslide w me when I get off work'
+```
+
+### Pre-processing
+
+I will do some preprocessing with Tensorflow!
+
+```python
+# Input Tensor Data
+text = tf.data.Dataset.from_tensor_slices(train_df.text)
+text
+```
+
+```text
+2022-12-11 15:20:58.687517: I tensorflow/core/common_runtime/process_util.cc:146] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+```
+
+```text
+<TensorSliceDataset shapes: (), types: tf.string>
+```
+
+Note that Im reading data from memory! If it would huge data I would be in troubles! 
+
+One advantage of initialize a Tensorflow dataset is that I will be able to create a data pipeline (batch, fetch, shuffle, etc.)
+
+```python
+# some samples
+list(text.take(2).as_numpy_iterator())
+```
+
+```text
+[b'Our Deeds are the Reason of this #earthquake May ALLAH Forgive us all',
+ b'Forest fire near La Ronge Sask. Canada']
+```
+
+We need to know that models don't understand text by itself! Just numbers! For this, we vectorize the sentences. I don't plan to use a model now, I would like to observe wich words are more present by target! (Also I don't want to consider **stopwords**) 
+
+I will use the tensorflow layer: Text Vectorization. from behind, it apply lowercase and delete punctuation. I also wants to remove stopwords, so I will build a custom standarization that do: 
+1. lowercase
+2. strip punctuation
+3. remove stop words! 
+
+[Click here if you don't know what are stop words](https://www.analyticsvidhya.com/blog/2019/08/how-to-remove-stopwords-text-normalization-nltk-spacy-gensim-python/)
+
+```python
+#### COUNT WORDS BY TARGET
+
+def custom_standardization(inputs):
+    """
+    Apply: lowercase, remove punctuation and stopwords
+    """
+    PUNCTUATION = r'[!"#$%&()\*\+,-\./:;<=>?@\[\\\]^_`{|}~\']'
+    lowercase = tf.strings.lower(inputs) # lowercase
+    strip = tf.strings.regex_replace(lowercase, PUNCTUATION, '') # strip punctuation
+    stopwrd = tf.strings.regex_replace(strip, r'\b(' + r'|'.join(stopwords.words('english')) + r')\b\s*', '')
+    return stopwrd
+    
+
+# model to apply vectorize_layer with custom standardization
+vectorize_layer = tf.keras.layers.TextVectorization(output_mode = 'multi_hot', standardize = custom_standardization)
+vectorize_layer.adapt(text)
+
+# model to vectorize
+model = tf.keras.models.Sequential()
+model.add(tf.keras.Input(shape=(1,), dtype=tf.string))
+model.add(vectorize_layer)
+
+# make counter
+train_count = model.predict(text.batch(batch_size = len(text))) # predict to count 
+token_counts = pd.DataFrame(columns = vectorize_layer.get_vocabulary(), data = train_count) # df with tokens and count
+train_df.rename(columns = {"target":"disaster_target"}, inplace = True) # rename target because there is a word target in data
+count_df = pd.concat([train_df, token_counts], axis = 1) #concat
+group_count = count_df.iloc[:,4:].groupby("disaster_target", as_index = False).sum() # count token for each target
+melt_count = pd.melt(group_count, id_vars=["disaster_target"], value_name = "count") # each token to row
+melt_count.sort_values(by=["count"], ascending = False).head(30)
+```
+
+```text
+2022-12-11 15:20:58.997911: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+/opt/conda/lib/python3.7/site-packages/IPython/core/interactiveshell.py:3552: FutureWarning: This dataframe has a column name that matches the 'value_name' column name of the resulting Dataframe. In the future this will raise an error, please set the 'value_name' parameter of DataFrame.melt to a unique name.
+  exec(code_obj, self.user_global_ns, self.user_ns)
+```
+
+<div class="nb-output">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>disaster_target</th>
+      <th>variable</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>like</td>
+      <td>239.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>im</td>
+      <td>221.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0</td>
+      <td>amp</td>
+      <td>174.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0</td>
+      <td>new</td>
+      <td>163.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1</td>
+      <td>fire</td>
+      <td>162.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0</td>
+      <td>get</td>
+      <td>158.0</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>0</td>
+      <td>dont</td>
+      <td>136.0</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>1</td>
+      <td>news</td>
+      <td>130.0</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>0</td>
+      <td>one</td>
+      <td>122.0</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>1</td>
+      <td>via</td>
+      <td>121.0</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>0</td>
+      <td>body</td>
+      <td>110.0</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>1</td>
+      <td>california</td>
+      <td>108.0</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>1</td>
+      <td>suicide</td>
+      <td>104.0</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>1</td>
+      <td>people</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>1</td>
+      <td>police</td>
+      <td>97.0</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>1</td>
+      <td>disaster</td>
+      <td>96.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0</td>
+      <td>via</td>
+      <td>96.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>1</td>
+      <td>amp</td>
+      <td>95.0</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>0</td>
+      <td>would</td>
+      <td>93.0</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>1</td>
+      <td>killed</td>
+      <td>90.0</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>0</td>
+      <td>video</td>
+      <td>90.0</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>0</td>
+      <td>people</td>
+      <td>90.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>like</td>
+      <td>88.0</td>
+    </tr>
+    <tr>
+      <th>117</th>
+      <td>1</td>
+      <td>hiroshima</td>
+      <td>84.0</td>
+    </tr>
+    <tr>
+      <th>87</th>
+      <td>1</td>
+      <td>fires</td>
+      <td>82.0</td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>0</td>
+      <td>know</td>
+      <td>82.0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>0</td>
+      <td>2</td>
+      <td>81.0</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>0</td>
+      <td>full</td>
+      <td>81.0</td>
+    </tr>
+    <tr>
+      <th>84</th>
+      <td>0</td>
+      <td>love</td>
+      <td>81.0</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>0</td>
+      <td>time</td>
+      <td>80.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+After I build it I realized that it is not necessary to instantiate a model to use layers! 😅
+
+# Split Data
+
+```python
+from sklearn.model_selection import train_test_split
+```
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(train_df[[col for col in train_df.columns if col != 'disaster_target']], train_df.disaster_target, test_size=0.2, random_state=13)
+```
+
+```python
+# To csv (In some notebooks I will use this data)
+pd.concat([X_train, y_train], axis = 1).to_csv('df_train.csv',index = False)
+pd.concat([X_test, y_test], axis = 1).to_csv('df_test.csv',index = False)
+```
+
+This dataset is here: https://www.kaggle.com/datasets/diegomachado/df-split
+
+```python
+# Delete it from memory
+del train_df, test_df, X_train, X_test, y_train, y_test
+gc.collect()
+```
+
+```text
+671
+```

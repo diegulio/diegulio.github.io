@@ -21,8 +21,8 @@
   },
   {
     "slug": "gan",
-    "title": "Paper Implementation: Generative Adversarial Networks",
-    "subtitle": "Implementamos el paper de Generative Adversarial Networks desde cero",
+    "title": "Paper Implementation Series: Generative Adversarial Networks",
+    "subtitle": "Implementamos el paper Generative Adversarial Networks",
     "date": "2024-02-28",
     "author": "Diegulio",
     "categories": ["python", "pytorch", "paper"],
@@ -42,7 +42,7 @@
   {
     "slug": "llm-cv-assistant",
     "title": "Data ❤️ Chat: Chatea con tu Curriculum",
-    "subtitle": "Creamos una aplicación web que te permite chatear con tu CV",
+    "subtitle": "Creamos una aplicación web que te permite chatear con tu CV!",
     "date": "2023-07-25",
     "author": "Diegulio",
     "categories": ["python", "llm", "langchain"],
@@ -51,7 +51,7 @@
   },
   {
     "slug": "llm-recipe",
-    "title": "Iniciando en LLM: Crea tu primera app con LangChain",
+    "title": "Iniciando en LLM: Crea tu primera aplicación con LangChain y ChatGPT",
     "subtitle": "Cocina tu comida favorita con la ayuda de LLM",
     "date": "2023-07-05",
     "author": "Diegulio",
@@ -61,7 +61,7 @@
   },
   {
     "slug": "back-to-sit",
-    "title": "Back To Sit 🐒",
+    "title": "Back To Sit",
     "subtitle": "A library to notify you when your code is done!",
     "date": "2023-05-01",
     "author": "Diegulio",
@@ -71,8 +71,8 @@
   },
   {
     "slug": "birdclef-2023",
-    "title": "BirdClef 2023 🐦",
-    "subtitle": "Bird sound classification with deep learning — Kaggle competition",
+    "title": "BirdClef 2023 Competition",
+    "subtitle": "Clasificando Sonidos de Pájaros con Redes Neuronales",
     "date": "2023-06-01",
     "author": "Diegulio",
     "categories": ["python", "pytorch", "kaggle"],
@@ -82,7 +82,7 @@
   {
     "slug": "nlp-disaster",
     "title": "Identificando desastres en Twitter con NLP",
-    "subtitle": "Clasificación de tweets de desastre con modelos de lenguaje",
+    "subtitle": "Aprende a usar Natural Language Processing (NLP) para identificar desastres en Twitter",
     "date": "2023-03-01",
     "author": "Diegulio",
     "categories": ["python", "nlp", "kaggle"],
